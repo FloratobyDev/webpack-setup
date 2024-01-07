@@ -1,11 +1,20 @@
 {
   "include": [
-    "./packages/client/**/*",
-    "./packages/server/**/*"
+    "./packages/client/**/*.ts",
+    "./packages/client/**/*.tsx",
+    "./packages/server/**/*.ts",
+    "./packages/server/**/*.js",
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "webpack.*.js",
   ],
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "module": "es6",

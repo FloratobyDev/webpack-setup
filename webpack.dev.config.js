@@ -1,9 +1,10 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const EslintWebpackPlugin = require("eslint-webpack-plugin");
 const path = require("path");
 const webpack = require("webpack");
 
 module.exports = {
-  entry: "./packages/client/src/index.tsx",
+  entry: "./packages/client/index.tsx",
   output: {
     path: path.resolve(__dirname, "public"),
     filename: "bundle.js",
@@ -24,7 +25,7 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
-        include: path.resolve(__dirname, "packages", "client", "src"),
+        include: path.resolve(__dirname, "packages", "client"),
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
@@ -46,7 +47,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: path.resolve(__dirname, "packages", "client", "src"),
+        include: path.resolve(__dirname, "packages", "client"),
         exclude: /node_modules/,
         use: ["style-loader", "css-loader", "postcss-loader"],
       },
@@ -55,6 +56,12 @@ module.exports = {
         use: "ts-loader",
         exclude: /node_modules/,
       },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        include: path.resolve(__dirname, "packages", "client"),
+        exclude: /node_modules/,
+        type: "asset/resource",
+      }
     ],
   },
   resolve: {
@@ -63,6 +70,7 @@ module.exports = {
   devtool: "inline-source-map",
   mode: "development",
   plugins: [
+    new EslintWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "template", "index.html"),
       filename: "index.html",

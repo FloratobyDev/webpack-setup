@@ -1,7 +1,8 @@
+import "./style.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./components/App";
-import "./style.css";
+// eslint-disable-next-line sort-imports
+import App from "./App";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);

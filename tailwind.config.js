@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./packages/client/src/**/*.{ts,tsx}", "./public/index.html"],
   theme: {
-    extend: {},
+    extend: {
+      fontSize: {
+        
+      }
+    },
   },
   plugins: [],
 }
