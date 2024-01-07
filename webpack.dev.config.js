@@ -3,14 +3,14 @@ const path = require("path");
 const webpack = require("webpack");
 
 module.exports = {
-  entry: "./packages/client/src/index.js",
+  entry: "./packages/client/src/index.tsx",
   output: {
-    path: path.resolve(__dirname, "packages/client/public"),
+    path: path.resolve(__dirname, "public"),
     filename: "bundle.js",
     publicPath: "/",
   },
   devServer: {
-    static:  path.resolve(__dirname, "packages/client/public"),
+    static: path.resolve(__dirname, "public"),
     hot: true,
     proxy: {
       "/api": {
@@ -23,14 +23,14 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.tsx?$/,
         include: path.resolve(__dirname, "packages", "client", "src"),
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
           options: {
             presets: [
-              "@babel/react",
+              "@babel/preset-react",
               [
                 "@babel/preset-env",
                 {
@@ -39,6 +39,7 @@ module.exports = {
                   },
                 },
               ],
+              "@babel/preset-typescript",
             ],
           },
         },
@@ -49,16 +50,21 @@ module.exports = {
         exclude: /node_modules/,
         use: ["style-loader", "css-loader", "postcss-loader"],
       },
+      {
+        test: /\.{tsx|ts}?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
     ],
   },
   resolve: {
-    extensions: [".js", ".jsx"],
+    extensions: [".js", ".tsx", ".ts"],
   },
-  devtool: "eval-source-map",
+  devtool: "inline-source-map",
   mode: "development",
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "packages/client/public/index.html"),
+      template: path.resolve(__dirname, "template", "index.html"),
       filename: "index.html",
     }),
     new webpack.DefinePlugin({
