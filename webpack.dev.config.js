@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const EslintWebpackPlugin = require("eslint-webpack-plugin");
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const path = require("path");
 const webpack = require("webpack");
 
@@ -24,22 +25,15 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.(ts|js)x?$/,
         include: path.resolve(__dirname, "packages", "client"),
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
           options: {
             presets: [
+              "@babel/preset-env",
               "@babel/preset-react",
-              [
-                "@babel/preset-env",
-                {
-                  targets: {
-                    browsers: ["last 2 versions"],
-                  },
-                },
-              ],
               "@babel/preset-typescript",
             ],
           },
@@ -52,20 +46,21 @@ module.exports = {
         use: ["style-loader", "css-loader", "postcss-loader"],
       },
       {
-        test: /\.{tsx|ts}?$/,
-        use: "ts-loader",
-        exclude: /node_modules/,
-      },
-      {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         include: path.resolve(__dirname, "packages", "client"),
         exclude: /node_modules/,
         type: "asset/resource",
-      }
+      },
+      {
+        test: /\.(ts|tsx)$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
     ],
   },
   resolve: {
     extensions: [".js", ".tsx", ".ts"],
+    plugins: [new TsconfigPathsPlugin()],
   },
   devtool: "inline-source-map",
   mode: "development",

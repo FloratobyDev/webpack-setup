@@ -12,9 +12,14 @@
   ],
   "compilerOptions": {
     "outDir": "./dist/",
+    "baseUrl": ".",
+    "paths": {
+      "@client/*": ["./packages/client/*"],
+      "@server/*": ["./packages/server/*"],
+    },
     "noImplicitAny": true,
-    "noEmit": true,
-    "allowImportingTsExtensions": true,
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "module": "es6",

@@ -1,29 +1,21 @@
-import React, { useEffect, useState } from "react";
-import Home from "./pages/Home";
-import { map } from "lodash";
-import Palette from "./assets/palette.png";
+import React, { useState } from "react";
+import MainPage from "./pages/MainPage";
+import NavBar from "./components/layout/NavBar";
+import PageLayout from "./components/layout/PageLayout";
+import { Pages } from "@client/types";
 
 function App() {
-  const [message, setMessage] = useState([]);
+  const [currentPage, setCurrentPage] = useState(Pages.JOURNAL);
 
-  useEffect(() => {
-    fetch("/api/hello")
-      .then((res) => res.json())
-      .then((data) => setMessage(data));
-  }, []);
-
-  console.log("message: ", message);
+  function handlePageChange(page: string) {
+    setCurrentPage(page);
+  }
 
   return (
-    <div className="bg-black h-screen text-xl text-white font-bold">
-      <img alt="palette-rand" src={Palette} />
-      <Home />
-      <p>
-        {map(message, (item, index) => {
-          return <span key={index}>{item.email}</span>;
-        })}
-      </p>
-    </div>
+    <PageLayout>
+      <NavBar activeLink={currentPage} onChange={handlePageChange} />
+      <MainPage activeLink={currentPage} />
+    </PageLayout>
   );
 }
 
