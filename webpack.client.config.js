@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
@@ -20,14 +21,7 @@ module.exports = {
           options: {
             presets: [
               "@babel/preset-react",
-              [
-                "@babel/preset-env",
-                {
-                  targets: {
-                    browsers: ["last 2 versions"],
-                  },
-                },
-              ],
+              "@babel/preset-env",
               "@babel/preset-typescript",
             ],
           },
@@ -54,6 +48,7 @@ module.exports = {
   },
   resolve: {
     extensions: [".js", ".ts", ".tsx"],
+    plugins: [new TsconfigPathsPlugin()],
   },
   mode: "production",
   devtool: "source-map",

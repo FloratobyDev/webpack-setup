@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+textarea {
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+
 @font-face {
   font-family: 'Poppins';
   src: url('./assets/Poppins/Poppins-Regular.ttf') format('truetype');

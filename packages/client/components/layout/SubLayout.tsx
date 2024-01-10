@@ -5,9 +5,10 @@ type Props = {
   children: React.ReactNode;
   transparent?: boolean;
   classnames?: string;
+  style?: React.CSSProperties;
 };
 
-function SubLayout({ transparent, children, classnames }: Props) {
+function SubLayout({ transparent, children, classnames, style }: Props) {
   const subLayoutClasses = classNames(
     " max-h-full h-full w-full inline-flex px-2 py-4 flex-col rounded-md",
     {
@@ -16,7 +17,11 @@ function SubLayout({ transparent, children, classnames }: Props) {
     },
     classnames,
   );
-  return <div className={subLayoutClasses}>{children}</div>;
+  return (
+    <div className={subLayoutClasses} style={style}>
+      {children}
+    </div>
+  );
 }
 
 export default SubLayout;

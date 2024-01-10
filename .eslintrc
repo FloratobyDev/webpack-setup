@@ -50,11 +50,6 @@
     "jsx-a11y/no-static-element-interactions": "off",
     "indent": "off",
     "no-multiple-empty-lines": ["error", { "max": 1 }],
-    "sort-keys": [
-      "error",
-      "asc",
-      { "caseSensitive": true, "natural": false, "minKeys": 2 },
-    ],
     "sort-imports": [
       "error",
       {

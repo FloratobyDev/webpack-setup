@@ -6,6 +6,7 @@ import RepositoryInfo from "./RepositoryInfo";
 import SubLayout from "@client/components/layout/SubLayout";
 import TaskCards from "./TaskCards";
 import TaskEditor from "./TaskEditor";
+import TaskProvider from "@client/contexts/TaskContext";
 
 function Journal() {
   const [activeRepo, setActiveRepo] = useState<string>(null);
@@ -23,14 +24,23 @@ function Journal() {
   return (
     <div className="flex flex-1 min-h-full h-full">
       <div className="basis-[16.5%] flex gap-y-1 ml-1 flex-col min-h-full h-full">
-        <SubLayout classnames="max-h-[14rem] overflow-auto">
+        <SubLayout
+          classnames="overflow-auto"
+          style={{
+            maxHeight: "14rem",
+          }}
+        >
           <RepositoryInfo
-            description="description"
+            description="This is a short description for this branch This is a short description for this branchThis is a short description for this branchThis is a short description for this branchThis is a short description for this branchThis is a short description for this branchThis is a short description for this branchThisThis is a short description for this branchT"
             languages={languages}
             name="name"
           />
         </SubLayout>
-        <SubLayout classnames="h-[calc(100vh-14rem)]">
+        <SubLayout
+          style={{
+            height: "calc(100vh - 14rem)",
+          }}
+        >
           <JournalRepositories
             activeRepo={activeRepo}
             onClick={handleRepoClick}
@@ -46,14 +56,24 @@ function Journal() {
           <JournalCards />
         </SubLayout>
       </div>
-      <div className="basis-[22%] flex gap-y-1 flex-col">
-        <SubLayout>
-          <TaskEditor />
-        </SubLayout>
-        <SubLayout>
-          <TaskCards />
-        </SubLayout>
-      </div>
+      <TaskProvider>
+        <div className="basis-[22%] flex gap-y-1 flex-col min-h-full h-full">
+          <SubLayout
+            style={{
+              maxHeight: "16rem",
+            }}
+          >
+            <TaskEditor />
+          </SubLayout>
+          <SubLayout
+            style={{
+              height: "calc(100vh - 16rem)",
+            }}
+          >
+            <TaskCards />
+          </SubLayout>
+        </div>
+      </TaskProvider>
     </div>
   );
 }
