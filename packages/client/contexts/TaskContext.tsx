@@ -1,7 +1,14 @@
-import React, { createContext, ReactNode, useContext, useMemo } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 import { TaskFunctions, useTaskReducer } from "../api/taskReduceApi";
 import { generateRandomString } from "@client/utils";
 import { TaskType } from "@client/types";
+import { useRepository } from "./RepositoryContext";
 
 type TaskContextType = {
   tasks: TaskType[];
@@ -10,7 +17,7 @@ type TaskContextType = {
   onUpdateChecklist: (
     taskId: string,
     checklistId: string,
-    value: boolean,
+    value: boolean
   ) => () => void;
 };
 
@@ -21,78 +28,85 @@ type Props = {
 };
 
 function TaskProvider({ children }: Props) {
-  const initialTaskValue = [
-    {
-      name: "Task 1",
-      checklist: [
-        {
-          checklistId: generateRandomString(5),
-          description: "check 1",
-          checked: false,
-        },
-        {
-          checklistId: generateRandomString(5),
-          description: "check 2",
-          checked: true,
-        },
-      ],
-      progress: "Open",
-      difficulty: "easy",
-      taskId: generateRandomString(5),
-    },
-    {
-      name: "Task 2",
-      checklist: [
-        {
-          checklistId: generateRandomString(5),
-          description: "check 1",
-          checked: false,
-        },
-        {
-          checklistId: generateRandomString(5),
-          description: "check 2",
-          checked: true,
-        },
-        {
-          checklistId: generateRandomString(5),
-          description: "check 3",
-          checked: false,
-        },
-      ],
-      progress: "In-Progress",
-      difficulty: "medium",
-      taskId: generateRandomString(5),
-    },
-    {
-      name: "Task 3",
-      checklist: [
-        {
-          checklistId: generateRandomString(5),
-          description: "check 1",
-          checked: false,
-        },
-        {
-          checklistId: generateRandomString(5),
-          description: "check 2",
-          checked: true,
-        },
-        {
-          checklistId: generateRandomString(5),
-          description: "check 3",
-          checked: false,
-        },
-        {
-          checklistId: generateRandomString(5),
-          description: "check 4",
-          checked: false,
-        },
-      ],
-      progress: "Done",
-      difficulty: "hard",
-      taskId: generateRandomString(5),
-    },
-  ];
-  const { currentTasks, modDispatch } = useTaskReducer(initialTaskValue);
+  // const initialTaskValue = [
+  //   {
+  //     name: "Task 1",
+  //     checklist: [
+  //       {
+  //         checklistId: generateRandomString(5),
+  //         description: "check 1",
+  //         checked: false,
+  //       },
+  //       {
+  //         checklistId: generateRandomString(5),
+  //         description: "check 2",
+  //         checked: true,
+  //       },
+  //     ],
+  //     progress: "Open",
+  //     difficulty: "easy",
+  //     taskId: generateRandomString(5),
+  //   },
+  //   {
+  //     name: "Task 2",
+  //     checklist: [
+  //       {
+  //         checklistId: generateRandomString(5),
+  //         description: "check 1",
+  //         checked: false,
+  //       },
+  //       {
+  //         checklistId: generateRandomString(5),
+  //         description: "check 2",
+  //         checked: true,
+  //       },
+  //       {
+  //         checklistId: generateRandomString(5),
+  //         description: "check 3",
+  //         checked: false,
+  //       },
+  //     ],
+  //     progress: "In-Progress",
+  //     difficulty: "medium",
+  //     taskId: generateRandomString(5),
+  //   },
+  //   {
+  //     name: "Task 3",
+  //     checklist: [
+  //       {
+  //         checklistId: generateRandomString(5),
+  //         description: "check 1",
+  //         checked: false,
+  //       },
+  //       {
+  //         checklistId: generateRandomString(5),
+  //         description: "check 2",
+  //         checked: true,
+  //       },
+  //       {
+  //         checklistId: generateRandomString(5),
+  //         description: "check 3",
+  //         checked: false,
+  //       },
+  //       {
+  //         checklistId: generateRandomString(5),
+  //         description: "check 4",
+  //         checked: false,
+  //       },
+  //     ],
+  //     progress: "Done",
+  //     difficulty: "hard",
+  //     taskId: generateRandomString(5),
+  //   },
+  // ];
+  const { currentTasks, modDispatch } = useTaskReducer([]);
+  const { tasks } = useRepository();
+
+  useEffect(() => {
+    addMultipleTasks(tasks);
+  }, [tasks]);
+
+  console.log("currentTasks", currentTasks, tasks);
 
   function onUpdateTask(taskId: string, progress: string) {
     modDispatch(TaskFunctions.CHANGE_PROGRESS, { taskId, progress });
@@ -102,10 +116,14 @@ function TaskProvider({ children }: Props) {
     modDispatch(TaskFunctions.ADD, { task });
   }
 
+  function addMultipleTasks(newTasks: TaskType[]) {
+    modDispatch(TaskFunctions.ADD_MULTIPLE, { newTasks });
+  }
+
   function onUpdateChecklist(
     taskId: string,
     checklistId: string,
-    value: boolean,
+    value: boolean
   ) {
     return () => {
       modDispatch(TaskFunctions.UPDATE_CHECKLIST, {
@@ -123,7 +141,7 @@ function TaskProvider({ children }: Props) {
       onAddTask,
       onUpdateChecklist,
     }),
-    [currentTasks],
+    [currentTasks]
   );
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;

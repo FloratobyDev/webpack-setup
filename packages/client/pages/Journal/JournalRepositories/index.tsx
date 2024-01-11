@@ -3,11 +3,12 @@ import Calendar from "./Calendar";
 import { H5 } from "@client/components/headings";
 import React from "react";
 import RepoButton from "./RepoButton";
+import { RepositoryType } from "@client/types";
 
 type Props = {
-  repositories: string[];
-  activeRepo: string;
-  onClick: (repo: string) => void;
+  repositories: RepositoryType[];
+  activeRepo: RepositoryType;
+  onClick: (repo: RepositoryType) => void;
 };
 
 function JournalRepositories({ repositories, activeRepo, onClick }: Props) {
@@ -21,9 +22,9 @@ function JournalRepositories({ repositories, activeRepo, onClick }: Props) {
         {repositories.map((repository) => (
           <RepoButton
             // hasAlert={repository === activeRepo}
-            active={repository === activeRepo}
-            key={repository}
-            name={repository}
+            active={repository.repoId === activeRepo.repoId}
+            key={repository.repoId}
+            name={repository.name}
             onClick={() => onClick(repository)}
           />
         ))}

@@ -35,3 +35,39 @@ export type TaskType = {
   progress: string;
   taskId: string;
 };
+
+export type RepositoryType = {
+  name: string;
+  repoId: string;
+  repositoryInfo: {
+    description: string;
+    languages: string[];
+  };
+};
+
+export type BookmarkType = {
+  title: string;
+  content: string;
+  commits: any[];
+  tasks: TaskType[];
+};
+
+export type CommitType = {
+  message: string;
+  date: string;
+  commit_sha: string;
+};
+
+export type PushType = {
+  pushId: string;
+  pushAt: string;
+  commits: CommitType[];
+  has_interacted: boolean;
+};
+
+export type JournalType = {
+  title: string;
+  content: string;
+  commits: any[];
+  tasks: TaskType[];
+};

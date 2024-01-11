@@ -3,6 +3,7 @@ import MainPage from "./pages/MainPage";
 import NavBar from "./components/layout/NavBar";
 import PageLayout from "./components/layout/PageLayout";
 import { Pages } from "@client/types";
+import RepositoryProvider from "./contexts/RepositoryContext";
 
 function App() {
   const [currentPage, setCurrentPage] = useState(Pages.JOURNAL);
@@ -14,7 +15,9 @@ function App() {
   return (
     <PageLayout>
       <NavBar activeLink={currentPage} onChange={handlePageChange} />
-      <MainPage activeLink={currentPage} />
+      <RepositoryProvider>
+        <MainPage activeLink={currentPage} />
+      </RepositoryProvider>
     </PageLayout>
   );
 }

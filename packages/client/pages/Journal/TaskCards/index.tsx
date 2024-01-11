@@ -53,7 +53,11 @@ function TaskCards() {
             }
           );
           return (
-            <button className={buttonClass} onClick={() => setActiveTab(tab)}>
+            <button
+              className={buttonClass}
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+            >
               {tab}
             </button>
           );
@@ -64,7 +68,7 @@ function TaskCards() {
           if (task.progress !== activeTab) return null;
           return (
             <Task
-              key={idx}
+              key={task.taskId}
               onProgressChange={onUpdateTask}
               progressTypes={ProgressType}
               taskInfo={task}

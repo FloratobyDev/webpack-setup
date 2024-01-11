@@ -44,6 +44,12 @@ module.exports = {
         exclude: /node_modules/,
         type: "asset/resource",
       },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        include: path.resolve(__dirname, "packages", "client"),
+        exclude: /node_modules/,
+        type: "asset/resource",
+      },
     ],
   },
   resolve: {

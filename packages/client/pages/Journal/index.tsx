@@ -1,24 +1,25 @@
-import React, { useEffect, useState } from "react";
 import JournalCards from "./JournalCards";
 import JournalEditor from "./JournalEditor";
 import JournalRepositories from "./JournalRepositories";
+import React from "react";
 import RepositoryInfo from "./RepositoryInfo";
 import SubLayout from "@client/components/layout/SubLayout";
 import TaskCards from "./TaskCards";
 import TaskEditor from "./TaskEditor";
 import TaskProvider from "@client/contexts/TaskContext";
+import { useRepository } from "@client/contexts/RepositoryContext";
 
 function Journal() {
-  const [activeRepo, setActiveRepo] = useState<string>(null);
-  const repositories = ["repositories1", "repos-2"];
-  const languages = ["language1", "language2"];
+  const {
+    currentRepository,
+    repositories,
+    changeRepository,
+    bookmarks,
+    journals,
+  } = useRepository();
 
-  useEffect(() => {
-    setActiveRepo(repositories[0]);
-  }, []);
-
-  function handleRepoClick(repo: string) {
-    setActiveRepo(repo);
+  if (!currentRepository) {
+    return null;
   }
 
   return (
@@ -31,9 +32,9 @@ function Journal() {
           }}
         >
           <RepositoryInfo
-            description="This is a short description for this branch This is a short description for this branchThis is a short description for this branchThis is a short description for this branchThis is a short description for this branchThis is a short description for this branchThis is a short description for this branchThisThis is a short description for this branchT"
-            languages={languages}
-            name="name"
+            description={currentRepository.repositoryInfo.description}
+            languages={currentRepository.repositoryInfo.languages}
+            name={currentRepository.name}
           />
         </SubLayout>
         <SubLayout
@@ -42,8 +43,8 @@ function Journal() {
           }}
         >
           <JournalRepositories
-            activeRepo={activeRepo}
-            onClick={handleRepoClick}
+            activeRepo={currentRepository}
+            onClick={changeRepository}
             repositories={repositories}
           />
         </SubLayout>
@@ -53,7 +54,7 @@ function Journal() {
           <JournalEditor />
         </SubLayout>
         <SubLayout classnames="flex-1" transparent>
-          <JournalCards />
+          <JournalCards bookmarks={bookmarks} journals={journals} />
         </SubLayout>
       </div>
       <TaskProvider>

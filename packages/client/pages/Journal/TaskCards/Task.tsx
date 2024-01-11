@@ -32,7 +32,7 @@ function Checklist({ item, onRemove }: ChecklistProps) {
     <div className="flex gap-x-2">
       <input
         checked={checked}
-        onClick={() => {
+        onChange={() => {
           setChecked(!checked);
           onRemove();
         }}
@@ -70,7 +70,7 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
     100;
 
   return (
-    <div className="rounded-md bg-black overflow-hidden">
+    <div className="rounded-md bg-black overflow-hidden select-none">
       <div
         className="h-1 bg-orange-400 transition-all duration-500 ease-in-out"
         style={{
@@ -95,6 +95,7 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
             return (
               <p
                 className="px-1"
+                key={tab}
                 onClick={() => {
                   onProgressChange(taskInfo.taskId, tab);
                   setOpenProgress(false);
@@ -114,10 +115,11 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
             {map(taskInfo.checklist, (item) => (
               <Checklist
                 item={item}
+                key={item.checklistId}
                 onRemove={onUpdateChecklist(
                   taskInfo.taskId,
                   item.checklistId,
-                  !item.checked,
+                  !item.checked
                 )}
               />
             ))}

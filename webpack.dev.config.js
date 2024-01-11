@@ -52,6 +52,12 @@ module.exports = {
         type: "asset/resource",
       },
       {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        include: path.resolve(__dirname, "packages", "client"),
+        exclude: /node_modules/,
+        type: "asset/resource",
+      },
+      {
         test: /\.(ts|tsx)$/,
         use: "ts-loader",
         exclude: /node_modules/,

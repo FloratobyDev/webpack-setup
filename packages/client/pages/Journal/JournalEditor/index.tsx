@@ -1,27 +1,27 @@
 import React, { useRef, useState } from "react";
+import CommitDropdown from "./CommitDropdown";
 
 function JournalEditor() {
-  const [title, setTitle] = useState<string>("");
-  // const [content, setContent] = useState<string>("");
-  // const [textAreaHeight, setTextAreaHeight] = useState("auto");
+  const [title, setTitle] = useState("");
 
   const [text, setText] = useState("");
   const textAreaRef = useRef(null);
 
-  const handleTextChange = (event: any) => {
+  function handleTextChange(event: any) {
     setText(event.target.value);
     resetTextAreaHeight();
-  };
+  }
 
-  const resetTextAreaHeight = () => {
+  function resetTextAreaHeight() {
     const textArea = textAreaRef.current;
     if (!textArea) return;
 
     textArea.style.height = "auto";
     textArea.style.height = `${textArea.scrollHeight}px`;
-  };
+  }
+
   return (
-    <div className="flex flex-col gap-y-8 text-black ">
+    <div className="flex flex-col gap-y-8 text-black">
       <div className="flex flex-col gap-y-2">
         <input
           className="border-2 border-gray-300 rounded-md p-2"
@@ -30,14 +30,30 @@ function JournalEditor() {
           value={title}
         />
         <textarea
+          onChange={handleTextChange}
+          placeholder="Type something..."
           ref={textAreaRef}
           style={{ height: "auto", overflow: "hidden" }}
           value={text}
-          onChange={handleTextChange}
-          placeholder="Type something..."
         />
       </div>
-      <div>
+      <div className="flex gap-x-2">
+        {/* <DropdownButton alignment="right" name="Add Tasks">
+          <div className="text-white">
+            <p>hello000oooooooooooooooo0</p>
+            <p>hello</p>
+            <p>hello</p>
+          </div>
+        </DropdownButton> */}
+        <CommitDropdown />
+        {/* <DropdownButton alignment="center" name="Add Commits">
+          <p>hello000oooooooooooooooo0</p>
+          <p>hello</p>
+          <p>hello</p>
+        </DropdownButton> */}
+        <button className="bg-black text-white px-4 py-2 rounded-md">
+          Save Draft
+        </button>
         <button className="bg-black text-white px-4 py-2 rounded-md">
           Save
         </button>

@@ -3,6 +3,7 @@ import { useReducer } from "react";
 
 export const TaskFunctions = {
   ADD: "add",
+  ADD_MULTIPLE: "add_multiple",
   CHANGE_PROGRESS: "change_progress",
   UPDATE_CHECKLIST: "update_checklist",
 };
@@ -19,6 +20,9 @@ export function tasksReducerApi(tasks: any, action: any) {
         }
         return t;
       });
+    }
+    case TaskFunctions.ADD_MULTIPLE: {
+      return action.newTasks;
     }
     case TaskFunctions.UPDATE_CHECKLIST: {
       return tasks.map((t: TaskType) => {

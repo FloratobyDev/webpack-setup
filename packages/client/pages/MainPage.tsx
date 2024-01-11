@@ -10,12 +10,14 @@ type Props = {
 function MainPage({ activeLink }: Props) {
   const links = [
     {
-      jsx: <Journal />,
+      jsx: <Journal key="journal" />,
       page: Pages.JOURNAL,
+      id: "journal",
     },
     {
-      jsx: <Settings />,
+      jsx: <Settings key="settings" />,
       page: Pages.SETTINGS,
+      id: "settings",
     },
   ];
   return <>{links.map(({ jsx, page }) => activeLink === page && jsx)}</>;
