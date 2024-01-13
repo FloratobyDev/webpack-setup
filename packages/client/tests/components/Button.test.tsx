@@ -3,8 +3,6 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import Button from "@client/components/buttons/Button";
-import MainPage from "@client/pages/MainPage";
-import { Pages } from "@client/types";
 import React from "react";
 import RepositoryProvider from "@client/contexts/RepositoryContext";
 import TaskEditor from "@client/pages/Journal/TaskEditor";

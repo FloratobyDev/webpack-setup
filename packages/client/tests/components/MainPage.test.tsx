@@ -7,6 +7,7 @@ import React from "react";
 import { render } from "@testing-library/react";
 import RepositoryProvider from "@client/contexts/RepositoryContext";
 import TaskProvider from "@client/contexts/TaskContext";
+// Mock the modules
 
 describe("MainPage Component", () => {
   it("renders without crashing", () => {
@@ -19,7 +20,7 @@ describe("MainPage Component", () => {
         <TaskProvider>
           <MainPage activeLink={Pages.JOURNAL} />
         </TaskProvider>
-      </RepositoryProvider>,
+      </RepositoryProvider>
     );
     expect(getByText("Tasks")).toBeInTheDocument();
   });

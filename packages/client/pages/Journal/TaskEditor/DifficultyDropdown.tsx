@@ -18,6 +18,7 @@ function DifficultyDropdown(
       {map(DifficultyTypes, (type) => (
         <button
           className="flex items-center gap-x-2"
+          key={type}
           onClick={onDifficultyClick(type)}
         >
           <p>{type}</p>

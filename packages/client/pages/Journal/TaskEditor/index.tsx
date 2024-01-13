@@ -11,7 +11,7 @@ import { useTask } from "@client/contexts/TaskContext";
 
 function TaskEditor() {
   const [openChecklist, setOpenChecklist] = useState(false);
-  const [currentChecklist, setCurrentChecklist] = useState<string>("");
+  // const [currentChecklist, setCurrentChecklist] = useState<string>("");
   const [checklist, setChecklist] = useState<ChecklistType[]>([]);
   const [openDifficulty, setOpenDifficulty] = useState(false);
   const [difficulty, setDifficulty] = useState(DifficultyTypes.EASY);
@@ -28,8 +28,8 @@ function TaskEditor() {
     setOpenDifficulty(false);
   }
 
-  function onAddCheck() {
-    if (currentChecklist.length <= 0) return;
+  function onAddCheck(currentChecklist: string) {
+    // if (currentChecklist.length <= 0) return;
     setChecklist([
       ...checklist,
       {
@@ -38,7 +38,7 @@ function TaskEditor() {
         checklistId: generateRandomString(5),
       },
     ]);
-    setCurrentChecklist("");
+    // setCurrentChecklist("");
   }
 
   function handleOpenDifficulty() {
@@ -77,8 +77,10 @@ function TaskEditor() {
       "bg-green-400": difficulty === DifficultyTypes.EASY,
       "bg-red-400": difficulty === DifficultyTypes.HARD,
       "bg-yellow-400": difficulty === DifficultyTypes.MEDIUM,
-    }
+    },
   );
+
+  // console.log("checklist", checklist, currentChecklist);
 
   return (
     <div className="flex h-full flex-col justify-between relative">
@@ -107,11 +109,11 @@ function TaskEditor() {
       {openChecklist && (
         <ChecklistDropdown
           checklist={checklist}
-          currentChecklist={currentChecklist}
+          // currentChecklist={currentChecklist}
           onAddCheck={onAddCheck}
           ref={checkListRef}
           setChecklist={setChecklist}
-          setCurrentChecklist={setCurrentChecklist}
+          // setCurrentChecklist={setCurrentChecklist}
         />
       )}
       {openDifficulty && (
