@@ -64,7 +64,7 @@ function TaskCards() {
         })}
       </div>
       <div className="overflow-auto flex flex-col gap-y-2">
-        {map(modifiedTasks, (task, idx) => {
+        {map(modifiedTasks, (task) => {
           if (task.progress !== activeTab) return null;
           return (
             <Task

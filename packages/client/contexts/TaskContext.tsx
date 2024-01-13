@@ -1,12 +1,4 @@
-import React, {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-} from "react";
-import { TaskFunctions, useTaskReducer } from "../api/taskReduceApi";
-import { generateRandomString } from "@client/utils";
+import React, { createContext, ReactNode, useContext, useMemo } from "react";
 import { TaskType } from "@client/types";
 import { useRepository } from "./RepositoryContext";
 
@@ -17,7 +9,7 @@ type TaskContextType = {
   onUpdateChecklist: (
     taskId: string,
     checklistId: string,
-    value: boolean
+    value: boolean,
   ) => () => void;
 };
 
@@ -28,120 +20,53 @@ type Props = {
 };
 
 function TaskProvider({ children }: Props) {
-  // const initialTaskValue = [
-  //   {
-  //     name: "Task 1",
-  //     checklist: [
-  //       {
-  //         checklistId: generateRandomString(5),
-  //         description: "check 1",
-  //         checked: false,
-  //       },
-  //       {
-  //         checklistId: generateRandomString(5),
-  //         description: "check 2",
-  //         checked: true,
-  //       },
-  //     ],
-  //     progress: "Open",
-  //     difficulty: "easy",
-  //     taskId: generateRandomString(5),
-  //   },
-  //   {
-  //     name: "Task 2",
-  //     checklist: [
-  //       {
-  //         checklistId: generateRandomString(5),
-  //         description: "check 1",
-  //         checked: false,
-  //       },
-  //       {
-  //         checklistId: generateRandomString(5),
-  //         description: "check 2",
-  //         checked: true,
-  //       },
-  //       {
-  //         checklistId: generateRandomString(5),
-  //         description: "check 3",
-  //         checked: false,
-  //       },
-  //     ],
-  //     progress: "In-Progress",
-  //     difficulty: "medium",
-  //     taskId: generateRandomString(5),
-  //   },
-  //   {
-  //     name: "Task 3",
-  //     checklist: [
-  //       {
-  //         checklistId: generateRandomString(5),
-  //         description: "check 1",
-  //         checked: false,
-  //       },
-  //       {
-  //         checklistId: generateRandomString(5),
-  //         description: "check 2",
-  //         checked: true,
-  //       },
-  //       {
-  //         checklistId: generateRandomString(5),
-  //         description: "check 3",
-  //         checked: false,
-  //       },
-  //       {
-  //         checklistId: generateRandomString(5),
-  //         description: "check 4",
-  //         checked: false,
-  //       },
-  //     ],
-  //     progress: "Done",
-  //     difficulty: "hard",
-  //     taskId: generateRandomString(5),
-  //   },
-  // ];
-  const { currentTasks, modDispatch } = useTaskReducer([]);
-  const { tasks } = useRepository();
-
-  useEffect(() => {
-    addMultipleTasks(tasks);
-  }, [tasks]);
-
-  console.log("currentTasks", currentTasks, tasks);
+  const { tasks, setTasks } = useRepository();
 
   function onUpdateTask(taskId: string, progress: string) {
-    modDispatch(TaskFunctions.CHANGE_PROGRESS, { taskId, progress });
+    const newTaskProgress = tasks.map((t: TaskType) => {
+      if (t.taskId === taskId) {
+        return { ...t, progress };
+      }
+      return t;
+    });
+
+    setTasks(newTaskProgress);
   }
 
   function onAddTask(task: TaskType) {
-    modDispatch(TaskFunctions.ADD, { task });
-  }
-
-  function addMultipleTasks(newTasks: TaskType[]) {
-    modDispatch(TaskFunctions.ADD_MULTIPLE, { newTasks });
+    setTasks([...tasks, task]);
   }
 
   function onUpdateChecklist(
     taskId: string,
     checklistId: string,
-    value: boolean
+    value: boolean,
   ) {
     return () => {
-      modDispatch(TaskFunctions.UPDATE_CHECKLIST, {
-        taskId,
-        checklistId,
-        value,
+      const newTasks = tasks.map((t: TaskType) => {
+        if (t.taskId === taskId) {
+          const checklist = t.checklist.map((c: any) => {
+            if (c.checklistId === checklistId) {
+              return { ...c, checked: value };
+            }
+            return c;
+          });
+          return { ...t, checklist };
+        }
+        return t;
       });
+      setTasks(newTasks);
     };
   }
 
   const value: TaskContextType = useMemo(
     () => ({
-      tasks: currentTasks,
+      tasks,
       onUpdateTask,
       onAddTask,
       onUpdateChecklist,
     }),
-    [currentTasks]
+    [tasks],
   );
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;

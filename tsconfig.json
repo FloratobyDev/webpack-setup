@@ -4,6 +4,7 @@
     "./packages/client/**/*.tsx",
     "./packages/server/**/*.ts",
     "./packages/server/**/*.js",
+    "./packages/client/tests/setupTests.ts",
   ],
   "exclude": [
     "node_modules",

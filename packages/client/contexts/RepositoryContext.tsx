@@ -1,10 +1,4 @@
-import {
-  BookmarkType,
-  JournalType,
-  PushType,
-  RepositoryType,
-  TaskType,
-} from "@client/types";
+import { JournalType, PushType, RepositoryType, TaskType } from "@client/types";
 import React, {
   createContext,
   ReactNode,
@@ -16,9 +10,12 @@ import React, {
 
 type RepositoryContextType = {
   repositories: RepositoryType[];
-  bookmarks: BookmarkType[];
+  bookmarks: JournalType[];
+  setBookmarks: (bookmarks: JournalType[]) => void;
   journals: JournalType[];
+  setJournals: (journals: JournalType[]) => void;
   tasks: TaskType[];
+  setTasks: (tasks: TaskType[]) => void;
   pushList: PushType[];
   currentRepository: RepositoryType;
   changeRepository: (repo: RepositoryType) => void;
@@ -269,8 +266,11 @@ function RepositoryProvider({ children }: Props) {
       changeRepository,
       repositories,
       bookmarks,
+      setBookmarks,
       journals,
+      setJournals,
       tasks,
+      setTasks,
     }),
     [repositories, bookmarks, journals, tasks, currentRepository, pushList]
   );

@@ -15,6 +15,7 @@ function Journal() {
     repositories,
     changeRepository,
     bookmarks,
+    setBookmarks,
     journals,
   } = useRepository();
 
@@ -54,7 +55,11 @@ function Journal() {
           <JournalEditor />
         </SubLayout>
         <SubLayout classnames="flex-1" transparent>
-          <JournalCards bookmarks={bookmarks} journals={journals} />
+          <JournalCards
+            bookmarks={bookmarks}
+            journals={journals}
+            setBookmarks={setBookmarks}
+          />
         </SubLayout>
       </div>
       <TaskProvider>

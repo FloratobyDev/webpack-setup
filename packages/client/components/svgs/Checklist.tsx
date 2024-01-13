@@ -1,6 +1,6 @@
 import React from "react";
 
-function Deadline() {
+function Checklist() {
   return (
     <svg
       fill="none"
@@ -17,4 +17,4 @@ function Deadline() {
   );
 }
 
-export default Deadline;
+export default Checklist;

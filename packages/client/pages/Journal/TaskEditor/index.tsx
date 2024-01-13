@@ -1,21 +1,22 @@
 import { ChecklistType, DifficultyTypes, ProgressType } from "@client/types";
 import React, { useRef, useState } from "react";
+import ChecklistDropdown from "./ChecklistDropdown";
 import classNames from "classnames";
 import Difficulty from "@client/components/svgs/Difficulty";
+import DifficultyDropdown from "./DifficultyDropdown";
 import { generateRandomString } from "@client/utils";
 import { H2 } from "@client/components/headings";
-import { map } from "lodash";
 import useOutsideClick from "@client/hooks/useOutsideClick";
 import { useTask } from "@client/contexts/TaskContext";
 
 function TaskEditor() {
   const [openChecklist, setOpenChecklist] = useState(false);
-  const [currentChecklist, setCurrentChecklist] = useState<string>(""); // ["task1", "task2"
-  const [checklist, setChecklist] = useState<ChecklistType[]>([]); // ["task1", "task2"
+  const [currentChecklist, setCurrentChecklist] = useState<string>("");
+  const [checklist, setChecklist] = useState<ChecklistType[]>([]);
   const [openDifficulty, setOpenDifficulty] = useState(false);
   const [difficulty, setDifficulty] = useState(DifficultyTypes.EASY);
   const [openDeadline, setOpenDeadline] = useState(false);
-  const [taskName, setTaskName] = useState(""); // ["task1", "task2"
+  const [taskName, setTaskName] = useState("");
   const { onAddTask } = useTask();
 
   const checkListRef = useRef(null);
@@ -76,7 +77,7 @@ function TaskEditor() {
       "bg-green-400": difficulty === DifficultyTypes.EASY,
       "bg-red-400": difficulty === DifficultyTypes.HARD,
       "bg-yellow-400": difficulty === DifficultyTypes.MEDIUM,
-    },
+    }
   );
 
   return (
@@ -104,61 +105,27 @@ function TaskEditor() {
         </div>
       </div>
       {openChecklist && (
-        <div
-          className="flex justify-between flex-col items-start absolute bg-black w-full top-32"
+        <ChecklistDropdown
+          checklist={checklist}
+          currentChecklist={currentChecklist}
+          onAddCheck={onAddCheck}
           ref={checkListRef}
-        >
-          <input
-            className="grow border border-gray-300 w-full rounded-lg focus:outline-none focus:border-blue-500"
-            onChange={(e) => setCurrentChecklist(e.target.value)}
-            placeholder="Write task here..."
-            value={currentChecklist}
-          />
-          <div>
-            {map(checklist, (task, idx) => (
-              <div className="flex items-center gap-x-2">
-                <p>{task.description}</p>
-                <button
-                  className=""
-                  onClick={() => {
-                    const newChecklist = [...checklist];
-                    newChecklist.splice(idx, 1);
-                    setChecklist(newChecklist);
-                  }}
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-          </div>
-          <button className="" onClick={onAddCheck}>
-            Add
-          </button>
-        </div>
+          setChecklist={setChecklist}
+          setCurrentChecklist={setCurrentChecklist}
+        />
       )}
       {openDifficulty && (
-        <div
-          className="flex justify-between flex-col items-start absolute h-24 bg-black w-full top-32"
+        <DifficultyDropdown
+          onDifficultyClick={onDifficultyClick}
           ref={difficultyRef}
-        >
-          {map(DifficultyTypes, (type) => (
-            <button
-              className="flex items-center gap-x-2"
-              onClick={onDifficultyClick(type)}
-            >
-              <p>{type}</p>
-            </button>
-          ))}
-        </div>
+        />
       )}
       {openDeadline && (
         <div
-          className="flex justify-between flex-col items-start absolute h-24 bg-black w-full top-[14.25rem]"
+          className="flex justify-between flex-col items-start absolute h-24 bg-black w-full top-[14.25rem] z-10"
           ref={deadlineRef}
         >
-          <button className="">Easy</button>
-          <button className="">Medium</button>
-          <button className="">Hard</button>
+          <input type="date" />
         </div>
       )}
       <div>
@@ -166,7 +133,6 @@ function TaskEditor() {
           Deadline
         </button>
         <button
-          className="btn btn-primary"
           onClick={() => {
             onAddTask({
               name: taskName,

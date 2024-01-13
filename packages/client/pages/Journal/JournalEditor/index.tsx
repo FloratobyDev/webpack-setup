@@ -1,19 +1,48 @@
+import { CommitType, JournalType, TaskType } from "@client/types";
 import React, { useRef, useState } from "react";
 import CommitDropdown from "./CommitDropdown";
+import TaskDropdown from "./TaskDropdown";
+import { useRepository } from "@client/contexts/RepositoryContext";
 
 function JournalEditor() {
   const [title, setTitle] = useState("");
+  const [commits, setCommits] = useState<CommitType[]>([]); // ["commit1", "commit2"
+  const [selectedTasks, setSelectedTasks] = useState<TaskType[]>([]); // ["commit1", "commit2"
 
-  const [text, setText] = useState("");
-  const textAreaRef = useRef(null);
+  const [content, setContent] = useState("");
+  const contentRef = useRef(null);
+
+  const { journals, setJournals } = useRepository();
+
+  function handleJournalSubmission() {
+    const newJournal: JournalType = {
+      title,
+      content,
+      commits,
+      tasks: selectedTasks,
+    };
+    setJournals([...journals, newJournal]);
+    setTitle("");
+    setContent("");
+    setCommits([]);
+    setSelectedTasks([]);
+  }
+
+  function handleCommitSave(stagedCommits: CommitType[]) {
+    setCommits(stagedCommits);
+  }
+
+  function handleTaskSave(stagedTasks: TaskType[]) {
+    setSelectedTasks(stagedTasks);
+  }
 
   function handleTextChange(event: any) {
-    setText(event.target.value);
+    setContent(event.target.value);
     resetTextAreaHeight();
   }
 
   function resetTextAreaHeight() {
-    const textArea = textAreaRef.current;
+    const textArea = contentRef.current;
     if (!textArea) return;
 
     textArea.style.height = "auto";
@@ -32,29 +61,21 @@ function JournalEditor() {
         <textarea
           onChange={handleTextChange}
           placeholder="Type something..."
-          ref={textAreaRef}
+          ref={contentRef}
           style={{ height: "auto", overflow: "hidden" }}
-          value={text}
+          value={content}
         />
       </div>
       <div className="flex gap-x-2">
-        {/* <DropdownButton alignment="right" name="Add Tasks">
-          <div className="text-white">
-            <p>hello000oooooooooooooooo0</p>
-            <p>hello</p>
-            <p>hello</p>
-          </div>
-        </DropdownButton> */}
-        <CommitDropdown />
-        {/* <DropdownButton alignment="center" name="Add Commits">
-          <p>hello000oooooooooooooooo0</p>
-          <p>hello</p>
-          <p>hello</p>
-        </DropdownButton> */}
+        <CommitDropdown commits={commits} onSave={handleCommitSave} />
+        <TaskDropdown onSave={handleTaskSave} selectedTasks={selectedTasks} />
         <button className="bg-black text-white px-4 py-2 rounded-md">
           Save Draft
         </button>
-        <button className="bg-black text-white px-4 py-2 rounded-md">
+        <button
+          className="bg-black text-white px-4 py-2 rounded-md"
+          onClick={handleJournalSubmission}
+        >
           Save
         </button>
       </div>

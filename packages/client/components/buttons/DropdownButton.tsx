@@ -10,12 +10,14 @@ type Props = {
   alignment: Alignment;
   onCancel?: () => void;
   onSave?: () => void;
+  onOpen?: () => void;
 };
 
 function DropdownButton({
   name,
   children,
   alignment,
+  onOpen,
   onCancel,
   onSave,
 }: Props) {
@@ -24,6 +26,7 @@ function DropdownButton({
 
   function handleOpenTask() {
     toggle(!open);
+    onOpen();
   }
 
   useOutsideClick(divRef, open, () => {

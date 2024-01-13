@@ -45,13 +45,6 @@ export type RepositoryType = {
   };
 };
 
-export type BookmarkType = {
-  title: string;
-  content: string;
-  commits: any[];
-  tasks: TaskType[];
-};
-
 export type CommitType = {
   message: string;
   date: string;
@@ -68,6 +61,6 @@ export type PushType = {
 export type JournalType = {
   title: string;
   content: string;
-  commits: any[];
+  commits: CommitType[];
   tasks: TaskType[];
 };

@@ -1,14 +1,27 @@
-import { BookmarkType, JournalType } from "@client/types";
 import React, { useState } from "react";
+import { generateRandomString } from "@client/utils";
+import { JournalType } from "@client/types";
 
 type Props = {
-  bookmarks: BookmarkType[];
+  bookmarks: JournalType[];
+  setBookmarks: (bookmarks: JournalType[]) => void;
   journals: JournalType[];
 };
 
-function JournalCards({ bookmarks, journals }: Props) {
+function JournalCards({ bookmarks, setBookmarks, journals }: Props) {
   const [openBookmark, setOpenBookmark] = useState(true);
   const [openJournal, setOpenJournal] = useState(true);
+
+  function handleAddBookmark(newBookmark: JournalType) {
+    return () => {
+      if (bookmarks.includes(newBookmark)) {
+        setBookmarks(bookmarks.filter((bookmark) => bookmark !== newBookmark));
+      } else {
+        setBookmarks([...bookmarks, newBookmark]);
+      }
+    };
+  }
+
   return (
     <div>
       <div>
@@ -18,7 +31,7 @@ function JournalCards({ bookmarks, journals }: Props) {
         {openBookmark && (
           <div className="grid grid-cols-4 gap-2 w-full">
             {bookmarks.map((bookmark) => (
-              <div>
+              <div key={generateRandomString(5)}>
                 <p>{bookmark.title}</p>
               </div>
             ))}
@@ -30,7 +43,21 @@ function JournalCards({ bookmarks, journals }: Props) {
         {openJournal && (
           <div className="grid grid-cols-4 gap-2 w-full">
             {journals.map((journal) => (
-              <p>{journal.title}</p>
+              <div
+                className="flex flex-col bg-gray-300"
+                key={generateRandomString(5)}
+              >
+                <button onClick={handleAddBookmark(journal)}>
+                  Add bookmark
+                </button>
+                <p>{journal.title}</p>
+                {journal.tasks.map((task) => (
+                  <p key={generateRandomString(5)}>{task.name}</p>
+                ))}
+                {journal.commits.map((commit) => (
+                  <p key={generateRandomString(5)}>{commit.commit_sha}</p>
+                ))}
+              </div>
             ))}
           </div>
         )}

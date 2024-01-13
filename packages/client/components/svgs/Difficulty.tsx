@@ -1,6 +1,6 @@
 import React from "react";
 
-function Settings() {
+function Difficulty() {
   return (
     <svg
       fill="none"
@@ -17,4 +17,4 @@ function Settings() {
   );
 }
 
-export default Settings;
+export default Difficulty;

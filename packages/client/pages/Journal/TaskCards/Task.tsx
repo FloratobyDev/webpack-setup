@@ -69,6 +69,13 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
       taskInfo.checklist.length) *
     100;
 
+  const taskClass = classNames(
+    "flex items-center justify-between p-2 px-3 relative",
+    {
+      "cursor-pointer": taskInfo.checklist.length > 0,
+    }
+  );
+
   return (
     <div className="rounded-md bg-black overflow-hidden select-none">
       <div
@@ -77,10 +84,7 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
           width: `${donePercentage}%`,
         }}
       />
-      <div
-        className="flex items-center justify-between p-2 px-3 relative"
-        onClick={handleOpen}
-      >
+      <div className={taskClass} onClick={handleOpen}>
         <p>{taskInfo.name}</p>
         <div className="flex items-center w-[30%] justify-between">
           <span className={difficultyClass} />
@@ -108,7 +112,7 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
         </div>
       )}
 
-      {open && (
+      {open && taskInfo.checklist.length > 0 && (
         <>
           <hr className="border-t-1 border-t-yellow-300" />
           <div>

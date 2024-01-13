@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 type Props = {
   active?: boolean;
-  iconSvg: React.ReactNode;
+  iconSvg?: React.ReactNode;
   label?: string;
 } & HTMLAttributes<HTMLButtonElement>;
 
