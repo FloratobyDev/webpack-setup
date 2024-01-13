@@ -11,7 +11,7 @@ import TaskProvider from "@client/contexts/TaskContext";
 describe("Button", () => {
   test("renders button role with label hi", () => {
     render(<Button label="hi" />);
-    const button = screen.getByRole("button");
+    const button = screen.getByRole("buton");
     expect(button).toHaveTextContent("hi");
   });
 });
