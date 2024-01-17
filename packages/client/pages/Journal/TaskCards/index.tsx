@@ -1,7 +1,7 @@
-import { ProgressType, TaskType } from "@client/types";
+import { DifficultyTypes, ProgressType, TaskType } from "@client/types";
+import { filter, map } from "lodash";
 import React, { useMemo, useState } from "react";
 import classNames from "classnames";
-import { map } from "lodash";
 import Task from "./Task";
 import { useTask } from "@client/contexts/TaskContext";
 
@@ -9,23 +9,37 @@ function TaskCards() {
   const [activeTab, setActiveTab] = useState(ProgressType.OPEN);
   const { tasks, onUpdateTask } = useTask();
   const [currentSearch, setCurrentSearch] = useState("");
-  const [sortBy, setSortBy] = useState("difficlty"); // ["state", "difficulty"
 
   const handleInputChange = (e: any) => {
     setCurrentSearch(e.target.value);
   };
 
   const modifiedTasks = useMemo(() => {
-    if (!currentSearch) return tasks;
-    const filteredTasks = tasks.filter((task: TaskType) => {
-      return (
-        task.progress === activeTab &&
-        task.name.toLowerCase().includes(currentSearch.toLowerCase())
-      );
+    let tasksPlaceholder = filter(tasks, (task: TaskType) => {
+      return task.progress === activeTab;
     });
 
-    return filteredTasks;
-  }, [tasks, currentSearch, sortBy]);
+    if (currentSearch) {
+      tasksPlaceholder = tasksPlaceholder.filter((task: TaskType) => {
+        return task.name.toLowerCase().includes(currentSearch.toLowerCase());
+      });
+    }
+
+    const sortTasks = (tasksTobeSorted: TaskType[]) => {
+      const order = {
+        [DifficultyTypes.EASY]: 1,
+        [DifficultyTypes.MEDIUM]: 2,
+        [DifficultyTypes.HARD]: 3,
+      };
+
+      return tasksTobeSorted.sort((a, b) => {
+        return order[a.difficulty] - order[b.difficulty];
+      });
+    };
+
+    const sortedTasks = sortTasks(tasksPlaceholder);
+    return sortedTasks;
+  }, [tasks, currentSearch, activeTab]);
 
   return (
     <div className="flex h-full flex-col relative gap-y-4">
@@ -33,14 +47,12 @@ function TaskCards() {
         <div className="flex justify-between bg-gray-500 flex-1 items-center px-2 gap-x-2">
           <input
             className="flex-1 text-black"
+            data-testid="searchbar"
             onChange={handleInputChange}
             type="text"
             value={currentSearch}
           />
           <p>search</p>
-        </div>
-        <div>
-          <p className="whitespace-nowrap">Sort by state</p>
         </div>
       </div>
       <div className="flex items-center">
@@ -55,6 +67,7 @@ function TaskCards() {
           return (
             <button
               className={buttonClass}
+              data-testid={`${tab}-tab`}
               key={tab}
               onClick={() => setActiveTab(tab)}
             >
@@ -65,7 +78,7 @@ function TaskCards() {
       </div>
       <div className="overflow-auto flex flex-col gap-y-2">
         {map(modifiedTasks, (task) => {
-          if (task.progress !== activeTab) return null;
+          // if (task.progress !== activeTab) return null;
           return (
             <Task
               key={task.taskId}

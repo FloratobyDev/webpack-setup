@@ -2,12 +2,14 @@ export type PageTypes = {
   ANALYTICS: string;
   JOURNAL: string;
   SETTINGS: string;
+  PROFILE: string;
 };
 
 export const Pages: PageTypes = {
-  ANALYTICS: "analytics",
-  JOURNAL: "journal",
-  SETTINGS: "settings",
+  ANALYTICS: "/analytics",
+  JOURNAL: "/journal",
+  SETTINGS: "/settings",
+  PROFILE: "/profile",
 };
 
 export const DifficultyTypes = {

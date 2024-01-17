@@ -286,7 +286,7 @@ export function useRepository() {
   const context = useContext(RepositoryContext);
   if (context === undefined) {
     throw new Error(
-      "useRepositoryContext must be used within a RepositoryProvider"
+      "useRepositoryContext must be used within a RepositoryProvider",
     );
   }
   return context;

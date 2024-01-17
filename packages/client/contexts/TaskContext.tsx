@@ -9,7 +9,7 @@ type TaskContextType = {
   onUpdateChecklist: (
     taskId: string,
     checklistId: string,
-    value: boolean,
+    value: boolean
   ) => () => void;
 };
 
@@ -23,6 +23,8 @@ function TaskProvider({ children }: Props) {
   const { tasks, setTasks } = useRepository();
 
   function onUpdateTask(taskId: string, progress: string) {
+    console.log("update checklist", taskId, progress);
+
     const newTaskProgress = tasks.map((t: TaskType) => {
       if (t.taskId === taskId) {
         return { ...t, progress };
@@ -66,7 +68,7 @@ function TaskProvider({ children }: Props) {
       onAddTask,
       onUpdateChecklist,
     }),
-    [tasks],
+    [tasks]
   );
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;

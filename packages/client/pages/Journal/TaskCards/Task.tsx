@@ -58,7 +58,7 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
     setOpenProgress(!openProgress);
   }
 
-  const difficultyClass = classNames("h-2 w-2 bg-red-400 rounded-full", {
+  const difficultyClass = classNames("h-2 w-2 rounded-full", {
     "bg-green-400": taskInfo.difficulty === DifficultyTypes.EASY,
     "bg-red-400": taskInfo.difficulty === DifficultyTypes.HARD,
     "bg-yellow-400": taskInfo.difficulty === DifficultyTypes.MEDIUM,
@@ -77,7 +77,10 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
   );
 
   return (
-    <div className="rounded-md bg-black overflow-hidden select-none">
+    <div
+      className="rounded-md bg-black overflow-hidden select-none"
+      data-testid={taskInfo.taskId}
+    >
       <div
         className="h-1 bg-orange-400 transition-all duration-500 ease-in-out"
         style={{
@@ -88,16 +91,24 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
         <p>{taskInfo.name}</p>
         <div className="flex items-center w-[30%] justify-between">
           <span className={difficultyClass} />
-          <button className="capitalize p-1" onClick={handleOpenProgress}>
+          <button
+            className="capitalize p-1"
+            onClick={(e) => {
+              handleOpenProgress(e);
+            }}
+          >
             {taskInfo.progress}
           </button>
         </div>
       </div>
       {openProgress && (
-        <div className="absolute origin-top z-10 right-2 bg-black border-gray-200 border flex rounded-md flex-col overflow-hidden">
+        <div
+          className="absolute origin-top z-10 right-2 bg-black border-gray-200 border flex rounded-md flex-col overflow-hidden"
+          data-testid={`${taskInfo.taskId}-progress`}
+        >
           {map(progressTypes, (tab) => {
             return (
-              <p
+              <button
                 className="px-1"
                 key={tab}
                 onClick={() => {
@@ -106,7 +117,7 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
                 }}
               >
                 {tab}
-              </p>
+              </button>
             );
           })}
         </div>

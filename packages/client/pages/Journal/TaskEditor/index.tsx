@@ -52,6 +52,8 @@ function TaskEditor() {
 
   function onDifficultyClick(difficultyType: string) {
     return () => {
+      console.log("difficultyType", difficultyType);
+
       setDifficulty(difficultyType);
       setOpenDifficulty(false);
     };
@@ -72,7 +74,7 @@ function TaskEditor() {
   });
 
   const difficultyClass = classNames(
-    "absolute h-2 w-2 bg-red-400 top-0 right-0 rounded-full",
+    "absolute h-2 w-2 top-0 right-0 rounded-full",
     {
       "bg-green-400": difficulty === DifficultyTypes.EASY,
       "bg-red-400": difficulty === DifficultyTypes.HARD,
