@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import Book from "../svgs/Book";
-import { Link } from "react-router-dom";
+import LinkButton from "../buttons/LinkButton";
 import { Pages } from "@client/types";
 import Settings from "../svgs/Settings";
-import LinkButton from "../buttons/LinkButton";
 
 function NavBar() {
   const [activeLink, setActiveLink] = useState(Pages.JOURNAL);

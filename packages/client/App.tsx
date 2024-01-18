@@ -55,6 +55,16 @@ const routes = createBrowserRouter([
 ]);
 
 function App() {
+  const { currentUser, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div className="bg-primary-black h-screen">loading...</div>;
+  }
+
+  if (!currentUser) {
+    return <Login />;
+  }
+
   return (
     <RepositoryProvider>
       <RouterProvider router={routes} />

@@ -7,12 +7,12 @@ import React, {
   useState,
 } from "react";
 import axios from "axios";
-import jwt from "jsonwebtoken";
-import { useNavigate } from "react-router-dom";
 
 type AuthContextType = {
   currentUser: any;
   setCurrentUser: (user: any) => void;
+  isVerified: boolean;
+  isLoading: boolean;
 };
 
 const AuthContext = createContext<AuthContextType>(undefined);
@@ -21,46 +21,31 @@ type Props = {
   children: ReactNode;
 };
 
-export const AuthState = {
-  UNVERIFIED: "unverified",
-  VERIFYING: "verifying",
-  AUTHENTICATING: "authenticating",
-  VERIFIED: "verified",
-};
-
 function AuthProvider({ children }: Props) {
   const [currentUser, setCurrentUser] = useState(null);
+  const [isVerified, setIsVerified] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     axios
-      .get("/api/user")
-      .then((res) => {
-        console.log("user found", res);
-        setCurrentUser(res.data.user);
+      .get("/api/verify")
+      .then((err) => {
+        console.log("err: ", err);
+
+        setIsVerified(true);
+        setCurrentUser(null);
       })
       .catch((err) => {
-        console.log("navigating to login");
+        setIsVerified(false);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
-  // useEffect(() => {
-  //   axios
-  //     .get("/api/auth/verify")
-  //     .then((res) => {
-  //       if (res.data.status === "success") {
-  //         setCurrentUser(res.data.user);
-  //       }
-  //       setAuthState(AuthState.VERIFIED);
-  //     })
-  //     .catch((err) => {
-  //       setCurrentUser(null);
-  //       setAuthState(AuthState.UNVERIFIED);
-  //     });
-  // }, [currentUser]);
-
   const value = useMemo(() => {
-    return { currentUser, setCurrentUser };
-  }, [currentUser]);
+    return { currentUser, setCurrentUser, isVerified, isLoading };
+  }, [currentUser, isVerified, isLoading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

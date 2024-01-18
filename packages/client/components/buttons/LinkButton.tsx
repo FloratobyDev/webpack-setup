@@ -11,7 +11,7 @@ type Props = {
 
 function LinkButton({ active, iconSvg, label = "", page, ...rest }: Props) {
   const linkButtonClasses = classNames(
-    "p-3 rounded-md hover:bg-primary-black flex items-center justify-center",
+    "p-3 rounded-md hover:bg-primary-black flex items-center justify-center w-full",
     {
       "bg-primary-black": active,
     },
