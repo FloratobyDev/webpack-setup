@@ -7,7 +7,7 @@ export type PageTypes = {
 
 export const Pages: PageTypes = {
   ANALYTICS: "/analytics",
-  JOURNAL: "/journal",
+  JOURNAL: "/",
   SETTINGS: "/settings",
   PROFILE: "/profile",
 };

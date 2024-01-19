@@ -33,7 +33,7 @@ function AuthProvider({ children }: Props) {
         console.log("err: ", err);
 
         setIsVerified(true);
-        setCurrentUser(null);
+        setCurrentUser(err.data.user);
       })
       .catch((err) => {
         setIsVerified(false);

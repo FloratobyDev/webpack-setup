@@ -23,8 +23,16 @@ function Journal() {
     return null;
   }
 
+  const installApp = () => {
+    const appName = "JournalVerse"; // Replace with your actual client ID
+    const githubInstallUrl = `https://github.com/apps/${appName}/installations/new`;
+    // Redirect the browser to GitHub's OAuth page
+    window.location.href = githubInstallUrl;
+  };
+
   return (
     <div className="flex flex-1 min-h-full h-full">
+      <button onClick={installApp}>Install App</button>
       <div className="basis-[16.5%] flex gap-y-1 ml-1 flex-col min-h-full h-full">
         <SubLayout
           classnames="overflow-auto"

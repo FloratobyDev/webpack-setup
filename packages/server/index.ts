@@ -1,15 +1,19 @@
-const path = require("path");
+/* eslint-disable import/extensions */
+// eslint-disable-next-line @typescript-eslint/no-shadow
 const cors = require("cors");
 const db = require("./dbRequest.ts");
 const dotenv = require("dotenv");
 const express = require("express");
-// const path = require("path");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+const buildOctokitWebhooks = require("./buildOctokitWebhooks.ts");
+const authController = require("./controllers/apiAuth.ts");
 
 dotenv.config();
 
-// console.log("db", hello());
-
 const app = express();
+app.use(cookieParser()); // Use cookie-parser middleware
+
 // Serve static files from the React app
 if (process.env.NODE_ENV === "development") {
   app.use(cors());
@@ -19,16 +23,33 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static("public"));
 }
 
-app.get("/verify", (req, res) => {
+buildOctokitWebhooks();
+
+const validateTokenMiddleware = (req, res, next) => {
+  // Get the token from the request headers
+  const token = req.cookies.accessToken;
+
+  if (token == null) return res.sendStatus(401);
+
+  // Verify the token
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403); // Forbidden if token is not valid
+    console.log("user", user);
+    req.user = user; // Add the user payload to the request
+    next(); // Proceed to the next middleware or route handler
+  });
+};
+
+app.get("/verify", validateTokenMiddleware, (req, res) => {
   res.json({ user: "Michael Musrhush" });
 });
 
-app.get("/user", (req, res) => {
+app.get("/user", validateTokenMiddleware, (req, res) => {
   db.raw("SELECT * FROM users");
   res.json({ user: "Michael" });
 });
 
-app.get("/users", (req, res) => {
+app.get("/users", validateTokenMiddleware, (req, res) => {
   db.raw("SELECT * FROM users")
     .then((data) => {
       console.log(data.rows);
@@ -40,49 +61,8 @@ app.get("/users", (req, res) => {
     });
 });
 
-app.get("/callback", async (req, res) => {
-  try {
-    const { code } = req.query;
-    const clientID = process.env.CLIENT_ID;
-    const clientSecret = process.env.CLIENT_SECRET;
+app.use("/auth", authController);
 
-    const response = await fetch(
-      "https://github.com/login/oauth/access_token",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          client_id: clientID,
-          client_secret: clientSecret,
-          code,
-        }),
-      },
-    );
-
-    const data = await response.json();
-
-    // Initialize Octokit with the access token
-    const octokit = new Octokit({
-      auth: data.access_token,
-    });
-
-    // Fetch user details
-    const userResponse = await octokit.request("GET /user");
-    req.session.user = {
-      accessToken: data.access_token,
-      githubId: userResponse.data.id,
-    };
-
-    res.redirect(`http://localhost:5173/authorize`);
-  } catch (err) {
-    res.status(500).redirect(`http://localhost:5173/`);
-  }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on http://localhost:${process.env.PORT}`);
 });

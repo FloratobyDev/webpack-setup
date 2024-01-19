@@ -27,7 +27,7 @@ const routes = createBrowserRouter([
     ),
     children: [
       {
-        path: "/journal",
+        path: "/",
         element: <Journal />,
       },
       {
@@ -43,10 +43,6 @@ const routes = createBrowserRouter([
         element: <Analytics />,
       },
     ],
-  },
-  {
-    path: "/login",
-    element: <Login />,
   },
   {
     path: "*",

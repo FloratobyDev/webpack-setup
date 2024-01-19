@@ -17,12 +17,11 @@ function Login() {
   const { setCurrentUser, isVerified } = useAuth();
 
   const authorizeApp = () => {
-    // const clientID = "Iv1.d6f08907cca5eef0"; // Replace with your actual client ID
-    // const redirectUri = encodeURIComponent("http://localhost:3001/callback");
-    // const scope = "repo";
-    // const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectUri}&scope=${scope}`;
-    // window.location.href = githubAuthUrl;
-    window.location.href = "http://localhost:9000/";
+    const clientID = "Iv1.d6f08907cca5eef0"; // Replace with your actual client ID
+    const redirectUri = encodeURIComponent("http://localhost:4242/authorize");
+    const scope = "repo";
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectUri}&scope=${scope}`;
+    window.location.href = githubAuthUrl;
   };
 
   const addUser = () => {
@@ -50,7 +49,7 @@ function Login() {
 
   return (
     <div className=" bg-primary-black h-screen flex items-center justify-center text-white">
-      <button onClick={authorizeApp}>Authorize</button>
+      {/* <button onClick={authorizeApp}>Authorize</button> */}
       <button onClick={addUser}>Add User</button>
       {users.map((user) => {
         return <p key={user.name}>{user.name}</p>;
