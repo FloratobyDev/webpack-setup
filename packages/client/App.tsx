@@ -42,6 +42,10 @@ const routes = createBrowserRouter([
         path: "/analytics",
         element: <Analytics />,
       },
+      {
+        path: "*",
+        element: <Navigate to="/" />,
+      },
     ],
   },
   {

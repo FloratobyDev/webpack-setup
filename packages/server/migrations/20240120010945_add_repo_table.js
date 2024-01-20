@@ -5,11 +5,10 @@
 exports.up = function (knex) {
   //create user table in raw sql
   return knex.raw(`
-    CREATE TABLE users (
-      github_id INTEGER PRIMARY KEY,
-      username VARCHAR NOT NULL UNIQUE,
-      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    CREATE TABLE repositories (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(github_id),
+      name VARCHAR(40) UNIQUE
     );
   `);
 };

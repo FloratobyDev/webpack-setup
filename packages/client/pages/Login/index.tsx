@@ -18,7 +18,9 @@ function Login() {
 
   const authorizeApp = () => {
     const clientID = "Iv1.d6f08907cca5eef0"; // Replace with your actual client ID
-    const redirectUri = encodeURIComponent("http://localhost:4242/authorize");
+    const redirectUri = encodeURIComponent(
+      "http://localhost:4242/auth/authorize",
+    );
     const scope = "repo";
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectUri}&scope=${scope}`;
     window.location.href = githubAuthUrl;

@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const buildOctokitWebhooks = require("./buildOctokitWebhooks.ts");
 const authController = require("./controllers/apiAuth.ts");
+const journalController = require("./controllers/apiJournal.ts");
 
 dotenv.config();
 
@@ -41,7 +42,7 @@ const validateTokenMiddleware = (req, res, next) => {
 };
 
 app.get("/verify", validateTokenMiddleware, (req, res) => {
-  res.json({ user: "Michael Musrhush" });
+  res.json({ user: "Michael Mushrush" });
 });
 
 app.get("/user", validateTokenMiddleware, (req, res) => {
@@ -62,6 +63,7 @@ app.get("/users", validateTokenMiddleware, (req, res) => {
 });
 
 app.use("/auth", authController);
+app.use("/journal", validateTokenMiddleware, journalController);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}`);

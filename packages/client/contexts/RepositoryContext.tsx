@@ -7,6 +7,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import axios from "axios";
 
 type RepositoryContextType = {
   repositories: RepositoryType[];
@@ -42,6 +43,15 @@ function RepositoryProvider({ children }: Props) {
   }
 
   useEffect(() => {
+    axios
+      .get("/api/journal/repo")
+      .then((res) => {
+        console.log("res", res.data);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+
     const fetchedData = {
       repositories: [
         {
@@ -286,7 +296,7 @@ export function useRepository() {
   const context = useContext(RepositoryContext);
   if (context === undefined) {
     throw new Error(
-      "useRepositoryContext must be used within a RepositoryProvider",
+      "useRepositoryContext must be used within a RepositoryProvider"
     );
   }
   return context;
