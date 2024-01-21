@@ -32,7 +32,7 @@ function Journal() {
 
   return (
     <div className="flex flex-1 min-h-full h-full">
-      <button onClick={installApp}>Install App</button>
+      {/* <button onClick={installApp}>Install App</button> */}
       <div className="basis-[16.5%] flex gap-y-1 ml-1 flex-col min-h-full h-full">
         <SubLayout
           classnames="overflow-auto"

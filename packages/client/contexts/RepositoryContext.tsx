@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import axios from "axios";
+import { useFetchRepositoryQuery } from "@client/store";
 
 type RepositoryContextType = {
   repositories: RepositoryType[];
@@ -37,9 +38,14 @@ function RepositoryProvider({ children }: Props) {
   const [pushList, setPushList] = useState([]); // ["repo1", "repo2"
   const [journals, setJournals] = useState([]);
   const [tasks, setTasks] = useState<TaskType[]>([]);
+  const { data: repos, isFetching, isLoading } = useFetchRepositoryQuery();
 
   function changeRepository(repo: RepositoryType) {
     setCurrentRepository(repo);
+  }
+
+  if (!isLoading && !isFetching) {
+    console.log("repos", repos);
   }
 
   useEffect(() => {

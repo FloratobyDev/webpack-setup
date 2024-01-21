@@ -6,7 +6,7 @@ exports.up = function (knex) {
   //create user table in raw sql
   return knex.raw(`
     CREATE TABLE repositories (
-      id SERIAL PRIMARY KEY,
+      repo_id integer PRIMARY KEY,
       user_id INTEGER REFERENCES users(github_id),
       name VARCHAR(40) UNIQUE
     );
@@ -19,6 +19,6 @@ exports.up = function (knex) {
  */
 exports.down = function (knex) {
   return knex.raw(`
-    DROP TABLE users;
+    DROP TABLE repositories;
   `);
 };
