@@ -8,7 +8,7 @@ exports.up = function (knex) {
     CREATE TABLE repositories (
       repo_id integer PRIMARY KEY,
       user_id INTEGER REFERENCES users(github_id),
-      name VARCHAR(40) UNIQUE
+      name VARCHAR(40) NOT NULL,
     );
   `);
 };
