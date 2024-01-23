@@ -6,9 +6,10 @@ exports.up = function (knex) {
   //create user table in raw sql
   return knex.raw(`
     CREATE TABLE repositories (
-      id integer PRIMARY KEY,
+      id SERIAL PRIMARY KEY,
       user_id INTEGER REFERENCES users(id),
-      name VARCHAR(40) NOT NULL
+      name VARCHAR(40) NOT NULL,
+      description VARCHAR(255)
     );
   `);
 };

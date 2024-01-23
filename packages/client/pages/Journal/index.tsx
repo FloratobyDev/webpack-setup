@@ -41,8 +41,8 @@ function Journal() {
           }}
         >
           <RepositoryInfo
-            description={currentRepository.repositoryInfo.description}
-            languages={currentRepository.repositoryInfo.languages}
+            description={currentRepository.description}
+            languages={[]}
             name={currentRepository.name}
           />
         </SubLayout>

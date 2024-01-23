@@ -14,6 +14,9 @@ module.exports = {
     migrations: {
       directory: __dirname + "/packages/server/migrations",
     },
+    seeds: {
+      directory: __dirname + "/packages/server/seeds",
+    },
   },
 
   staging: {

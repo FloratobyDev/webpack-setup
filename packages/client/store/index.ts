@@ -12,4 +12,4 @@ export const store = configureStore({
 
 setupListeners(store.dispatch);
 
-export { useFetchRepositoryQuery } from "./api/journalApi";
+export { useFetchRepositoryQuery, useFetchRepositoryByIdQuery } from "./api/journalApi";

@@ -38,26 +38,38 @@ export type TaskType = {
   taskId: string;
 };
 
+export type NotificationType = {
+  id: string;
+  push_id: string;
+  repo_id: string;
+  user_id: string;
+  description: string;
+  has_interacted: boolean;
+  has_seen: boolean;
+  created_at: string;
+};
+
 export type RepositoryType = {
   name: string;
-  repoId: string;
-  repositoryInfo: {
-    description: string;
-    languages: string[];
-  };
+  id: string;
+  hasAlerts: boolean;
+  user_id: string;
+  description: string;
+  notifications: NotificationType[];
 };
 
 export type CommitType = {
-  message: string;
-  date: string;
   commit_sha: string;
+  description: string;
 };
 
 export type PushType = {
-  pushId: string;
-  pushAt: string;
+  created_at: string;
   commits: CommitType[];
   has_interacted: boolean;
+  has_seen: boolean;
+  notification_id: number;
+  push_id: number;
 };
 
 export type JournalType = {

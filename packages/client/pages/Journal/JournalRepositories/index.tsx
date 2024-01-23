@@ -23,6 +23,8 @@ function JournalRepositories({ repositories, activeRepo, onClick }: Props) {
     });
   }, [repositories, search]);
 
+  console.log('repositoriesss', modifiedRepositories);
+  
   return (
     <div className="flex flex-col h-full">
       <div className="flex justify-between">
@@ -32,9 +34,9 @@ function JournalRepositories({ repositories, activeRepo, onClick }: Props) {
       <div className="flex flex-col overflow-auto my-2 grow">
         {modifiedRepositories.map((repository) => (
           <RepoButton
-            // hasAlert={repository === activeRepo}
-            active={repository.repoId === activeRepo.repoId}
-            key={repository.repoId}
+            active={repository.id === activeRepo.id}
+            hasAlert={repository.hasAlerts}
+            key={repository.id}
             name={repository.name}
             onClick={() => onClick(repository)}
           />

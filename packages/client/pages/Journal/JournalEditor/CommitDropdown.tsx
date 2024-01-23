@@ -82,9 +82,9 @@ function CommitDropdown({ commits, onSave }: Props) {
               </div>
             </div>
             <div className="flex flex-col gap-y-1">
-              {map(pushList, (push) => (
+              {map(pushList, (push, key) => (
                 <PushInfo
-                  key={push.pushId}
+                  key={key}
                   onDeselect={handleSingleDeselect}
                   onDeselectMultiple={handleMultipleDeselect}
                   onSelect={handleSingleSelect}
@@ -102,7 +102,7 @@ function CommitDropdown({ commits, onSave }: Props) {
                 {selectedStagedCommits.length > 0 ? (
                   map(selectedStagedCommits, (commit) => (
                     <div className="flex justify-between p-1">
-                      <p className="truncate w-32">{commit.message}</p>
+                      <p className="truncate w-32">{commit.description}</p>
                       <div className="flex gap-x-2">
                         <p className="">{commit.commit_sha}</p>
                         <button onClick={() => handleSingleDeselect(commit)}>

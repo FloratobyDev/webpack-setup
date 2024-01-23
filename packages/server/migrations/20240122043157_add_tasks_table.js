@@ -24,8 +24,9 @@ exports.up = async function (knex) {
  */
 exports.down = async function (knex) {
   await knex.raw(`
+  DROP TABLE tasks;`);
+  
+  return knex.raw(`
   DROP TYPE task_state;`);
 
-  knex.raw(`
-  DROP TABLE tasks;`);
 };

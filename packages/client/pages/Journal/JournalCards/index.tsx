@@ -55,7 +55,7 @@ function JournalCards({ bookmarks, setBookmarks, journals }: Props) {
                   <p key={generateRandomString(5)}>{task.name}</p>
                 ))}
                 {journal.commits.map((commit) => (
-                  <p key={generateRandomString(5)}>{commit.commit_sha}</p>
+                  <p key={commit.commit_sha}>{commit.commit_sha}</p>
                 ))}
               </div>
             ))}

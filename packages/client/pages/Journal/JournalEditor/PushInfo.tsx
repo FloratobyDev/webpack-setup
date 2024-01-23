@@ -23,15 +23,17 @@ function PushInfo({
 }: Props) {
   const [open, setOpen] = useState<boolean>(true);
   const [pushSelected, setPushSelected] = useState<boolean>(false);
+  const [hasNotification, setHasNotification] = useState<boolean>(!pushInfo.has_interacted);
 
   function handleOpen() {
     setOpen(!open);
   }
 
-  const difficultyClass = classNames(
-    "h-2 w-2 bg-red-400 rounded-full absolute top-0 right-0",
+  const notificationClass = classNames(
+    "h-2 w-2 rounded-full absolute top-0 right-0",
     {
-      "bg-red-400": pushInfo.has_interacted,
+      "bg-red-400": hasNotification,
+      "bg-transparent": !hasNotification,
     },
   );
 
@@ -43,13 +45,16 @@ function PushInfo({
   );
 
   return (
-    <div className="rounded-md bg-black-75 overflow-hidden select-none text-white relative max-h-full">
-      <div className={difficultyClass} />
+    <div className="rounded-md bg-black-75 overflow-hidden select-none text-white relative max-h-full" onClick={()=>{
+      setHasNotification(false);
+      // pushInfo.has_interacted = false;
+    }}>
+      <div className={notificationClass} />
       <div
         className="flex items-center justify-between p-2 px-3 relative"
         onClick={handleOpen}
       >
-        <H4>{pushInfo.pushAt}</H4>
+        <H4>{pushInfo.created_at}</H4>
         <div className="flex gap-x-2">
           <p className="text-yellow-400 italic">
             {selectedCommitsInPushCount}/{pushInfo.commits.length}
@@ -57,6 +62,7 @@ function PushInfo({
           <button
             onClick={(e: any) => {
               e.stopPropagation();
+              setHasNotification(false);
               setPushSelected(!pushSelected);
               if (pushSelected) {
                 onDeselectMultiple(pushInfo.commits);
@@ -83,7 +89,7 @@ function PushInfo({
                 className="flex justify-between p-1"
                 key={commitInfo.commit_sha}
               >
-                <p className="truncate w-32">{commitInfo.message}</p>
+                <p className="truncate w-32">{commitInfo.description}</p>
                 <div className="flex gap-x-2">
                   <p className="">{commitInfo.commit_sha}</p>
                   <button
