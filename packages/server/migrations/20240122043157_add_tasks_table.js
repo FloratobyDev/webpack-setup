@@ -4,15 +4,19 @@
  */
 exports.up = async function (knex) {
   await knex.raw(`
-  CREATE TYPE task_state AS ENUM ('OP', 'DN', 'IP');
+  CREATE TYPE task_state AS ENUM ('Open', 'Done', 'In-Progress');
   `);
+
+  await knex.raw(`
+  CREATE TYPE difficulty_type AS ENUM ('EASY', 'MEDIUM', 'HARD');`);
 
   return knex.raw(`
   CREATE TABLE tasks (
     id SERIAL PRIMARY KEY,
     repo_id INTEGER REFERENCES repositories(id),
     user_id INTEGER REFERENCES users(id),
-    state task_state DEFAULT 'OP',
+    state task_state DEFAULT 'Open',
+    difficulty difficulty_type DEFAULT 'EASY',
     due_date DATE,
     title VARCHAR(40) NOT NULL
   );`);
@@ -25,8 +29,10 @@ exports.up = async function (knex) {
 exports.down = async function (knex) {
   await knex.raw(`
   DROP TABLE tasks;`);
-  
+
+  await knex.raw(`
+  DROP TYPE difficulty_type;`);
+
   return knex.raw(`
   DROP TYPE task_state;`);
-
 };

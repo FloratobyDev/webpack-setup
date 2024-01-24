@@ -14,6 +14,8 @@ dotenv.config();
 
 const app = express();
 app.use(cookieParser()); // Use cookie-parser middleware
+app.use(express.json()); // Use express.json() middleware
+app.use(express.urlencoded({ extended: true })); // Use express.urlencoded() middleware
 
 // Serve static files from the React app
 if (process.env.NODE_ENV === "development") {

@@ -18,24 +18,31 @@ export const DifficultyTypes = {
   HARD: "hard",
 };
 
-export const ProgressType = {
+export type ProgressType = {
+  OPEN: string;
+  INPROGRESS: string;
+  DONE: string;
+};
+
+export const ProgressValues: ProgressType = {
   OPEN: "Open",
   INPROGRESS: "In-Progress",
   DONE: "Done",
 };
 
 export type ChecklistType = {
-  description: string;
-  checked: boolean;
-  checklistId: string;
+  content: string;
+  is_done: boolean;
+  id: string;
 };
 
 export type TaskType = {
-  name: string;
-  checklist: ChecklistType[];
+  title: string;
+  checklists: ChecklistType[];
   difficulty: string;
-  progress: string;
-  taskId: string;
+  state: string;
+  id: string;
+  due_date: string;
 };
 
 export type NotificationType = {
@@ -49,13 +56,18 @@ export type NotificationType = {
   created_at: string;
 };
 
+export type RepoNotificationType = {
+  id: number;
+  repo_id: number;
+}
+
 export type RepositoryType = {
   name: string;
   id: string;
   hasAlerts: boolean;
   user_id: string;
   description: string;
-  notifications: NotificationType[];
+  notifications: RepoNotificationType[];
 };
 
 export type CommitType = {

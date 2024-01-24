@@ -7,8 +7,8 @@ beforeEach(() => jest.clearAllMocks());
 
 describe("ChecklistDropdown Component", () => {
   const mockChecklist = [
-    { description: "Task 1", checked: false, checklistId: "1989" },
-    { description: "Task 2", checked: false, checklistId: "2787" },
+    { content: "Task 1", is_done: false, id: "1989" },
+    { content: "Task 2", is_done: false, id: "2787" },
   ];
   const mockSetChecklist = jest.fn();
   const mockOnAddCheck = jest.fn();
@@ -45,7 +45,7 @@ describe("ChecklistDropdown Component", () => {
       />
     );
     mockChecklist.forEach((task) => {
-      expect(screen.getByText(task.description)).toBeInTheDocument();
+      expect(screen.getByText(task.content)).toBeInTheDocument();
     });
   });
 

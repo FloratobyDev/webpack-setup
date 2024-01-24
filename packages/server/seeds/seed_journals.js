@@ -66,9 +66,9 @@ exports.seed = async function (knex) {
 
   await knex.raw(`
   INSERT INTO tasks (repo_id, user_id, state, due_date, title)
-  VALUES (1, 1, 'OP', '2021-01-01', 'test task'),
-         (2, 2, 'IP', '2021-01-01', 'test task2'),
-         (3, 3, 'OP', '2021-01-01', 'test task3');
+  VALUES (1, 1, 'Open', '2021-01-01', 'test task'),
+         (1, 1, 'In-Progress', '2021-01-01', 'test task2'),
+         (3, 1, 'Done', '2021-01-01', 'test task3');
   `);
 
   await knex.raw(`

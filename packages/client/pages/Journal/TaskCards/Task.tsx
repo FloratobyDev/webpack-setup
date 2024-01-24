@@ -1,24 +1,13 @@
-import { ChecklistType, DifficultyTypes } from "@client/types";
+import { ChecklistType, DifficultyTypes, TaskType } from "@client/types";
 import { filter, map, size } from "lodash";
 import React, { useState } from "react";
 import classNames from "classnames";
+import ProgressDropdown from "./ProgressDropdown";
 import { useTask } from "@client/contexts/TaskContext";
 // import { headerTabs } from ".";
 
 type Props = {
-  taskInfo: {
-    name: string;
-    checklist: ChecklistType[];
-    difficulty: string;
-    progress: string;
-    taskId: string;
-  };
-  progressTypes: {
-    OPEN: string;
-    INPROGRESS: string;
-    DONE: string;
-  };
-  onProgressChange: (taskId: string, progress: string) => void;
+  taskInfo: TaskType;
 };
 
 type ChecklistProps = {
@@ -27,7 +16,7 @@ type ChecklistProps = {
 };
 
 function Checklist({ item, onRemove }: ChecklistProps) {
-  const [checked, setChecked] = useState(item.checked);
+  const [checked, setChecked] = useState(item.is_done);
   return (
     <div className="flex gap-x-2">
       <input
@@ -38,19 +27,22 @@ function Checklist({ item, onRemove }: ChecklistProps) {
         }}
         type="checkbox"
       />
-      {/* <button type="button" onClick={onRemove}>X</button> */}
-      <p>{item.description}</p>
+      <p>{item.content}</p>
     </div>
   );
 }
 
-function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
+function Task({ taskInfo }: Props) {
   const [open, setOpen] = useState(false);
-  const [openProgress, setOpenProgress] = useState(false); // ["task1", "task2"
+  const [openProgress, setOpenProgress] = useState(false);
   const { onUpdateChecklist } = useTask();
 
   function handleOpen() {
     setOpen(!open);
+  }
+
+  if (!taskInfo) {
+    return null;
   }
 
   function handleOpenProgress(e: any) {
@@ -65,21 +57,21 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
   });
 
   const donePercentage =
-    (size(filter(taskInfo.checklist, { checked: true })) /
-      taskInfo.checklist.length) *
+    (size(filter(taskInfo.checklists, { checked: true })) /
+      taskInfo.checklists.length) *
     100;
 
   const taskClass = classNames(
     "flex items-center justify-between p-2 px-3 relative",
     {
-      "cursor-pointer": taskInfo.checklist.length > 0,
-    }
+      "cursor-pointer": taskInfo.checklists.length > 0,
+    },
   );
 
   return (
     <div
       className="rounded-md bg-black overflow-hidden select-none"
-      data-testid={taskInfo.taskId}
+      data-testid={taskInfo.id}
     >
       <div
         className="h-1 bg-orange-400 transition-all duration-500 ease-in-out"
@@ -88,7 +80,7 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
         }}
       />
       <div className={taskClass} onClick={handleOpen}>
-        <p>{taskInfo.name}</p>
+        <p>{taskInfo.title}</p>
         <div className="flex items-center w-[30%] justify-between">
           <span className={difficultyClass} />
           <button
@@ -97,44 +89,29 @@ function Task({ taskInfo, progressTypes, onProgressChange }: Props) {
               handleOpenProgress(e);
             }}
           >
-            {taskInfo.progress}
+            {taskInfo.state}
           </button>
         </div>
       </div>
       {openProgress && (
-        <div
-          className="absolute origin-top z-10 right-2 bg-black border-gray-200 border flex rounded-md flex-col overflow-hidden"
-          data-testid={`${taskInfo.taskId}-progress`}
-        >
-          {map(progressTypes, (tab) => {
-            return (
-              <button
-                className="px-1"
-                key={tab}
-                onClick={() => {
-                  onProgressChange(taskInfo.taskId, tab);
-                  setOpenProgress(false);
-                }}
-              >
-                {tab}
-              </button>
-            );
-          })}
-        </div>
+        <ProgressDropdown
+          setOpenProgress={setOpenProgress}
+          taskInfo={taskInfo}
+        />
       )}
 
-      {open && taskInfo.checklist.length > 0 && (
+      {open && taskInfo.checklists.length > 0 && (
         <>
           <hr className="border-t-1 border-t-yellow-300" />
           <div>
-            {map(taskInfo.checklist, (item) => (
+            {map(taskInfo.checklists, (item) => (
               <Checklist
                 item={item}
-                key={item.checklistId}
+                key={item.id}
                 onRemove={onUpdateChecklist(
-                  taskInfo.taskId,
-                  item.checklistId,
-                  !item.checked
+                  taskInfo.id,
+                  item.id,
+                  !item.is_done,
                 )}
               />
             ))}

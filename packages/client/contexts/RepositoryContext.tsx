@@ -7,11 +7,14 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { groupBy } from "lodash";
-import { useFetchRepositoryQuery } from "@client/store";
+import {
+  useFetchRepositoryByIdQuery,
+  useFetchRepositoryQuery,
+} from "@client/store";
 
 type RepositoryContextType = {
   repositories: RepositoryType[];
+  updateRepositoryAlertById: (id: string) => void;
   bookmarks: JournalType[];
   setBookmarks: (bookmarks: JournalType[]) => void;
   journals: JournalType[];
@@ -21,6 +24,7 @@ type RepositoryContextType = {
   pushList: PushType[];
   currentRepository: RepositoryType;
   changeRepository: (repo: RepositoryType) => void;
+  allLoading: boolean;
 };
 
 type Props = {
@@ -32,31 +36,60 @@ const RepositoryContext = createContext<RepositoryContextType>(undefined);
 function RepositoryProvider({ children }: Props) {
   const [currentRepository, setCurrentRepository] =
     useState<RepositoryType>(null); // ["repo1", "repo2"
-  const [initialState, setInitialState] = useState(null); // ["repo1", "repo2"
   const [repositories, setRepositories] = useState<Array<RepositoryType>>([]);
   const [bookmarks, setBookmarks] = useState([]);
   const [pushList, setPushList] = useState<PushType[]>([]); // ["repo1", "repo2"
   const [journals, setJournals] = useState([]);
   const [tasks, setTasks] = useState<TaskType[]>([]);
-  const { data: repos, isFetching, isLoading } = useFetchRepositoryQuery();
+  const { data: repos, isLoading } = useFetchRepositoryQuery();
+  const {
+    data: dataByRepo,
+    isLoading: isDataLoading,
+    isFetching: isDataFetching,
+  } = useFetchRepositoryByIdQuery(currentRepository?.id, {
+    skip: !currentRepository?.id,
+    refetchOnMountOrArgChange: true,
+  });
 
   function changeRepository(repo: RepositoryType) {
     setCurrentRepository(repo);
   }
 
-  if (!isLoading) {
-    console.log("repos", repos);
+  function updateRepositoryAlertById(id: string) {
+    setCurrentRepository((repo) => {
+      return { ...repo, hasAlerts: false };
+    });
+    setRepositories((prevRepos) => {
+      return prevRepos.map((repo) => {
+        const newRepo = { ...repo };
+        if (newRepo.id === id) {
+          newRepo.hasAlerts = false;
+        }
+        return newRepo;
+      });
+    });
   }
 
   useEffect(() => {
     if (!isLoading) {
-      console.log("isLoading");
-      setCurrentRepository(repos.repositories[0]);
-      setRepositories(repos.repositories);
-      setPushList(repos.groupedResults);
-      // console.log('groupBy', groupBy(repos.commits, 'push_id'));
+      if (!repos.length) return;
+      setCurrentRepository(repos[0]);
+      setRepositories(repos);
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    if (!isDataLoading && !isDataFetching) {
+      if (!dataByRepo) return;
+      console.log("changing data", dataByRepo);
+      setPushList(dataByRepo.pushes);
+      setTasks(dataByRepo.tasks);
+    }
+  }, [isDataLoading, isDataFetching]);
+
+  console.log('repoLoading', isLoading);
+  
+  console.log("isDataLoading", isDataLoading, isDataFetching);
 
   // useEffect(() => {
   //   axios
@@ -272,12 +305,13 @@ function RepositoryProvider({ children }: Props) {
   //     setTasks([]);
   //   }
   // }, [currentRepository]);
-
+  const allLoading = isLoading || isDataLoading || isDataFetching;
   const value: RepositoryContextType = useMemo(
     () => ({
       pushList,
       currentRepository,
       changeRepository,
+      updateRepositoryAlertById,
       repositories,
       bookmarks,
       setBookmarks,
@@ -285,6 +319,7 @@ function RepositoryProvider({ children }: Props) {
       setJournals,
       tasks,
       setTasks,
+      allLoading,
     }),
     [repositories, bookmarks, journals, tasks, currentRepository, pushList],
   );

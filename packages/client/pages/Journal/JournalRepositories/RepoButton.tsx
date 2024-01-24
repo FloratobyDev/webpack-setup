@@ -8,9 +8,9 @@ type Props = {
 } & HTMLAttributes<HTMLButtonElement>;
 
 function RepoButton({ name, hasAlert, active, ...rest }: Props) {
-  const [hasAlertValue, setHasAlertValue] = useState<boolean>(hasAlert);
+  // const [hasAlertValue, setHasAlertValue] = useState<boolean>(hasAlert);
   const alertClass = classNames("h-2 w-2 rounded-full bg-red-500", {
-    invisible: !hasAlertValue,
+    invisible: !hasAlert,
   });
 
   const buttonClass = classNames(
@@ -22,9 +22,9 @@ function RepoButton({ name, hasAlert, active, ...rest }: Props) {
   return (
     <div
       className="w-full"
-      onClick={() => {
-        setHasAlertValue(false);
-      }}
+      // onClick={() => {
+      //   setHasAlertValue(false);
+      // }}
     >
       <button {...rest} className={buttonClass}>
         <span aria-label="alert-circle" className={alertClass} />

@@ -8,6 +8,7 @@ import TaskCards from "./TaskCards";
 import TaskEditor from "./TaskEditor";
 import TaskProvider from "@client/contexts/TaskContext";
 import { useRepository } from "@client/contexts/RepositoryContext";
+import { useUpdateNotificationsMutation } from "@client/store";
 
 function Journal() {
   const {
@@ -17,7 +18,12 @@ function Journal() {
     bookmarks,
     setBookmarks,
     journals,
+    updateRepositoryAlertById,
+    allLoading,
   } = useRepository();
+
+  const [updateNotification, { isLoading, isSuccess, isError, error }] =
+    useUpdateNotificationsMutation();
 
   if (!currentRepository) {
     return null;
@@ -29,6 +35,22 @@ function Journal() {
     // Redirect the browser to GitHub's OAuth page
     window.location.href = githubInstallUrl;
   };
+
+  async function handleNotificationClick() {
+    if (currentRepository.hasAlerts) {
+      console.log(
+        "currentRepository.notifications",
+        currentRepository.notifications,
+      );
+
+      await updateNotification(currentRepository.notifications);
+      await updateRepositoryAlertById(currentRepository.id);
+    }
+  }
+
+  if(allLoading) {
+    return null;
+  }
 
   return (
     <div className="flex flex-1 min-h-full h-full">
@@ -58,7 +80,10 @@ function Journal() {
           />
         </SubLayout>
       </div>
-      <div className="flex-1 flex flex-col gap-y-1">
+      <div
+        onClick={handleNotificationClick}
+        className="flex-1 flex flex-col gap-y-1"
+      >
         <SubLayout classnames="basis-0" transparent>
           <JournalEditor />
         </SubLayout>

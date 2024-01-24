@@ -38,7 +38,7 @@ function TaskDropdown({ selectedTasks, onSave }: Props) {
   const modifiedTasksBySearch = useMemo(
     () =>
       tasks.filter((task) =>
-        task.name.toLowerCase().includes(search.toLowerCase())
+        task.title.toLowerCase().includes(search.toLowerCase())
       ),
     [search, tasks],
   );
@@ -85,7 +85,7 @@ function TaskDropdown({ selectedTasks, onSave }: Props) {
               return (
                 <div
                   className={taskClasses}
-                  key={`task-${task.taskId}`}
+                  key={`task-${task.id}`}
                   onClick={() => {
                     if (isTaskStaged) {
                       setStagedTasks(
@@ -96,7 +96,7 @@ function TaskDropdown({ selectedTasks, onSave }: Props) {
                     }
                   }}
                 >
-                  <p>{task.name}</p>
+                  <p>{task.title}</p>
                   <div className={crossClass}>
                     <Cross />
                   </div>

@@ -13,6 +13,7 @@ type Props = {
 
 function JournalRepositories({ repositories, activeRepo, onClick }: Props) {
   const [search, setSearch] = useState("");
+
   function handleSearchChange(e: any) {
     setSearch(e.target.value);
   }

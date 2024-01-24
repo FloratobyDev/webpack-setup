@@ -28,8 +28,8 @@ function ChecklistDropdown(
       />
       <div>
         {map(checklist, (task, idx) => (
-          <div className="flex items-center gap-x-2" key={task.checklistId}>
-            <p>{task.description}</p>
+          <div className="flex items-center gap-x-2" key={task.id}>
+            <p>{task.content}</p>
             <button
               className=""
               onClick={() => {

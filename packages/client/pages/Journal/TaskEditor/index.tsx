@@ -1,4 +1,4 @@
-import { ChecklistType, DifficultyTypes, ProgressType } from "@client/types";
+import { ChecklistType, DifficultyTypes, ProgressValues } from "@client/types";
 import React, { useRef, useState } from "react";
 import ChecklistDropdown from "./ChecklistDropdown";
 import classNames from "classnames";
@@ -12,7 +12,7 @@ import { useTask } from "@client/contexts/TaskContext";
 function TaskEditor() {
   const [openChecklist, setOpenChecklist] = useState(false);
   // const [currentChecklist, setCurrentChecklist] = useState<string>("");
-  const [checklist, setChecklist] = useState<ChecklistType[]>([]);
+  const [checklists, setChecklists] = useState<ChecklistType[]>([]);
   const [openDifficulty, setOpenDifficulty] = useState(false);
   const [difficulty, setDifficulty] = useState(DifficultyTypes.EASY);
   const [openDeadline, setOpenDeadline] = useState(false);
@@ -30,12 +30,12 @@ function TaskEditor() {
 
   function onAddCheck(currentChecklist: string) {
     // if (currentChecklist.length <= 0) return;
-    setChecklist([
-      ...checklist,
+    setChecklists([
+      ...checklists,
       {
-        description: currentChecklist,
-        checked: false,
-        checklistId: generateRandomString(5),
+        content: currentChecklist,
+        is_done: false,
+        id: generateRandomString(5),
       },
     ]);
     // setCurrentChecklist("");
@@ -102,7 +102,7 @@ function TaskEditor() {
             </button>
             <button onClick={handleOpenChecklist}>
               <span className="whitespace-nowrap">
-                {checklist.length > 0 ? `+${checklist.length}` : ""} Addc
+                {checklists.length > 0 ? `+${checklists.length}` : ""} Addc
               </span>
             </button>
           </div>
@@ -110,11 +110,11 @@ function TaskEditor() {
       </div>
       {openChecklist && (
         <ChecklistDropdown
-          checklist={checklist}
+          checklist={checklists}
           // currentChecklist={currentChecklist}
           onAddCheck={onAddCheck}
           ref={checkListRef}
-          setChecklist={setChecklist}
+          setChecklist={setChecklists}
           // setCurrentChecklist={setCurrentChecklist}
         />
       )}
@@ -139,15 +139,16 @@ function TaskEditor() {
         <button
           onClick={() => {
             onAddTask({
-              name: taskName,
-              checklist,
+              title: taskName,
+              checklists,
               difficulty,
-              progress: ProgressType.OPEN,
-              taskId: generateRandomString(10),
+              state: ProgressValues.OPEN,
+              id: generateRandomString(10),
+              due_date: ""
             });
 
             setTaskName("");
-            setChecklist([]);
+            setChecklists([]);
             setDifficulty(DifficultyTypes.EASY);
           }}
         >

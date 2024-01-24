@@ -26,7 +26,7 @@ function TaskProvider({ children }: Props) {
     console.log("update checklist", taskId, progress);
 
     const newTaskProgress = tasks.map((t: TaskType) => {
-      if (t.taskId === taskId) {
+      if (t.id === taskId) {
         return { ...t, progress };
       }
       return t;
@@ -46,8 +46,8 @@ function TaskProvider({ children }: Props) {
   ) {
     return () => {
       const newTasks = tasks.map((t: TaskType) => {
-        if (t.taskId === taskId) {
-          const checklist = t.checklist.map((c: any) => {
+        if (t.id === taskId) {
+          const checklist = t.checklists.map((c: any) => {
             if (c.checklistId === checklistId) {
               return { ...c, checked: value };
             }
