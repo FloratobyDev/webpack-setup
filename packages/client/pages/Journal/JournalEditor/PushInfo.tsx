@@ -23,7 +23,9 @@ function PushInfo({
 }: Props) {
   const [open, setOpen] = useState<boolean>(true);
   const [pushSelected, setPushSelected] = useState<boolean>(false);
-  const [hasNotification, setHasNotification] = useState<boolean>(!pushInfo.has_interacted);
+  const [hasNotification, setHasNotification] = useState<boolean>(
+    !pushInfo.has_interacted,
+  );
 
   function handleOpen() {
     setOpen(!open);
@@ -45,10 +47,13 @@ function PushInfo({
   );
 
   return (
-    <div className="rounded-md bg-black-75 overflow-hidden select-none text-white relative max-h-full" onClick={()=>{
-      setHasNotification(false);
-      // pushInfo.has_interacted = false;
-    }}>
+    <div
+      className="rounded-md bg-black-75 overflow-hidden select-none text-white relative max-h-full"
+      onClick={() => {
+        setHasNotification(false);
+        // pushInfo.has_interacted = false;
+      }}
+    >
       <div className={notificationClass} />
       <div
         className="flex items-center justify-between p-2 px-3 relative"

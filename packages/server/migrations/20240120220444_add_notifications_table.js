@@ -9,7 +9,7 @@ exports.up = function(knex) {
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
-    push_id INTEGER REFERENCES push(id),
+    push_id INTEGER REFERENCES pushes(id),
     repo_id INTEGER REFERENCES repositories(id),
     has_seen BOOLEAN DEFAULT FALSE,
     has_interacted BOOLEAN DEFAULT FALSE

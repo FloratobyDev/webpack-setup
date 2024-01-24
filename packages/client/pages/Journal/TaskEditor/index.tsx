@@ -29,7 +29,6 @@ function TaskEditor() {
   }
 
   function onAddCheck(currentChecklist: string) {
-    // if (currentChecklist.length <= 0) return;
     setChecklists([
       ...checklists,
       {
@@ -38,7 +37,6 @@ function TaskEditor() {
         id: generateRandomString(5),
       },
     ]);
-    // setCurrentChecklist("");
   }
 
   function handleOpenDifficulty() {
@@ -52,8 +50,6 @@ function TaskEditor() {
 
   function onDifficultyClick(difficultyType: string) {
     return () => {
-      console.log("difficultyType", difficultyType);
-
       setDifficulty(difficultyType);
       setOpenDifficulty(false);
     };

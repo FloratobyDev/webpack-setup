@@ -90,15 +90,15 @@ journalRouter.get("/repo/:repoId", async (req, res) => {
           n.has_seen,
           n.has_interacted
       FROM 
-          push p
+          pushes p
       LEFT JOIN commits c ON p.id = c.push_id
       LEFT JOIN notifications n ON p.id = n.push_id
       WHERE 
-          p.repo_id = ?
+          p.repo_id = ? AND p.user_id = ?
       ORDER BY 
           p.created_at DESC
       LIMIT 10;`,
-        [repoId],
+        [repoId, githubId],
       );
 
       const pushList = map(
@@ -115,6 +115,9 @@ journalRouter.get("/repo/:repoId", async (req, res) => {
           has_seen: value[0].has_seen,
         }),
       );
+
+      console.log("rawPush", firstTenPushesWithNotif.rows);
+      console.log("pushList", pushList);
 
       const journals = await journalDb.raw(
         `SELECT * FROM journals WHERE user_id=? AND repo_id=? ORDER BY created_at DESC LIMIT 10`,
@@ -138,12 +141,30 @@ journalRouter.get("/repo/:repoId", async (req, res) => {
         [journalIds, repoId, githubId],
       );
 
+      const journalCommits = await journalDb.raw(
+        `SELECT * FROM journal_commit join commits ON journal_commit.commit_sha = commits.commit_sha WHERE journal_commit.journal_id = ANY(?) AND journal_commit.user_id=?`,
+        [journalIds, githubId],
+      );
+
+      const modifiedJournals = journals.rows.map((journal) => {
+        return {
+          ...journal,
+          tasks: journalTasks.rows.filter(
+            (journalTask) => journalTask.journal_id === journal.id,
+          ),
+          commits: journalCommits.rows.filter(
+            (journalCommit) => journalCommit.journal_id === journal.id,
+          ),
+        };
+      });
+
+      console.log("modifiedJournals", modifiedJournals);
+
       const firstTenNotifs = await journalDb.raw(
         `SELECT * FROM notifications WHERE user_id=? AND repo_id=? ORDER BY created_at DESC LIMIT 10`,
         [githubId, repoId],
       );
 
-      //add checklist to tasks by task_id with lodash
       const tasksWithChecklist = tasks.rows.map((task) => {
         return {
           ...task,
@@ -155,13 +176,14 @@ journalRouter.get("/repo/:repoId", async (req, res) => {
 
       return res.status(200).json({
         pushes: pushList,
-        journals: journals.rows,
+        journals: modifiedJournals,
         tasks: tasksWithChecklist,
         journalTasks: journalTasks.rows,
         notifications: firstTenNotifs.rows,
       });
     }
   } catch (err) {
+    console.log("err", err);
     return res.status(500).json({ message: "Internal Server Error", err });
   }
 });

@@ -9,14 +9,6 @@ type Props<T> = {
 };
 
 function HeaderTabs<T>({ options, activeValues, handleValueChange }: Props<T>) {
-  console.log(
-    "options",
-    options,
-    "activeValues",
-    activeValues,
-    "handleValueChange",
-    handleValueChange,
-  );
 
   return (
     <div className="flex items-center">

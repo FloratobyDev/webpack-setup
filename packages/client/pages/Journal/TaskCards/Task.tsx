@@ -57,7 +57,7 @@ function Task({ taskInfo }: Props) {
   });
 
   const donePercentage =
-    (size(filter(taskInfo.checklists, { checked: true })) /
+    (size(filter(taskInfo.checklists, { is_done: true })) /
       taskInfo.checklists.length) *
     100;
 

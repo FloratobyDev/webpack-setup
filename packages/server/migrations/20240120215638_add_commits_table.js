@@ -5,11 +5,10 @@
 exports.up = function(knex) {
   return knex.raw(`
   CREATE TABLE commits (
-    commit_sha VARCHAR(64) NOT NULL,
-    push_id INTEGER REFERENCES push(id),
+    commit_sha VARCHAR(64) NOT NULL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
-    description VARCHAR(200),
-    PRIMARY KEY (commit_sha, push_id)
+    push_id INTEGER REFERENCES pushes(id),
+    description VARCHAR(200)
   );`
   );
 };

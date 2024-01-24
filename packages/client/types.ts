@@ -85,6 +85,10 @@ export type PushType = {
 };
 
 export type JournalType = {
+  created_at?: string;
+  id?: number;
+  published_at?: string;
+  status: string;
   title: string;
   content: string;
   commits: CommitType[];

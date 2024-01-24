@@ -29,7 +29,7 @@ function CommitDropdown({ commits, onSave }: Props) {
 
   function handleSingleDeselect(commit: CommitType) {
     setSelectedStagedCommits(
-      selectedStagedCommits.filter((c) => c.commit_sha !== commit.commit_sha)
+      selectedStagedCommits.filter((c) => c.commit_sha !== commit.commit_sha),
     );
   }
 
@@ -37,7 +37,7 @@ function CommitDropdown({ commits, onSave }: Props) {
     setSelectedStagedCommits((prevCommits) => {
       const removedCommitShas = map(removedCommits, (c) => c.commit_sha);
       return prevCommits.filter(
-        (c) => !removedCommitShas.includes(c.commit_sha)
+        (c) => !removedCommitShas.includes(c.commit_sha),
       );
     });
   }
@@ -93,6 +93,9 @@ function CommitDropdown({ commits, onSave }: Props) {
                   selectedCommits={selectedStagedCommits}
                 />
               ))}
+              {pushList.length === 0 && (
+                <p className="text-center">No push available</p>
+              )}
             </div>
           </div>
           {openStagedCommitPanel && (
@@ -101,7 +104,10 @@ function CommitDropdown({ commits, onSave }: Props) {
               <div>
                 {selectedStagedCommits.length > 0 ? (
                   map(selectedStagedCommits, (commit) => (
-                    <div className="flex justify-between p-1">
+                    <div
+                      className="flex justify-between p-1"
+                      key={commit.commit_sha}
+                    >
                       <p className="truncate w-32">{commit.description}</p>
                       <div className="flex gap-x-2">
                         <p className="">{commit.commit_sha}</p>

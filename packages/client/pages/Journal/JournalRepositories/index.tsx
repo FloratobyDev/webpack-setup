@@ -24,8 +24,6 @@ function JournalRepositories({ repositories, activeRepo, onClick }: Props) {
     });
   }, [repositories, search]);
 
-  console.log('repositoriesss', modifiedRepositories);
-  
   return (
     <div className="flex flex-col h-full">
       <div className="flex justify-between">

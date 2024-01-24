@@ -19,7 +19,6 @@ function Journal() {
     setBookmarks,
     journals,
     updateRepositoryAlertById,
-    allLoading,
   } = useRepository();
 
   const [updateNotification, { isLoading, isSuccess, isError, error }] =
@@ -46,10 +45,6 @@ function Journal() {
       await updateNotification(currentRepository.notifications);
       await updateRepositoryAlertById(currentRepository.id);
     }
-  }
-
-  if(allLoading) {
-    return null;
   }
 
   return (

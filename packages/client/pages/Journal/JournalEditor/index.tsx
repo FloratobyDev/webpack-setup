@@ -20,6 +20,7 @@ function JournalEditor() {
       content,
       commits,
       tasks: selectedTasks,
+      status: "draft",
     };
     setJournals([...journals, newJournal]);
     setTitle("");

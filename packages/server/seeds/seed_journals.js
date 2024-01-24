@@ -11,7 +11,7 @@ exports.seed = async function (knex) {
   await knex("journals").del();
   await knex("notifications").del();
   await knex("commits").del();
-  await knex("push").del();
+  await knex("pushes").del();
   await knex("repositories").del();
   await knex("users").del();
 
@@ -32,20 +32,20 @@ exports.seed = async function (knex) {
   `);
 
   await knex.raw(`
-  INSERT INTO push (repo_id, user_id)
+  INSERT INTO pushes (repo_id, user_id)
   VALUES (1, 1),
          (1, 1),
-         (2, 2),
-         (3, 3);
+         (3, 3),
+         (2, 1);
   `);
 
   await knex.raw(`
-  INSERT INTO commits (commit_sha, push_id, user_id, description)
+  INSERT INTO commits (commit_sha, user_id, push_id, description)
   VALUES ('test_sha', 1, 1, 'test description'),
-         ('test_sha2', 2, 2, 'test description2'),
-         ('test_sha3', 3, 3, 'test description3'),
-         ('test_sha4', 1, 1, 'test description4'),
-         ('test_sha5', 2, 1, 'test description5');
+         ('test_sha2', 2, 1, 'test description2'),
+         ('test_sha3', 3, 1, 'test description2'),
+         ('test_sha4', 1, 4, 'test description4'),
+         ('test_sha5', 1, 2, 'test description5');
   `);
 
   await knex.raw(`
@@ -59,8 +59,10 @@ exports.seed = async function (knex) {
   await knex.raw(`
   INSERT INTO journals (user_id, repo_id, status, title, content)
   VALUES (1, 1, 'draft', 'test title', 'test content'),
-         (2, 2, 'draft', 'test title2', 'test content2'),
-         (3, 3, 'published', 'test title3', 'test content3');
+         (1, 2, 'draft', 'test title2', 'test content2'),
+         (1, 3, 'published', 'test title3', 'test content3'),
+         (1, 1, 'published', 'test title4', 'test content4'),
+         (1, 1, 'published', 'test title5', 'test content5');
 
   `);
 
@@ -91,4 +93,10 @@ exports.seed = async function (knex) {
          (1, 1, FALSE, 'test checklist2'),
          (3, 2, FALSE, 'test checklist3');
   `);
+
+  await knex.raw(`
+  INSERT INTO journal_commit (journal_id, user_id, commit_sha)
+  VALUES (1, 1, 'test_sha'),
+         (4, 1, 'test_sha2'),
+         (5, 1, 'test_sha2');`);
 };

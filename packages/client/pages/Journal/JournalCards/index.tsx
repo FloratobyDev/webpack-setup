@@ -50,13 +50,16 @@ function JournalCards({ bookmarks, setBookmarks, journals }: Props) {
                 <button onClick={handleAddBookmark(journal)}>
                   Add bookmark
                 </button>
-                <p>{journal.title}</p>
-                {journal.tasks.map((task) => (
-                  <p key={generateRandomString(5)}>{task.title}</p>
-                ))}
+                <h1 className="text-xl">{journal.title}</h1>
+                <div className="bg-orange-200">
+                  {journal.tasks.map((task) => (
+                    <p key={generateRandomString(5)}>{task.title}</p>
+                  ))}
+                </div>
                 {journal.commits.map((commit) => (
-                  <p key={commit.commit_sha}>{commit.commit_sha}</p>
+                  <p className="bg-yellow-200" key={commit.commit_sha}>{commit.commit_sha}</p>
                 ))}
+                <p className="bg-blue-200">{journal.content}</p>
               </div>
             ))}
           </div>

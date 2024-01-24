@@ -81,15 +81,13 @@ function RepositoryProvider({ children }: Props) {
   useEffect(() => {
     if (!isDataLoading && !isDataFetching) {
       if (!dataByRepo) return;
-      console.log("changing data", dataByRepo);
+      console.log("repos", dataByRepo);
+
       setPushList(dataByRepo.pushes);
       setTasks(dataByRepo.tasks);
+      setJournals(dataByRepo.journals);
     }
   }, [isDataLoading, isDataFetching]);
-
-  console.log('repoLoading', isLoading);
-  
-  console.log("isDataLoading", isDataLoading, isDataFetching);
 
   // useEffect(() => {
   //   axios
