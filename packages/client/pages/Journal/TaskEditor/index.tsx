@@ -1,17 +1,18 @@
 import { ChecklistType, DifficultyTypes, ProgressValues } from "@client/types";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ChecklistDropdown from "./ChecklistDropdown";
 import classNames from "classnames";
 import Difficulty from "@client/components/svgs/Difficulty";
 import DifficultyDropdown from "./DifficultyDropdown";
 import { generateRandomString } from "@client/utils";
 import { H2 } from "@client/components/headings";
+import { useAddTasksMutation } from "@client/store";
 import useOutsideClick from "@client/hooks/useOutsideClick";
+import { useRepository } from "@client/contexts/RepositoryContext";
 import { useTask } from "@client/contexts/TaskContext";
 
 function TaskEditor() {
   const [openChecklist, setOpenChecklist] = useState(false);
-  // const [currentChecklist, setCurrentChecklist] = useState<string>("");
   const [checklists, setChecklists] = useState<ChecklistType[]>([]);
   const [openDifficulty, setOpenDifficulty] = useState(false);
   const [difficulty, setDifficulty] = useState(DifficultyTypes.EASY);
@@ -22,6 +23,24 @@ function TaskEditor() {
   const checkListRef = useRef(null);
   const difficultyRef = useRef(null);
   const deadlineRef = useRef(null);
+
+  const [addTask, { isSuccess, isLoading, data }] = useAddTasksMutation();
+  const { currentRepository } = useRepository();
+
+  useEffect(() => {
+    if (isSuccess) {
+      onAddTask({
+        title: taskName,
+        checklists: data.checklists,
+        difficulty,
+        state: ProgressValues.OPEN,
+        id: String(data.id),
+      });
+      setChecklists([]);
+      setDifficulty(DifficultyTypes.EASY);
+      setTaskName("");
+    }
+  }, [isSuccess]);
 
   function handleOpenChecklist() {
     setOpenChecklist(!openChecklist);
@@ -34,7 +53,7 @@ function TaskEditor() {
       {
         content: currentChecklist,
         is_done: false,
-        id: generateRandomString(5),
+        id: generateRandomString(10),
       },
     ]);
   }
@@ -78,8 +97,6 @@ function TaskEditor() {
     },
   );
 
-  // console.log("checklist", checklist, currentChecklist);
-
   return (
     <div className="flex h-full flex-col justify-between relative">
       <div>
@@ -107,11 +124,9 @@ function TaskEditor() {
       {openChecklist && (
         <ChecklistDropdown
           checklist={checklists}
-          // currentChecklist={currentChecklist}
           onAddCheck={onAddCheck}
           ref={checkListRef}
           setChecklist={setChecklists}
-          // setCurrentChecklist={setCurrentChecklist}
         />
       )}
       {openDifficulty && (
@@ -134,21 +149,22 @@ function TaskEditor() {
         </button>
         <button
           onClick={() => {
-            onAddTask({
-              title: taskName,
-              checklists,
-              difficulty,
-              state: ProgressValues.OPEN,
-              id: generateRandomString(10),
-              due_date: ""
+            addTask({
+              newTask: {
+                title: taskName,
+                checklists,
+                difficulty,
+                state: ProgressValues.OPEN,
+                id: generateRandomString(5),
+              },
+              rest: {
+                repo_id: currentRepository?.id,
+              },
             });
-
-            setTaskName("");
-            setChecklists([]);
-            setDifficulty(DifficultyTypes.EASY);
           }}
         >
-          Send
+          {isLoading && <p>Loading...</p>}
+          {!isLoading && <p>Send</p>}
         </button>
       </div>
     </div>

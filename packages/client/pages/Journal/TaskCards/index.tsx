@@ -7,7 +7,6 @@ import Task from "./Task";
 import { useTask } from "@client/contexts/TaskContext";
 
 function TaskCards() {
-  const sampleValue = [0,1,2]
   const [activeTab, setActiveTab] = useState(ProgressValues.OPEN);
   const { tasks } = useTask();
   const [currentSearch, setCurrentSearch] = useState("");

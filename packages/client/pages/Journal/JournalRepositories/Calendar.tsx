@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { H3 } from "@client/components/headings";
+import { useFetchCalendarDatesByMonthQuery } from "@client/store";
 
 function generateCalendar(year, month) {
   const firstDayOfMonth = dayjs(`${year}-${month}-01`).day();
@@ -34,13 +35,27 @@ function generateCalendar(year, month) {
 function Calendar() {
   const [date, setDate] = useState(dayjs());
   // const [calendarData, setCalendar] = useState(generateCalendar(2024, 3));
-  const [highlightedDates, setHighlightedDates] = useState([
-    "2024-01-04",
-    "2024-01-02",
-  ]); // Example dates
+  const [highlightedDates, setHighlightedDates] = useState([]); // Example dates
+
+  const {
+    data: calendarDates,
+    isLoading: isCalendarLoading,
+    isError: isCalendarError,
+  } = useFetchCalendarDatesByMonthQuery(dayjs().month().toString());
+
+  console.log("calendarDates", calendarDates);
+
+  useEffect(() => {
+    if (calendarDates) {
+      setHighlightedDates(calendarDates);
+    }
+  }, [calendarDates]);
+
+  console.log("highlightedDates", highlightedDates);
+
   const calendarData = useMemo(
     () => generateCalendar(date.year(), date.month() + 1),
-    [date]
+    [date],
   );
 
   const goToPreviousMonth = () => {
@@ -52,14 +67,8 @@ function Calendar() {
     setDate((currentDate) => currentDate.add(1, "month"));
   };
 
-  const isDateHighlighted = (year, month, day) => {
-    const dateStr = dayjs(
-      `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
-        2,
-        "0"
-      )}`
-    ).format("YYYY-MM-DD");
-    return highlightedDates.includes(dateStr);
+  const isDateHighlighted = (newDate: { day: number; isWeekend: boolean }) => {
+    return true;
   };
 
   return (
@@ -86,12 +95,8 @@ function Calendar() {
             {week.map((day, dayIndex) => (
               <div
                 className={classNames("h-4 w-4 rounded-md mx-auto", {
-                  "bg-yellow-200":
-                    day &&
-                    isDateHighlighted(date.year(), date.month() + 1, day.day),
-                  "bg-gray-200":
-                    day &&
-                    !isDateHighlighted(date.year(), date.month() + 1, day.day),
+                  "bg-yellow-200": day && isDateHighlighted(day),
+                  "bg-gray-200": day && !isDateHighlighted(day),
                   invisible: !day,
                 })}
                 key={dayIndex}

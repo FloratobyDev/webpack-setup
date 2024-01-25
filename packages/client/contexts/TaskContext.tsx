@@ -10,7 +10,7 @@ type TaskContextType = {
     taskId: string,
     checklistId: string,
     value: boolean,
-  ) => () => void;
+  ) => void;
 };
 
 const TaskContext = createContext<TaskContextType>(undefined);
@@ -23,10 +23,12 @@ function TaskProvider({ children }: Props) {
   const { tasks, setTasks } = useRepository();
 
   function onUpdateTask(taskId: string, state: string) {
-    console.log("update checklist", taskId, state);
+    console.log("update checklist", taskId, state, tasks);
 
     const newTaskProgress = tasks.map((t: TaskType) => {
-      if (t.id === taskId) {
+      if (String(t.id) === String(taskId)) {
+        console.log("changin task");
+
         return { ...t, state };
       }
       return t;
@@ -45,24 +47,22 @@ function TaskProvider({ children }: Props) {
     checklistId: string,
     value: boolean,
   ) {
-    return () => {
-      console.log("update checklist", taskId, checklistId, value);
-      const newTasks = tasks.map((t: TaskType) => {
-        if (t.id === taskId) {
-          const checklists = t.checklists.map((c: ChecklistType) => {
-            if (c.id === checklistId) {
-              return { ...c, is_done: value };
-            }
-            return c;
-          });
-          return { ...t, checklists };
-        }
-        return t;
-      });
-      console.log("new Tasks", newTasks);
+    console.log("update checklist", taskId, checklistId, value);
+    const newTasks = tasks.map((t: TaskType) => {
+      if (t.id === taskId) {
+        const checklists = t.checklists.map((c: ChecklistType) => {
+          if (c.id === checklistId) {
+            return { ...c, is_done: value };
+          }
+          return c;
+        });
+        return { ...t, checklists };
+      }
+      return t;
+    });
+    console.log("new Tasks", newTasks);
 
-      setTasks(newTasks);
-    };
+    setTasks(newTasks);
   }
 
   const value: TaskContextType = useMemo(

@@ -4,7 +4,7 @@
  */
 exports.seed = async function (knex) {
   // Deletes ALL existing entries
-  await knex("checklist").del();
+  await knex("checklists").del();
   await knex("bookmarks").del();
   await knex("journal_task").del();
   await knex("tasks").del();
@@ -88,7 +88,7 @@ exports.seed = async function (knex) {
   `);
 
   await knex.raw(`
-  INSERT INTO checklist (task_id, user_id, is_done, content)
+  INSERT INTO checklists (task_id, user_id, is_done, content)
   VALUES (1, 1, FALSE, 'test checklist'),
          (1, 1, FALSE, 'test checklist2'),
          (3, 2, FALSE, 'test checklist3');
@@ -99,4 +99,12 @@ exports.seed = async function (knex) {
   VALUES (1, 1, 'test_sha'),
          (4, 1, 'test_sha2'),
          (5, 1, 'test_sha2');`);
+
+  await knex.raw(`
+  INSERT INTO calendar (date, user_id)
+  VALUES ('2024-01-03T05:00:00.000Z', 1),
+         ('2024-01-06T05:00:00.000Z', 1),
+         ('2024-01-10T05:00:00.000Z', 1),
+         ('2024-02-20T05:00:00.000Z', 1);
+         `);
 };

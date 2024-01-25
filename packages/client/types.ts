@@ -42,7 +42,7 @@ export type TaskType = {
   difficulty: string;
   state: string;
   id: string;
-  due_date: string;
+  due_date?: string;
 };
 
 export type NotificationType = {

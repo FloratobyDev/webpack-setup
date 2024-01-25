@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import classNames from "classnames";
 import { H4 } from "@client/components/headings";
 import { map } from "lodash";
+import { useUpdateNotificationHasInteractedMutation } from "@client/store";
 
 type Props = {
   pushInfo: PushType;
@@ -27,8 +28,29 @@ function PushInfo({
     !pushInfo.has_interacted,
   );
 
+  const [
+    mutateNotification,
+    {
+      isLoading: isNotificationLoading,
+      data: notificationData,
+      isSuccess: isNotificationSuccess,
+      isError: isNotificationError,
+      error: notificationError,
+    },
+  ] = useUpdateNotificationHasInteractedMutation();
+
   function handleOpen() {
     setOpen(!open);
+  }
+
+  function handleNotification() {
+    if (hasNotification) {
+      mutateNotification({
+        push_id: pushInfo.push_id,
+        notification_id: pushInfo.notification_id,
+      });
+      setHasNotification(false);
+    }
   }
 
   const notificationClass = classNames(
@@ -49,10 +71,7 @@ function PushInfo({
   return (
     <div
       className="rounded-md bg-black-75 overflow-hidden select-none text-white relative max-h-full"
-      onClick={() => {
-        setHasNotification(false);
-        // pushInfo.has_interacted = false;
-      }}
+      onClick={handleNotification}
     >
       <div className={notificationClass} />
       <div

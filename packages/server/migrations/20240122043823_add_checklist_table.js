@@ -4,7 +4,7 @@
  */
 exports.up = function(knex) {
   return knex.raw(`
-  CREATE TABLE checklist (
+  CREATE TABLE checklists (
     id SERIAL PRIMARY KEY,
     task_id INTEGER REFERENCES tasks(id),
     user_id INTEGER REFERENCES users(id),
@@ -20,6 +20,6 @@ exports.up = function(knex) {
  */
 exports.down = function(knex) {
   return knex.raw(`
-  DROP TABLE checklist;
+  DROP TABLE checklists;
   `);
 };

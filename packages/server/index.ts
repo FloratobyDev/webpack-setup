@@ -37,7 +37,7 @@ const validateTokenMiddleware = (req, res, next) => {
   // Verify the token
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) return res.sendStatus(403); // Forbidden if token is not valid
-    console.log("user", user);
+    // console.log("user", user);
     req.user = user; // Add the user payload to the request
     next(); // Proceed to the next middleware or route handler
   });

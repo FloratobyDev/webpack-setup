@@ -1,9 +1,10 @@
 import { ChecklistType, DifficultyTypes, TaskType } from "@client/types";
-import { filter, map, size } from "lodash";
-import React, { useState } from "react";
+import { debounce, filter, map, size } from "lodash";
+import React, { useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
 import ProgressDropdown from "./ProgressDropdown";
 import { useTask } from "@client/contexts/TaskContext";
+import { useUpdateChecklistMutation } from "@client/store";
 // import { headerTabs } from ".";
 
 type Props = {
@@ -14,15 +15,14 @@ type ChecklistProps = {
   item: ChecklistType;
   onRemove: () => void;
 };
-
+// TODO: Add error handling in case of failure
 function Checklist({ item, onRemove }: ChecklistProps) {
-  const [checked, setChecked] = useState(item.is_done);
   return (
     <div className="flex gap-x-2">
       <input
-        checked={checked}
+        checked={item.is_done}
         onChange={() => {
-          setChecked(!checked);
+          // setChecked(!checked);
           onRemove();
         }}
         type="checkbox"
@@ -36,10 +36,25 @@ function Task({ taskInfo }: Props) {
   const [open, setOpen] = useState(false);
   const [openProgress, setOpenProgress] = useState(false);
   const { onUpdateChecklist } = useTask();
+  const [mutateChecklist, { isLoading, data, isSuccess, isError, error }] =
+    useUpdateChecklistMutation();
 
   function handleOpen() {
     setOpen(!open);
   }
+
+  useEffect(() => {
+    if (isError) {
+      onUpdateChecklist(taskInfo.id, data?.id, !data?.is_done);
+    }
+  }, [isSuccess]);
+
+  const debouncedMutateChecklist = useCallback(
+    debounce((taskId, checklistId, isDone) => {
+      mutateChecklist({ taskId, checklistId, isDone });
+    }, 200),
+    [],
+  );
 
   if (!taskInfo) {
     return null;
@@ -77,6 +92,7 @@ function Task({ taskInfo }: Props) {
         className="h-1 bg-orange-400 transition-all duration-500 ease-in-out"
         style={{
           width: `${donePercentage}%`,
+          visibility: !donePercentage ? "hidden" : "visible",
         }}
       />
       <div className={taskClass} onClick={handleOpen}>
@@ -108,11 +124,10 @@ function Task({ taskInfo }: Props) {
               <Checklist
                 item={item}
                 key={item.id}
-                onRemove={onUpdateChecklist(
-                  taskInfo.id,
-                  item.id,
-                  !item.is_done,
-                )}
+                onRemove={() => {
+                  onUpdateChecklist(taskInfo.id, item.id, !item.is_done);
+                  debouncedMutateChecklist(taskInfo.id, item.id, !item.is_done);
+                }}
               />
             ))}
           </div>

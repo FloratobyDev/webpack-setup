@@ -8,7 +8,7 @@ exports.up = async function (knex) {
   `);
 
   await knex.raw(`
-  CREATE TYPE difficulty_type AS ENUM ('EASY', 'MEDIUM', 'HARD');`);
+  CREATE TYPE difficulty_type AS ENUM ('easy', 'medium', 'hard');`);
 
   return knex.raw(`
   CREATE TABLE tasks (
@@ -16,8 +16,8 @@ exports.up = async function (knex) {
     repo_id INTEGER REFERENCES repositories(id),
     user_id INTEGER REFERENCES users(id),
     state task_state DEFAULT 'Open',
-    difficulty difficulty_type DEFAULT 'EASY',
-    due_date DATE,
+    difficulty difficulty_type DEFAULT 'easy',
+    due_date DATE DEFAULT NULL,
     title VARCHAR(40) NOT NULL
   );`);
 };
