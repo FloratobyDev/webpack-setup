@@ -15,12 +15,10 @@ export default function useOutsideClick(
     }
 
     if (open) {
-      setTimeout(() => {
-        document.addEventListener("click", handleClickOutside);
-      }, 0);
+      document.addEventListener("mouseup", handleClickOutside);
 
       return () => {
-        document.removeEventListener("click", handleClickOutside);
+        document.removeEventListener("mouseup", handleClickOutside);
       };
     }
   }, [ref, open, onOutsideClick]);

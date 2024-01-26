@@ -1,5 +1,3 @@
-/* eslint-disable import/extensions */
-// eslint-disable-next-line @typescript-eslint/no-shadow
 const cors = require("cors");
 const db = require("./dbRequest.ts");
 const dotenv = require("dotenv");
@@ -7,8 +5,8 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const buildOctokitWebhooks = require("./buildOctokitWebhooks.ts");
-const authController = require("./controllers/apiAuth.ts");
-const journalController = require("./controllers/apiJournal.ts");
+const authController = require("./controllers/authRoutes.ts");
+const journalController = require("./controllers/journalRoutes.ts");
 
 dotenv.config();
 

@@ -1,7 +1,8 @@
 import { CommitType, JournalType, TaskType } from "@client/types";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CommitDropdown from "./CommitDropdown";
 import TaskDropdown from "./TaskDropdown";
+import { useAddJournalMutation } from "@client/store";
 import { useRepository } from "@client/contexts/RepositoryContext";
 
 function JournalEditor() {
@@ -12,7 +13,16 @@ function JournalEditor() {
   const [content, setContent] = useState("");
   const contentRef = useRef(null);
 
-  const { journals, setJournals } = useRepository();
+  const { journals, setJournals, currentRepository } = useRepository();
+  const [
+    addJournal,
+    { data: journalData, isLoading: journalLoading, error: journalError },
+  ] = useAddJournalMutation();
+
+  useEffect(() => {
+    setCommits([]);
+    setSelectedTasks([]);
+  }, [currentRepository]);
 
   function handleJournalSubmission() {
     const newJournal: JournalType = {
@@ -22,7 +32,14 @@ function JournalEditor() {
       tasks: selectedTasks,
       status: "draft",
     };
-    setJournals([...journals, newJournal]);
+
+    addJournal({
+      journal: newJournal,
+      rest: {
+        repoId: currentRepository?.id,
+      },
+    });
+    setJournals([newJournal, ...journals]);
     setTitle("");
     setContent("");
     setCommits([]);

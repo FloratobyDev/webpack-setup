@@ -21,8 +21,8 @@ authRouter.get("/authorize", async (req, res) => {
         code,
       }),
     })
-      .then((res) => {
-        return res.json();
+      .then((jsonResponse) => {
+        return jsonResponse.json();
       })
       .then((data) => {
         response = data;
@@ -73,10 +73,11 @@ authRouter.get("/authorize", async (req, res) => {
           .cookie("accessToken", token, {
             httpOnly: true,
             sampleSite: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
           })
           .status(200)
           .redirect(`http://localhost:9000/`);
-      }
+      },
     );
   } catch (err) {
     res.status(500).redirect(`http://localhost:9000/login`);

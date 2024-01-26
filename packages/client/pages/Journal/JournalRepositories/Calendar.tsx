@@ -43,20 +43,18 @@ function Calendar() {
     isError: isCalendarError,
   } = useFetchCalendarDatesByMonthQuery(dayjs().month().toString());
 
-  console.log("calendarDates", calendarDates);
-
   useEffect(() => {
     if (calendarDates) {
       setHighlightedDates(calendarDates);
     }
   }, [calendarDates]);
 
-  console.log("highlightedDates", highlightedDates);
-
   const calendarData = useMemo(
     () => generateCalendar(date.year(), date.month() + 1),
     [date],
   );
+
+  console.log("calendarData", calendarData);
 
   const goToPreviousMonth = () => {
     setDate((currentDate) => currentDate.subtract(1, "month"));
@@ -67,9 +65,18 @@ function Calendar() {
     setDate((currentDate) => currentDate.add(1, "month"));
   };
 
-  const isDateHighlighted = (newDate: { day: number; isWeekend: boolean }) => {
-    return true;
+  const isDateHighlighted = (dayObj: any) => {
+    const currentMonthAndYearWithDay = dayjs(
+      `${date.year()}-${date.month() + 1}-${dayObj.day}`,
+    ).format("YYYY-MM-DD");
+
+    const isHighlighted = calendarDates.includes(currentMonthAndYearWithDay);
+    return isHighlighted;
   };
+
+  if (isCalendarLoading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="bg-gray-600 w-full flex flex-col text-center rounded-md px-2 py-4">

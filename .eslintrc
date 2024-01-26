@@ -30,6 +30,7 @@
     "react/require-default-props": "off",
     "react/button-has-type": "off",
     "import/prefer-default-export": "off",
+    "eslint-plugin-import/extensions": "off",
     "react/jsx-sort-props": [
       1,
       {

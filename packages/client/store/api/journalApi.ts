@@ -13,6 +13,7 @@ type AllTypes = {
   journals: JournalType[];
   tasks: TaskType[];
   notifications: NotificationType[];
+  bookmarkedJournals: JournalType[];
 };
 
 type NotificationType = {
@@ -36,18 +37,23 @@ type UpdateChecklistInputType = {
   taskId: string;
 };
 
+type AddJournalType = {
+  journal: JournalType;
+  rest: any;
+};
+
 const journalApi = createApi({
   reducerPath: "journalApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api/journal" }),
   tagTypes: ["Repository"],
   endpoints: (builder) => ({
     fetchRepository: builder.query<RepositoryType[], void>({
-      query: () => "/repo",
+      query: () => "/repositories",
     }),
     fetchRepositoryById: builder.query<AllTypes, string>({
       query: (id) => {
         return {
-          url: `/repo/${id}`,
+          url: `/repositories/${id}`,
           method: "GET",
         };
       },
@@ -63,7 +69,7 @@ const journalApi = createApi({
       // },
       query: (notificationInfo) => {
         return {
-          url: `repo/notifications`,
+          url: `/notifications`,
           method: "PATCH",
           body: notificationInfo,
         };
@@ -78,7 +84,7 @@ const journalApi = createApi({
     >({
       query: (notificationInfo) => {
         return {
-          url: `repo/notifications/${notificationInfo.notification_id}/interacted`,
+          url: `/notifications/${notificationInfo.notification_id}`,
           method: "PATCH",
           body: {
             push_id: notificationInfo.push_id,
@@ -94,7 +100,7 @@ const journalApi = createApi({
     >({
       query: (checklistInfo) => {
         return {
-          url: `/repo/checklists/${checklistInfo.checklistId}`,
+          url: `/checklists/${checklistInfo.checklistId}`,
           method: "PATCH",
           body: {
             isDone: checklistInfo.isDone,
@@ -112,7 +118,7 @@ const journalApi = createApi({
     >({
       query: (taskInfo) => {
         return {
-          url: `/repo/tasks/${taskInfo.id}/state`,
+          url: `/tasks/${taskInfo.id}`,
           method: "PATCH",
           body: {
             state: taskInfo.state,
@@ -123,7 +129,7 @@ const journalApi = createApi({
     addTasks: builder.mutation<AddTaskReturnType, AddTaskInputType>({
       query: ({ newTask, rest }) => {
         return {
-          url: `/repo/tasks/create`,
+          url: `/tasks`,
           method: "POST",
           body: {
             newTask,
@@ -132,17 +138,51 @@ const journalApi = createApi({
         };
       },
     }),
-    fetchCalendarDatesByMonth: builder.query<
-      {
-        date: string;
-        count: number;
-      }[],
-      string
-    >({
+    fetchCalendarDatesByMonth: builder.query<Array<string>, string>({
       query: (month) => {
         return {
-          url: `/repo/calendar/${month}`,
+          url: `/calendar/${month}`,
           method: "GET",
+        };
+      },
+    }),
+    addJournal: builder.mutation<JournalType, AddJournalType>({
+      query: (journal) => {
+        return {
+          url: "/journals",
+          method: "POST",
+          body: {
+            journal: journal.journal,
+            rest: journal.rest,
+          },
+        };
+      },
+    }),
+    removeBookmark: builder.mutation<JournalType, number>({
+      query: (bookmarkId) => {
+        return {
+          url: `/bookmarks`,
+          method: "DELETE",
+          params: {
+            bookmarkId,
+          },
+        };
+      },
+    }),
+    addBookmark: builder.mutation<
+      JournalType,
+      {
+        journalId: number;
+        repoId: number;
+      }
+    >({
+      query: (bookmarkInfo) => {
+        return {
+          url: `/bookmarks`,
+          method: "POST",
+          body: {
+            ...bookmarkInfo,
+          },
         };
       },
     }),
@@ -158,5 +198,8 @@ export const {
   useUpdateTaskStateMutation,
   useUpdateNotificationHasInteractedMutation,
   useFetchCalendarDatesByMonthQuery,
+  useAddJournalMutation,
+  useAddBookmarkMutation,
+  useRemoveBookmarkMutation,
 } = journalApi;
 export default journalApi;

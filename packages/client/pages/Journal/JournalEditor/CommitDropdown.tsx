@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CommitType } from "@client/types";
 import DropdownButton from "@client/components/buttons/DropdownButton";
 import { H6 } from "@client/components/headings";
@@ -17,7 +17,9 @@ function CommitDropdown({ commits, onSave }: Props) {
   const [openStagedCommitPanel, setOpenStagedCommitPanel] = useState(true);
   const [selectedStagedCommits, setSelectedStagedCommits] =
     useState<CommitType[]>(commits);
-  const { pushList } = useRepository();
+  const { pushList, setPushList } = useRepository();
+
+  // console.log("pushList", commits);
 
   function handleMultipleSelect(commit: CommitType[]) {
     setSelectedStagedCommits([...selectedStagedCommits, ...commit]);
@@ -58,9 +60,12 @@ function CommitDropdown({ commits, onSave }: Props) {
     setSelectedStagedCommits(commits);
   }
 
+  const hasInteracted = pushList.some((push) => !push.has_interacted);
+
   return (
     <DropdownButton
       alignment="left"
+      hasAlerts={hasInteracted}
       name="Add Commits"
       onCancel={onCancel}
       onOpen={onOpen}
@@ -91,6 +96,7 @@ function CommitDropdown({ commits, onSave }: Props) {
                   onSelectMultiple={handleMultipleSelect}
                   pushInfo={push}
                   selectedCommits={selectedStagedCommits}
+                  setPushList={setPushList}
                 />
               ))}
               {pushList.length === 0 && (

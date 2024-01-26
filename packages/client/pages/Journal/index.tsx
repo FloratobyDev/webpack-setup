@@ -15,8 +15,6 @@ function Journal() {
     currentRepository,
     repositories,
     changeRepository,
-    bookmarks,
-    setBookmarks,
     journals,
     updateRepositoryAlertById,
   } = useRepository();
@@ -35,15 +33,15 @@ function Journal() {
     window.location.href = githubInstallUrl;
   };
 
-  async function handleNotificationClick() {
+  function handleNotificationClick() {
     if (currentRepository.hasAlerts) {
       console.log(
         "currentRepository.notifications",
         currentRepository.notifications,
       );
-
-      await updateNotification(currentRepository.notifications);
-      await updateRepositoryAlertById(currentRepository.id);
+      
+      updateNotification(currentRepository.notifications);
+      updateRepositoryAlertById(currentRepository.id);
     }
   }
 
@@ -76,18 +74,14 @@ function Journal() {
         </SubLayout>
       </div>
       <div
-        onClick={handleNotificationClick}
         className="flex-1 flex flex-col gap-y-1"
+        onClick={handleNotificationClick}
       >
         <SubLayout classnames="basis-0" transparent>
           <JournalEditor />
         </SubLayout>
         <SubLayout classnames="flex-1" transparent>
-          <JournalCards
-            bookmarks={bookmarks}
-            journals={journals}
-            setBookmarks={setBookmarks}
-          />
+          <JournalCards journals={journals} />
         </SubLayout>
       </div>
       <TaskProvider>

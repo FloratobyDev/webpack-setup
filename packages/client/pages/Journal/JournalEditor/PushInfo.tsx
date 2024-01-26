@@ -7,6 +7,7 @@ import { useUpdateNotificationHasInteractedMutation } from "@client/store";
 
 type Props = {
   pushInfo: PushType;
+  setPushList: (args: (pushList: PushType[]) => PushType[]) => void;
   selectedCommits: CommitType[];
   onSelect: (commit: CommitType) => void;
   onSelectMultiple: (commit: CommitType[]) => void;
@@ -17,6 +18,7 @@ type Props = {
 function PushInfo({
   selectedCommits,
   pushInfo,
+  setPushList,
   onSelect,
   onSelectMultiple,
   onDeselect,
@@ -50,6 +52,14 @@ function PushInfo({
         notification_id: pushInfo.notification_id,
       });
       setHasNotification(false);
+      setPushList((prevPushList: PushType[]) => {
+        return prevPushList.map((push) => {
+          if (push.push_id === pushInfo.push_id) {
+            return { ...push, has_interacted: true };
+          }
+          return push;
+        });
+      });
     }
   }
 

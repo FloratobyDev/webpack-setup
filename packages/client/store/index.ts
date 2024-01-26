@@ -21,4 +21,7 @@ export {
   useUpdateTaskStateMutation,
   useUpdateNotificationHasInteractedMutation,
   useFetchCalendarDatesByMonthQuery,
+  useAddJournalMutation,
+  useAddBookmarkMutation,
+  useRemoveBookmarkMutation,
 } from "./api/journalApi";

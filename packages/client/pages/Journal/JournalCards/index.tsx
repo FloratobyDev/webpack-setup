@@ -1,26 +1,55 @@
 import React, { useState } from "react";
+import {
+  useAddBookmarkMutation,
+  useRemoveBookmarkMutation,
+} from "@client/store";
 import { generateRandomString } from "@client/utils";
 import { JournalType } from "@client/types";
+import { useRepository } from "@client/contexts/RepositoryContext";
 
 type Props = {
-  bookmarks: JournalType[];
-  setBookmarks: (bookmarks: JournalType[]) => void;
   journals: JournalType[];
 };
 
-function JournalCards({ bookmarks, setBookmarks, journals }: Props) {
+function JournalCards({ journals }: Props) {
   const [openBookmark, setOpenBookmark] = useState(true);
   const [openJournal, setOpenJournal] = useState(true);
+  const { bookmarks, setBookmarks, currentRepository } = useRepository();
+
+  const [
+    addBookmark,
+    { data: bookmarkData, isLoading: bookmarkLoading, error: bookmarkError },
+  ] = useAddBookmarkMutation();
+
+  const [
+    removeBookmark,
+    {
+      data: removeBookmarkData,
+      isLoading: removeBookmarkLoading,
+      error: removeBookmarkError,
+    },
+  ] = useRemoveBookmarkMutation();
 
   function handleAddBookmark(newBookmark: JournalType) {
     return () => {
-      if (bookmarks.includes(newBookmark)) {
-        setBookmarks(bookmarks.filter((bookmark) => bookmark !== newBookmark));
+
+      if (bookmarks.some((bookmark) => bookmark.id === newBookmark.id)) {
+        removeBookmark(newBookmark.id);
+        const removeBookmarkFilter = bookmarks.filter(
+          (bookmark) => bookmark.id !== newBookmark.id,
+        );
+        setBookmarks(removeBookmarkFilter);
       } else {
+        addBookmark({
+          journalId: newBookmark.id,
+          repoId: Number(currentRepository.id),
+        });
         setBookmarks([...bookmarks, newBookmark]);
       }
     };
   }
+
+  console.log("bookmarks", bookmarks);
 
   return (
     <div>
@@ -57,7 +86,9 @@ function JournalCards({ bookmarks, setBookmarks, journals }: Props) {
                   ))}
                 </div>
                 {journal.commits.map((commit) => (
-                  <p className="bg-yellow-200" key={commit.commit_sha}>{commit.commit_sha}</p>
+                  <p className="bg-yellow-200" key={commit.commit_sha}>
+                    {commit.commit_sha}
+                  </p>
                 ))}
                 <p className="bg-blue-200">{journal.content}</p>
               </div>

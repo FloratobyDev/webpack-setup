@@ -22,6 +22,7 @@ type RepositoryContextType = {
   tasks: TaskType[];
   setTasks: (tasks: TaskType[]) => void;
   pushList: PushType[];
+  setPushList: ((args: (pushList: PushType[])=>PushType[]) => void);
   currentRepository: RepositoryType;
   changeRepository: (repo: RepositoryType) => void;
   allLoading: boolean;
@@ -37,9 +38,9 @@ function RepositoryProvider({ children }: Props) {
   const [currentRepository, setCurrentRepository] =
     useState<RepositoryType>(null); // ["repo1", "repo2"
   const [repositories, setRepositories] = useState<Array<RepositoryType>>([]);
-  const [bookmarks, setBookmarks] = useState([]);
+  const [bookmarks, setBookmarks] = useState<JournalType[]>([]);
   const [pushList, setPushList] = useState<PushType[]>([]); // ["repo1", "repo2"
-  const [journals, setJournals] = useState([]);
+  const [journals, setJournals] = useState<JournalType[]>([]);
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const { data: repos, isLoading } = useFetchRepositoryQuery();
   const {
@@ -81,11 +82,10 @@ function RepositoryProvider({ children }: Props) {
   useEffect(() => {
     if (!isDataLoading && !isDataFetching) {
       if (!dataByRepo) return;
-      console.log("repos", dataByRepo);
-
       setPushList(dataByRepo.pushes);
       setTasks(dataByRepo.tasks);
       setJournals(dataByRepo.journals);
+      setBookmarks(dataByRepo.bookmarkedJournals);
     }
   }, [isDataLoading, isDataFetching]);
 
@@ -307,6 +307,7 @@ function RepositoryProvider({ children }: Props) {
   const value: RepositoryContextType = useMemo(
     () => ({
       pushList,
+      setPushList,
       currentRepository,
       changeRepository,
       updateRepositoryAlertById,

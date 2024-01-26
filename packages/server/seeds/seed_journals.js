@@ -52,7 +52,7 @@ exports.seed = async function (knex) {
   INSERT INTO notifications (user_id, push_id, repo_id)
   VALUES (1, 1, 1),
          (1, 2, 1),
-         (2, 2, 2),
+         (1, 4, 2),
          (3, 3, 3);
   `);
 
@@ -67,6 +67,10 @@ exports.seed = async function (knex) {
   `);
 
   await knex.raw(`
+  INSERT INTO bookmarks (user_id, journal_id, repo_id)
+  VALUES (1, 1, 1);`)
+
+  await knex.raw(`
   INSERT INTO tasks (repo_id, user_id, state, due_date, title)
   VALUES (1, 1, 'Open', '2021-01-01', 'test task'),
          (1, 1, 'In-Progress', '2021-01-01', 'test task2'),
@@ -75,13 +79,6 @@ exports.seed = async function (knex) {
 
   await knex.raw(`
   INSERT INTO journal_task (journal_id, task_id)
-  VALUES (1, 1),
-         (2, 2),
-         (3, 3);
-  `);
-
-  await knex.raw(`
-  INSERT INTO bookmarks (user_id, journal_id)
   VALUES (1, 1),
          (2, 2),
          (3, 3);
@@ -102,9 +99,9 @@ exports.seed = async function (knex) {
 
   await knex.raw(`
   INSERT INTO calendar (date, user_id)
-  VALUES ('2024-01-03T05:00:00.000Z', 1),
-         ('2024-01-06T05:00:00.000Z', 1),
-         ('2024-01-10T05:00:00.000Z', 1),
-         ('2024-02-20T05:00:00.000Z', 1);
+  VALUES ('2024-01-03', 1),
+         ('2024-01-06', 1),
+         ('2024-01-10', 1),
+         ('2024-02-20', 1);
          `);
 };

@@ -11,6 +11,7 @@ type Props = {
   onCancel?: () => void;
   onSave?: () => void;
   onOpen?: () => void;
+  hasAlerts?: boolean;
 };
 
 function DropdownButton({
@@ -20,6 +21,7 @@ function DropdownButton({
   onOpen,
   onCancel,
   onSave,
+  hasAlerts,
 }: Props) {
   const [open, toggle] = useState(false);
   const divRef = useRef(null);
@@ -43,7 +45,10 @@ function DropdownButton({
   );
 
   return (
-    <div className="relative">
+    <div className="relative" ref={divRef}>
+      {hasAlerts && (
+        <div className="h-2 w-2 bg-red-400 -top-0.5 -right-0.5 rounded-full absolute" />
+      )}
       <button
         className="bg-black text-white px-4 py-2 rounded-md"
         onClick={handleOpenTask}
@@ -51,7 +56,7 @@ function DropdownButton({
         {name}
       </button>
       {open && (
-        <div className={alignmentClasses} ref={divRef}>
+        <div className={alignmentClasses}>
           {children}
           <div className="text-white flex gap-x-2 justify-end">
             <button

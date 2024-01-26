@@ -4,7 +4,7 @@ const journalDb = require("../dbRequest.ts");
 const journalJwt = require("jsonwebtoken");
 const dayjs = require("dayjs");
 
-journalRouter.get("/repo", async (req, res) => {
+journalRouter.get("/repositories", async (req, res) => {
   try {
     if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
       // const { githubId } = journalJwt.decode(req.cookies.accessToken);
@@ -40,41 +40,11 @@ journalRouter.get("/repo", async (req, res) => {
       return res.status(404).json({ message: "No repositories found" });
     }
   } catch (err) {
-    console.log("err", err);
     return res.status(500).json({ message: "Internal Server Error", err });
   }
 });
 
-journalRouter.patch("/repo/notifications", async (req, res) => {
-  try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
-      // const { githubId } = journalJwt.decode(req.cookies.accessToken);
-      const githubId = 1;
-      // const { notificationInfo } = req.body;
-      console.log("req.body", req.body);
-
-      const notificationIds = req.body.map((notification) =>
-        Number(notification.id),
-      );
-
-      const repoId = req.body[0].repo_id;
-
-      await journalDb.raw(
-        `UPDATE notifications SET has_seen=true WHERE id = ANY(?) AND user_id=? AND repo_id=?`,
-        [notificationIds, githubId, repoId],
-      );
-
-      // console.log("updatedNotifications", updatedNotifications.rows);
-
-      return res.status(200).json({ message: "Notifications updated" });
-    }
-  } catch (err) {
-    console.log("err", err);
-    return res.status(500).json({ message: "Internal Server Error", err });
-  }
-});
-
-journalRouter.get("/repo/:repoId", async (req, res) => {
+journalRouter.get("/repositories/:repoId", async (req, res) => {
   try {
     if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
       // const { githubId } = journalJwt.decode(req.cookies.accessToken);
@@ -170,12 +140,23 @@ journalRouter.get("/repo/:repoId", async (req, res) => {
         };
       });
 
+      const bookmarks = await journalDb.raw(
+        `SELECT * FROM bookmarks WHERE user_id=? AND repo_id=?`,
+        [githubId, repoId],
+      );
+
+      const bookmarkedJournals = await journalDb.raw(
+        `SELECT * FROM journals WHERE id = ANY(?) AND repo_id=?`,
+        [bookmarks.rows.map((bookmark) => bookmark.journal_id), repoId],
+      );
+
       return res.status(200).json({
         pushes: pushList,
         journals: modifiedJournals,
         tasks: tasksWithChecklist,
         journalTasks: journalTasks.rows,
         notifications: firstTenNotifs.rows,
+        bookmarkedJournals: bookmarkedJournals.rows,
       });
     }
   } catch (err) {
@@ -184,8 +165,49 @@ journalRouter.get("/repo/:repoId", async (req, res) => {
   }
 });
 
-// TODO: Make sure to turn task id into number before updating.
-journalRouter.post("/repo/tasks/create", async (req, res) => {
+journalRouter.patch("/notifications", async (req, res) => {
+  try {
+    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
+      const notificationIds = req.body.map((notification) =>
+        Number(notification.id),
+      );
+      await journalDb.raw(
+        `UPDATE notifications SET has_seen=true WHERE id = ANY(?) RETURNING *`,
+        [notificationIds],
+      );
+
+      return res.status(200).json({ message: "Notifications updated" });
+    }
+  } catch (err) {
+    console.log("err", err);
+    return res.status(500).json({ message: "Internal Server Error", err });
+  }
+});
+
+journalRouter.patch("/notifications/:id", async (req, res) => {
+  try {
+    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
+      // const { githubId } = journalJwt.decode(req.cookies.accessToken);
+      const githubId = 1;
+      const { id } = req.params;
+      const updatedNotification = await journalDb.raw(
+        `UPDATE notifications SET has_interacted=true WHERE id=? AND user_id=? RETURNING *`,
+        [Number(id), githubId],
+      );
+
+      console.log("updateNotification", updatedNotification);
+
+      return res.status(200).json({
+        id: updatedNotification.rows[0].id,
+        has_interacted: updatedNotification.rows[0].has_interacted,
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Internal Server Error", err });
+  }
+});
+
+journalRouter.post("/tasks", async (req, res) => {
   try {
     if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
       // const { githubId } = journalJwt.decode(req.cookies.accessToken);
@@ -242,28 +264,7 @@ journalRouter.post("/repo/tasks/create", async (req, res) => {
   }
 });
 
-journalRouter.patch("/repo/checklists/:id", async (req, res) => {
-  try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
-      // const { githubId } = journalJwt.decode(req.cookies.accessToken);
-      const githubId = 1;
-      const { id: checklistId } = req.params;
-      const { taskId, isDone } = req.body;
-
-      const updatedChecklists = await journalDb.raw(
-        `UPDATE checklists SET is_done=? WHERE id=? AND user_id=? AND task_id=? RETURNING *`,
-        [isDone, checklistId, githubId, taskId],
-      );
-      console.log("req.body", req.body, updatedChecklists.rows);
-
-      return res.status(200).json(updatedChecklists.rows[0]);
-    }
-  } catch (err) {
-    return res.status(500).json({ message: "Internal Server Error", err });
-  }
-});
-
-journalRouter.patch("/repo/tasks/:id/state", async (req, res) => {
+journalRouter.patch("/tasks/:id", async (req, res) => {
   try {
     if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
       // const { githubId } = journalJwt.decode(req.cookies.accessToken);
@@ -288,30 +289,48 @@ journalRouter.patch("/repo/tasks/:id/state", async (req, res) => {
   }
 });
 
-journalRouter.patch("/repo/notifications/:id/interacted", async (req, res) => {
+journalRouter.patch("/checklists/:id", async (req, res) => {
   try {
     if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
       // const { githubId } = journalJwt.decode(req.cookies.accessToken);
       const githubId = 1;
-      const { id } = req.params;
-      const updatedNotification = await journalDb.raw(
-        `UPDATE notifications SET has_interacted=true WHERE id=? AND user_id=? RETURNING *`,
-        [Number(id), githubId],
+      const { id: checklistId } = req.params;
+      const { taskId, isDone } = req.body;
+
+      const updatedChecklists = await journalDb.raw(
+        `UPDATE checklists SET is_done=? WHERE id=? AND user_id=? AND task_id=? RETURNING *`,
+        [isDone, checklistId, githubId, taskId],
       );
+      console.log("req.body", req.body, updatedChecklists.rows);
 
-      console.log("updateNotification", updatedNotification);
-
-      return res.status(200).json({
-        id: updatedNotification.rows[0].id,
-        has_interacted: updatedNotification.rows[0].has_interacted,
-      });
+      return res.status(200).json(updatedChecklists.rows[0]);
     }
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", err });
   }
 });
 
-journalRouter.get("/repo/calendar/:month", async (req, res) => {
+journalRouter.post("/calendar", async (req, res) => {
+  try {
+    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
+      const githubId = 1;
+      const { date } = req.body;
+
+      const newDate = await journalDb.raw(
+        `INSERT INTO calendar (date, user_id) VALUES (?, ?) RETURNING *`,
+        [date, githubId],
+      );
+
+      console.log("newDate", newDate.rows[0]);
+
+      return res.status(200).json({ message: "Success" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Internal Server Error", err });
+  }
+});
+
+journalRouter.get("/calendar/:month", async (req, res) => {
   try {
     if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
       const githubId = 1;
@@ -328,7 +347,113 @@ journalRouter.get("/repo/calendar/:month", async (req, res) => {
       const Alldates = dates.rows.map((date) => {
         return dayjs(date.date).format("YYYY-MM-DD");
       });
+      console.log("dates", Alldates);
       return res.status(200).json(Alldates);
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Internal Server Error", err });
+  }
+});
+
+journalRouter.post("/journals", async (req, res) => {
+  try {
+    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
+      const githubId = 1;
+      const { journal, rest } = req.body;
+
+      console.log("journal", journal, rest);
+
+      const newJournal = await journalDb.raw(
+        `INSERT INTO journals (status, content, title, user_id, repo_id) VALUES (?, ?, ?, ?, ?) RETURNING *`,
+        [journal.status, journal.content, journal.title, githubId, rest.repoId],
+      );
+
+      const newJournalId = newJournal.rows[0].id;
+
+      const newJournalTasks = await journalDb("journal_task")
+        .returning("*")
+        .insert(
+          journal.tasks.map((task) => ({
+            journal_id: newJournalId,
+            task_id: task.id,
+          })),
+        );
+
+      const newJournalCommits = await journalDb("journal_commit")
+        .returning("*")
+        .insert(
+          journal.commits.map((commit) => ({
+            journal_id: newJournalId,
+            commit_sha: commit.commit_sha,
+            user_id: githubId,
+          })),
+        );
+
+      const newJournalTasksWithTaskTitle = newJournalTasks.map((task) => {
+        return {
+          ...task,
+          title: journal.tasks.find((t) => t.id === task.task_id).title,
+        };
+      });
+
+      const newJournalCommitsWithCommitDescription = newJournalCommits.map(
+        (commit) => {
+          return {
+            ...commit,
+            description: journal.commits.find(
+              (c) => c.commit_sha === commit.commit_sha,
+            ).description,
+          };
+        },
+      );
+
+      console.log({
+        ...newJournal.rows[0],
+        tasks: newJournalTasksWithTaskTitle,
+        commits: newJournalCommitsWithCommitDescription,
+      });
+
+      return res.status(200).json({ message: "Success" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Internal Server Error", err });
+  }
+});
+
+journalRouter.post("/bookmarks", async (req, res) => {
+  try {
+    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
+      const githubId = 1;
+      const { journalId, repoId } = req.body;
+
+      const newBookmark = await journalDb.raw(
+        `INSERT INTO bookmarks (journal_id, user_id, repo_id) VALUES (?, ?, ?) RETURNING *`,
+        [journalId, githubId, repoId],
+      );
+
+      console.log("newBookmark", newBookmark.rows[0]);
+
+      return res.status(200).json({ message: "Success" });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: "Internal Server Error", err });
+  }
+});
+
+journalRouter.delete("/bookmarks", async (req, res) => {
+  try {
+    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
+      const githubId = 1;
+      const { bookmarkId } = req.query;
+
+      const deletedBookmark = await journalDb.raw(
+        `DELETE FROM bookmarks WHERE journal_id=? AND user_id=? RETURNING *`,
+        [Number(bookmarkId), githubId],
+      );
+
+      console.log("deletedBookmark", deletedBookmark.rows[0]);
+
+      return res.status(200).json({ message: "Success" });
     }
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", err });
