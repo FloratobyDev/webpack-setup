@@ -74,7 +74,7 @@ function Journal() {
         </SubLayout>
       </div>
       <div
-        className="flex-1 flex flex-col gap-y-1"
+        className="flex-1 flex flex-col gap-y-1 overflow-auto"
         onClick={handleNotificationClick}
       >
         <SubLayout classnames="basis-0" transparent>
@@ -87,6 +87,7 @@ function Journal() {
       <TaskProvider>
         <div className="basis-[22%] flex gap-y-1 flex-col min-h-full h-full">
           <SubLayout
+            classnames="overflow-auto"
             style={{
               maxHeight: "16rem",
             }}

@@ -7,7 +7,7 @@ import Task from "./Task";
 import { useTask } from "@client/contexts/TaskContext";
 
 function TaskCards() {
-  const [activeTab, setActiveTab] = useState(ProgressValues.OPEN);
+  const [activeTab, setActiveTab] = useState(ProgressValues.INPROGRESS);
   const { tasks } = useTask();
   const [currentSearch, setCurrentSearch] = useState("");
 
@@ -54,7 +54,7 @@ function TaskCards() {
         handleValueChange={setActiveTab}
         options={mappedProgressValues}
       />
-      <div className="overflow-auto flex flex-col gap-y-2">
+      <div className="overflow-auto h-full gap-y-2">
         {map(modifiedTasks, (task) => {
           return <Task key={task.id} taskInfo={task} />;
         })}

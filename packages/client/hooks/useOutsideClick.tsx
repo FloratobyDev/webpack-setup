@@ -16,10 +16,9 @@ export default function useOutsideClick(
 
     if (open) {
       document.addEventListener("mouseup", handleClickOutside);
-
-      return () => {
-        document.removeEventListener("mouseup", handleClickOutside);
-      };
     }
+    return () => {
+      document.removeEventListener("mouseup", handleClickOutside);
+    };
   }, [ref, open, onOutsideClick]);
 }

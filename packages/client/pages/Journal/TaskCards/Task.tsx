@@ -85,7 +85,7 @@ function Task({ taskInfo }: Props) {
 
   return (
     <div
-      className="rounded-md bg-black overflow-hidden select-none"
+      className="rounded-md bg-black overflow-hidden select-none my-2"
       data-testid={taskInfo.id}
     >
       <div
