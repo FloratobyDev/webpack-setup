@@ -14,14 +14,14 @@ function RepoButton({ name, hasAlert, active, ...rest }: Props) {
   });
 
   const buttonClass = classNames(
-    "hover:bg-black w-full hover:text-white flex items-center font-poppins gap-x-1 px-2 py-1 rounded-md",
+    "hover:bg-primary-black w-full hover:text-white flex items-center font-poppins gap-x-1 px-2 py-1 rounded-md",
     {
-      "bg-black text-white": active,
+      "bg-primary-black text-white": active,
     },
   );
   return (
     <div
-      className="w-full"
+      className="w-full my-0.5"
       // onClick={() => {
       //   setHasAlertValue(false);
       // }}

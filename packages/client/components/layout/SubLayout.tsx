@@ -10,7 +10,7 @@ type Props = {
 
 function SubLayout({ transparent, children, classnames, style }: Props) {
   const subLayoutClasses = classNames(
-    " max-h-full h-full w-full inline-flex px-2 py-4 flex-col rounded-md",
+    " max-h-full h-full w-full inline-flex flex-col rounded-md",
     {
       "dark:bg-black-75 shadow-md": !transparent,
       "dark:bg-transparent": transparent,

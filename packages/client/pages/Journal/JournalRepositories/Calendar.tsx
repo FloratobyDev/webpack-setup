@@ -79,16 +79,45 @@ function Calendar() {
   }
 
   return (
-    <div className="bg-gray-600 w-full flex flex-col text-center rounded-md px-2 py-4">
-      <H3>{date.format("MMMM")}</H3>
-      <p>{date.format("YYYY")}</p>
-      <div className="w-full flex justify-between px-2">
-        <button onClick={goToPreviousMonth}>{"<<"}</button>
-        {/* Display current month and year */}
-        <button onClick={goToNextMonth}>{">>"}</button>
+    <div className="bg-primary-black w-full flex flex-col text-center rounded-md px-2 py-4">
+      <p className="text-xs font-bold font-jost">{date.format("YYYY")}</p>
+      <div className="w-full flex justify-between px-4">
+        <button onClick={goToPreviousMonth}>
+          <svg
+            fill="none"
+            height="10"
+            viewBox="0 0 8 10"
+            width="8"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clipRule="evenodd"
+              d="M4.54692 9.22066C5.86627 10.2029 7.74127 9.26127 7.74127 7.61643L7.74127 2.94722C7.74127 1.30238 5.86627 0.360739 4.54693 1.34299L1.41112 3.6776C0.336918 4.47735 0.336917 6.0863 1.41112 6.88605L4.54692 9.22066Z"
+              fill="#DFB626"
+              fillRule="evenodd"
+            />
+          </svg>
+        </button>
+        <H3 classname="text-primary-yellow font-semibold uppercase">{date.format("MMMM")}</H3>
+        <button onClick={goToNextMonth}>
+          <svg
+            fill="none"
+            height="10"
+            viewBox="0 0 8 10"
+            width="8"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              clipRule="evenodd"
+              d="M3.93355 1.34282C2.6142 0.360566 0.739199 1.3022 0.739199 2.94704L0.739198 7.61625C0.739198 9.26109 2.61419 10.2027 3.93354 9.22048L7.06935 6.88588C8.14355 6.08613 8.14355 4.47717 7.06935 3.67743L3.93355 1.34282Z"
+              fill="#DFB626"
+              fillRule="evenodd"
+            />
+          </svg>
+        </button>
       </div>
-      <div className="flex flex-col gap-y-2 mt-2">
-        <div className="grid grid-cols-7 items-center justify-center text-center">
+      <div className="flex flex-col gap-y-3 mt-2">
+        <div className="grid grid-cols-7 items-center justify-center text-center text-xs text-black-50 font-jost font-semibold">
           <p>S</p>
           <p>M</p>
           <p>T</p>
@@ -101,9 +130,9 @@ function Calendar() {
           <div className="grid grid-cols-7" key={weekIndex}>
             {week.map((day, dayIndex) => (
               <div
-                className={classNames("h-4 w-4 rounded-md mx-auto", {
-                  "bg-yellow-200": day && isDateHighlighted(day),
-                  "bg-gray-200": day && !isDateHighlighted(day),
+                className={classNames("h-5 w-5 rounded-[4px] mx-auto", {
+                  "bg-primary-yellow": day && isDateHighlighted(day),
+                  "bg-black-50": day && !isDateHighlighted(day),
                   invisible: !day,
                 })}
                 key={dayIndex}

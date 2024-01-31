@@ -10,17 +10,40 @@ textarea {
   box-shadow: none;
 }
 
-
 @font-face {
-  font-family: 'Poppins';
-  src: url('./assets/Poppins/Poppins-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+  font-family: "Poppins";
+  src: url("./assets/Poppins/Poppins-Regular.ttf") format("truetype");
+  font-weight: 400;
 }
 
 @font-face {
-  font-family: 'Poppins';
-  src: url('./assets/Poppins/Poppins-Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
+  font-family: "Poppins";
+  src: url("./assets/Poppins/Poppins-Bold.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: url("./assets/Poppins/Poppins-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Jost";
+  src: url("./assets/Jost/Jost-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+/* jost medium */
+@font-face {
+  font-family: "Jost";
+  src: url("./assets/Jost/Jost-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+/* jost semi bold */
+@font-face {
+  font-family: "Jost";
+  src: url("./assets/Jost/Jost-SemiBold.ttf") format("truetype");
+  font-weight: 600;
 }

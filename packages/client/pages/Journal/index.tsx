@@ -46,13 +46,13 @@ function Journal() {
   }
 
   return (
-    <div className="flex flex-1 min-h-full h-full">
+    <div className="flex min-h-full h-full">
       {/* <button onClick={installApp}>Install App</button> */}
-      <div className="basis-[16.5%] flex gap-y-1 ml-1 flex-col min-h-full h-full">
+      <div className="w-[18%] max-w-[18%] flex gap-y-1 ml-1 flex-col min-h-full h-full">
         <SubLayout
           classnames="overflow-auto"
           style={{
-            maxHeight: "14rem",
+            maxHeight: "16rem",
           }}
         >
           <RepositoryInfo
@@ -63,7 +63,7 @@ function Journal() {
         </SubLayout>
         <SubLayout
           style={{
-            height: "calc(100vh - 14rem)",
+            height: "calc(100vh - 16rem)",
           }}
         >
           <JournalRepositories
@@ -85,7 +85,7 @@ function Journal() {
         </SubLayout>
       </div>
       <TaskProvider>
-        <div className="basis-[22%] flex gap-y-1 flex-col min-h-full h-full">
+        <div className="w-[22%] flex gap-y-1 flex-col min-h-full h-full">
           <SubLayout
             classnames="overflow-auto"
             style={{

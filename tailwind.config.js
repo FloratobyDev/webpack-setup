@@ -14,6 +14,7 @@ module.exports = {
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
+        jost: ["Jost", "monospace"],
       },
       lineHeight: {
         "heading-1": "2.2rem",
@@ -25,9 +26,15 @@ module.exports = {
         "heading-7": "0.825rem",
       },
       colors: {
-        "primary-black": "#2C2C2C",
+        "primary-black": "#232323",
         "black-75": "#3A3A3A",
+        "black-5": "#878787",
+        "paragraph": "#F0F0F0",
+        "sub-paragraph": "#CFCFCF",
+        "error": "#E72D14",
+        "success": "#32E714",
         "primary-yellow": "#DFB626",
+        "black-50": "#5C5C5C",
       },
     },
   },
