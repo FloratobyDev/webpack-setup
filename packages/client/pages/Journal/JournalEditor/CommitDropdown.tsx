@@ -19,8 +19,6 @@ function CommitDropdown({ commits, onSave }: Props) {
     useState<CommitType[]>(commits);
   const { pushList, setPushList } = useRepository();
 
-  // console.log("pushList", commits);
-
   function handleMultipleSelect(commit: CommitType[]) {
     setSelectedStagedCommits([...selectedStagedCommits, ...commit]);
   }

@@ -12,7 +12,7 @@ function DifficultyDropdown(
 ) {
   return (
     <div
-      className="flex justify-between flex-col items-start absolute h-24 bg-black w-full top-32"
+      className="flex justify-between flex-col items-start absolute h-24 bg-black w-full"
       ref={difficultyRef}
     >
       {map(DifficultyTypes, (type) => (

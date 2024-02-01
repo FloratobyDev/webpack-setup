@@ -3,6 +3,7 @@ import { debounce, filter, map, size } from "lodash";
 import React, { useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
 import ProgressDropdown from "./ProgressDropdown";
+import RadioButton from "@client/components/buttons/RadioButton";
 import { useTask } from "@client/contexts/TaskContext";
 import { useUpdateChecklistMutation } from "@client/store";
 // import { headerTabs } from ".";
@@ -18,14 +19,12 @@ type ChecklistProps = {
 // TODO: Add error handling in case of failure
 function Checklist({ item, onRemove }: ChecklistProps) {
   return (
-    <div className="flex gap-x-2">
-      <input
+    <div className="flex gap-x-2 items-center py-1">
+      <RadioButton
         checked={item.is_done}
-        onChange={() => {
-          // setChecked(!checked);
+        onClick={() => {
           onRemove();
         }}
-        type="checkbox"
       />
       <p>{item.content}</p>
     </div>
@@ -33,7 +32,7 @@ function Checklist({ item, onRemove }: ChecklistProps) {
 }
 
 function Task({ taskInfo }: Props) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [openProgress, setOpenProgress] = useState(false);
   const { onUpdateChecklist } = useTask();
   const [mutateChecklist, { isLoading, data, isSuccess, isError, error }] =
@@ -77,7 +76,7 @@ function Task({ taskInfo }: Props) {
     100;
 
   const taskClass = classNames(
-    "flex items-center justify-between p-2 px-3 relative",
+    "flex items-center justify-between p-2 px-3 relative text-lg",
     {
       "cursor-pointer": taskInfo.checklists.length > 0,
     },
@@ -85,11 +84,11 @@ function Task({ taskInfo }: Props) {
 
   return (
     <div
-      className="rounded-md bg-black overflow-hidden select-none my-2"
+      className="rounded-md bg-primary-black select-none my-2 font-jost"
       data-testid={taskInfo.id}
     >
       <div
-        className="h-1 bg-orange-400 transition-all duration-500 ease-in-out"
+        className="h-1 bg-primary-yellow transition-all duration-500 ease-in-out rounded-t-md"
         style={{
           width: `${donePercentage}%`,
           visibility: !donePercentage ? "hidden" : "visible",
@@ -97,29 +96,31 @@ function Task({ taskInfo }: Props) {
       />
       <div className={taskClass} onClick={handleOpen}>
         <p>{taskInfo.title}</p>
-        <div className="flex items-center w-[30%] justify-between">
+        <div className="flex items-center gap-x-2 justify-between">
           <span className={difficultyClass} />
-          <button
-            className="capitalize p-1"
-            onClick={(e) => {
-              handleOpenProgress(e);
-            }}
-          >
-            {taskInfo.state}
-          </button>
+          <div className="relative">
+            <button
+              className="capitalize py-1 px-3 text-primary-yellow cursor-pointer rounded-md hover:bg-black-75 whitespace-nowrap"
+              onClick={(e) => {
+                handleOpenProgress(e);
+              }}
+            >
+              {taskInfo.state}
+            </button>
+            {openProgress && (
+              <ProgressDropdown
+                setOpenProgress={setOpenProgress}
+                taskInfo={taskInfo}
+              />
+            )}
+          </div>
         </div>
       </div>
-      {openProgress && (
-        <ProgressDropdown
-          setOpenProgress={setOpenProgress}
-          taskInfo={taskInfo}
-        />
-      )}
 
       {open && taskInfo.checklists.length > 0 && (
         <>
-          <hr className="border-t-1 border-t-yellow-300" />
-          <div>
+          <hr className="border-t-1 border-t-primary-yellow" />
+          <div className="py-2 px-4">
             {map(taskInfo.checklists, (item) => (
               <Checklist
                 item={item}

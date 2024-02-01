@@ -14,10 +14,10 @@ function HeaderTabs<T>({ options, activeValues, handleValueChange }: Props<T>) {
     <div className="flex items-center">
       {map(options, (tab) => {
         const buttonClass = classNames(
-          "flex-1 p-1 px-3 mx-1 rounded-full grow-0 whitespace-nowrap",
+          "flex-1 px-4 py-1.5 mx-0.5 rounded-md grow-0 whitespace-nowrap font-poppins font-bold",
           {
-            "bg-black": tab === activeValues,
-            "bg-gray-500": tab !== activeValues,
+            "bg-primary-black": tab === activeValues,
+          //   "bg-gray-500": tab !== activeValues,
           },
         );
         return (

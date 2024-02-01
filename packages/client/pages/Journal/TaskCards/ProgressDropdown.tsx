@@ -32,13 +32,13 @@ function ProgressDropdown({ taskInfo, setOpenProgress }: Props) {
 
   return (
     <div
-      className="absolute origin-top z-10 right-2 bg-black border-gray-200 border flex rounded-md flex-col overflow-hidden"
+      className="absolute z-10 right-0 top-11 shadow-sm shadow-black bg-black-75 flex rounded-md flex-col overflow-hidden p-2"
       data-testid={`${taskInfo.id}-progress`}
     >
       {map(ProgressValues, (tab) => {
         return (
           <button
-            className="px-1"
+            className="px-1 hover:bg-primary-yellow hover:text-primary-black whitespace-nowrap rounded-md text-primary-yellow"
             key={tab}
             onClick={() => {
               mutateTaskState({

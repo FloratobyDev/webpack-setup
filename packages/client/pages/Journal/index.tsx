@@ -39,7 +39,7 @@ function Journal() {
         "currentRepository.notifications",
         currentRepository.notifications,
       );
-      
+
       updateNotification(currentRepository.notifications);
       updateRepositoryAlertById(currentRepository.id);
     }
@@ -86,18 +86,20 @@ function Journal() {
       </div>
       <TaskProvider>
         <div className="w-[22%] flex gap-y-1 flex-col min-h-full h-full">
+          <div className="flex-1">
+            <SubLayout
+              classnames="flex-1"
+              // style={{
+              //   maxHeight: "16rem",
+              // }}
+            >
+              <TaskEditor />
+            </SubLayout>
+          </div>
           <SubLayout
-            classnames="overflow-auto"
-            style={{
-              maxHeight: "16rem",
-            }}
-          >
-            <TaskEditor />
-          </SubLayout>
-          <SubLayout
-            style={{
-              height: "calc(100vh - 16rem)",
-            }}
+          // style={{
+          //   height: "calc(100vh - 16rem)",
+          // }}
           >
             <TaskCards />
           </SubLayout>
