@@ -50,7 +50,7 @@ function DropdownButton({
         <div className="h-2 w-2 bg-red-400 -top-0.5 -right-0.5 rounded-full absolute" />
       )}
       <button
-        className="bg-black text-white px-4 py-2 rounded-md"
+        className="border border-black-5 text-white px-3 py-1.5 rounded-md font-poppins focus:outline-none hover:bg-black-5 hover:border-transparent hover:text-black"
         onClick={handleOpenTask}
       >
         {name}

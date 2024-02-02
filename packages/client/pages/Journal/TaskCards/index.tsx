@@ -43,8 +43,6 @@ function TaskCards() {
     return sortedTasks;
   }, [tasks, currentSearch, activeTab]);
 
-  // const progressValues =
-
   const mappedProgressValues = map(ProgressValues, (tab) => tab);
 
   return (

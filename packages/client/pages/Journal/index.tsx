@@ -15,7 +15,6 @@ function Journal() {
     currentRepository,
     repositories,
     changeRepository,
-    journals,
     updateRepositoryAlertById,
   } = useRepository();
 
@@ -81,7 +80,7 @@ function Journal() {
           <JournalEditor />
         </SubLayout>
         <SubLayout classnames="flex-1" transparent>
-          <JournalCards journals={journals} />
+          <JournalCards />
         </SubLayout>
       </div>
       <TaskProvider>

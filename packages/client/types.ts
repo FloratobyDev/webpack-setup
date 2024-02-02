@@ -30,6 +30,16 @@ export const ProgressValues: ProgressType = {
   DONE: "Done",
 };
 
+export type ActivityType = {
+  JOURNAL: string;
+  BOOKMARK: string;
+};
+
+export const ActivityValues: ActivityType = {
+  JOURNAL: "Journal",
+  BOOKMARK: "Bookmark",
+};
+
 export type ChecklistType = {
   content: string;
   is_done: boolean;
@@ -59,7 +69,7 @@ export type NotificationType = {
 export type RepoNotificationType = {
   id: number;
   repo_id: number;
-}
+};
 
 export type RepositoryType = {
   name: string;

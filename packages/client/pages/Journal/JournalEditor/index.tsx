@@ -1,6 +1,7 @@
 import { CommitType, JournalType, TaskType } from "@client/types";
 import React, { useEffect, useRef, useState } from "react";
 import CommitDropdown from "./CommitDropdown";
+import Paper from "@client/components/layout/Paper";
 import TaskDropdown from "./TaskDropdown";
 import { useAddJournalMutation } from "@client/store";
 import { useRepository } from "@client/contexts/RepositoryContext";
@@ -68,15 +69,16 @@ function JournalEditor() {
   }
 
   return (
-    <div className="flex flex-col gap-y-8 text-black">
+    <Paper classname="flex flex-col gap-y-8 text-black">
       <div className="flex flex-col gap-y-2">
         <input
-          className="border-2 border-gray-300 rounded-md p-2"
+          className="focus:outline-none rounded-md bg-primary-black text-heading-1 leading-heading-1 placeholder:text-heading-1 font-poppins font-medium text-primary-yellow placeholder:text-primary-yellow focus:placeholder:opacity-0"
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Title"
+          placeholder="Untitled"
           value={title}
         />
         <textarea
+          className="focus:outline-none rounded-md bg-primary-black text-heading-4 leading-heading-4 placeholder:text-heading-4 font-jost text-paragraph placeholder:text-paragraph focus:placeholder:opacity-0"
           onChange={handleTextChange}
           placeholder="Type something..."
           ref={contentRef}
@@ -87,17 +89,17 @@ function JournalEditor() {
       <div className="flex gap-x-2">
         <CommitDropdown commits={commits} onSave={handleCommitSave} />
         <TaskDropdown onSave={handleTaskSave} selectedTasks={selectedTasks} />
-        <button className="bg-black text-white px-4 py-2 rounded-md">
+        <button className="bg-primary-yellow text-black font-poppins focus:outline-none px-3 py-1.5 rounded-md hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent">
           Save Draft
         </button>
         <button
-          className="bg-black text-white px-4 py-2 rounded-md"
+          className="bg-primary-yellow text-black font-poppins focus:outline-none px-3 py-1.5 rounded-md hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent"
           onClick={handleJournalSubmission}
         >
           Save
         </button>
       </div>
-    </div>
+    </Paper>
   );
 }
 
