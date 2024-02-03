@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { map } from "lodash";
 import { useTask } from "@client/contexts/TaskContext";
 import { useUpdateTaskStateMutation } from "@client/store";
+import ReactDOM from "react-dom";
 
 type Props = {
   taskInfo: TaskType;

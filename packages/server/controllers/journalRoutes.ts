@@ -145,10 +145,36 @@ journalRouter.get("/repositories/:repoId", async (req, res) => {
         [githubId, repoId],
       );
 
+      const bookmarkIds = bookmarks.rows.map((bookmark) => bookmark.journal_id);
+
+      console.log("bookmarkIds", bookmarkIds);
+
       const bookmarkedJournals = await journalDb.raw(
         `SELECT * FROM journals WHERE id = ANY(?) AND repo_id=?`,
-        [bookmarks.rows.map((bookmark) => bookmark.journal_id), repoId],
+        [bookmarkIds, repoId],
       );
+
+      const bookmarkedTasks = await journalDb.raw(
+        `SELECT * FROM journal_task join tasks ON journal_task.task_id = tasks.id WHERE journal_task.journal_id = ANY(?) AND tasks.repo_id=? AND tasks.user_id=?`,
+        [bookmarkIds, repoId, githubId],
+      );
+
+      const bookmarkedCommits = await journalDb.raw(
+        `SELECT * FROM journal_commit join commits ON journal_commit.commit_sha = commits.commit_sha WHERE journal_commit.journal_id = ANY(?) AND journal_commit.user_id=?`,
+        [bookmarkIds, githubId],
+      );
+
+      const modifiedBookmarks = bookmarkedJournals.rows.map((journal) => {
+        return {
+          ...journal,
+          tasks: bookmarkedTasks.rows.filter(
+            (journalTask) => journalTask.journal_id === journal.id,
+          ),
+          commits: bookmarkedCommits.rows.filter(
+            (journalCommit) => journalCommit.journal_id === journal.id,
+          ),
+        };
+      });
 
       return res.status(200).json({
         pushes: pushList,
@@ -156,7 +182,7 @@ journalRouter.get("/repositories/:repoId", async (req, res) => {
         tasks: tasksWithChecklist,
         journalTasks: journalTasks.rows,
         notifications: firstTenNotifs.rows,
-        bookmarkedJournals: bookmarkedJournals.rows,
+        bookmarkedJournals: modifiedBookmarks,
       });
     }
   } catch (err) {

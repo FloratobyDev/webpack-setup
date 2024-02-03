@@ -1,5 +1,6 @@
 import { ChecklistType, DifficultyTypes, ProgressValues } from "@client/types";
 import React, { useEffect, useRef, useState } from "react";
+import Calendar from "./Calendar";
 import ChecklistDropdown from "./ChecklistDropdown";
 import classNames from "classnames";
 import DifficultyDropdown from "./DifficultyDropdown";
@@ -12,7 +13,7 @@ import { useRepository } from "@client/contexts/RepositoryContext";
 import { useTask } from "@client/contexts/TaskContext";
 
 function TaskEditor() {
-  const [openChecklist, setOpenChecklist] = useState(false);
+  const [openChecklist, setOpenChecklist] = useState(true);
   const [checklists, setChecklists] = useState<ChecklistType[]>([
     {
       content: "This is a checklist",
@@ -108,6 +109,8 @@ function TaskEditor() {
     },
   );
 
+  const [dueDate, setDueDate] = useState(null);
+
   return (
     <Paper classname="flex gap-y-2 h-full flex-col justify-between">
       <div className="flex flex-col gap-y-4">
@@ -137,8 +140,10 @@ function TaskEditor() {
             className="rounded-md px-3 py-1.5 text-primary-yellow flex items-center bg-primary-black gap-x-2 cursor-pointer"
             onClick={handleOpenDeadline}
           >
-            <p className="font-poppins font-semibold">09/09/2024</p>
-            <div className="h-full w-[1px] bg-primary-yellow" />
+            <p className="font-poppins font-semibold">
+              {dueDate || "No deadline"}
+            </p>
+            <div className="h-4 w-[2px] bg-primary-yellow" />
             <svg
               fill="none"
               height="6"
@@ -154,10 +159,16 @@ function TaskEditor() {
           </button>
           {openDeadline && (
             <div
-              className="flex justify-between flex-col items-start absolute h-24 bg-black w-full z-10"
+              className="flex justify-between flex-col items-start absolute h-full z-10 top-10  w-56"
               ref={deadlineRef}
             >
-              <input type="date" />
+              <Calendar
+                onChange={(date) => {
+                  setOpenDeadline(false);
+                  setDueDate(date);
+                }}
+              />
+              {/* <input type="date" /> */}
             </div>
           )}
         </div>
