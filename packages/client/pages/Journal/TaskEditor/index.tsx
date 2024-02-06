@@ -103,11 +103,11 @@ function TaskEditor() {
   return (
     <Paper classname="flex gap-y-2 h-full flex-col justify-between">
       <div className="flex flex-col gap-y-2">
-        <H2 classname="text-paragraph font-black text-lg">Tasks</H2>
+        <H2 classname="text-primary-yellow font-black text-lg">Tasks</H2>
         <div className="flex flex-col gap-y-2">
           <div className="flex bg-primary-black p-3 items-center rounded-smd gap-x-2 text-black h-9">
             <input
-              className="bg-transparent outline-none text-paragraph placeholder:text-paragraph placeholder:text-sm text-sm flex w-[90%]"
+              className="bg-transparent outline-none text-paragraph placeholder:text-paragraph placeholder:text-md focus:placeholder:text-transparent text-md flex w-[90%]"
               onChange={onTaskNameChange}
               placeholder="Write task here..."
               type="text"
@@ -164,7 +164,7 @@ function TaskEditor() {
             className="rounded-smd px-3 py-1.5 font-extrabold text-sm text-paragraph flex items-center bg-primary-black gap-x-2 cursor-pointer hover:opacity-80"
             onClick={handleOpenDifficulty}
           >
-            <p className="capitalize">{difficulty}</p>
+            <p className="capitalize text-sm font-extrabold">{difficulty}</p>
             <svg
               fill="none"
               height="24"
@@ -260,7 +260,7 @@ function TaskEditor() {
           }}
         >
           {isLoading && <p className="font-extrabold text-sm">Loading...</p>}
-          {!isLoading && <p className="font-extrabold text-sm">Send</p>}
+          {!isLoading && <p className="font-extrabold text-sm">Add Task</p>}
         </button>
       </div>
     </Paper>

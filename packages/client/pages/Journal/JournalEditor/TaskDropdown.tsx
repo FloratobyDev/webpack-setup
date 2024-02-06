@@ -38,15 +38,17 @@ function TaskDropdown({ selectedTasks, onSave }: Props) {
   const modifiedTasksBySearch = useMemo(
     () =>
       tasks.filter((task) =>
-        task.title.toLowerCase().includes(search.toLowerCase())
+        task.title.toLowerCase().includes(search.toLowerCase()),
       ),
     [search, tasks],
   );
 
+  const label = `Add Tasks (${selectedTasks.length})`;
+
   return (
     <DropdownButton
       alignment="left"
-      name="Add Tasks"
+      name={label}
       onCancel={onCancel}
       onOpen={onOpen}
       onSave={() => {
@@ -54,27 +56,28 @@ function TaskDropdown({ selectedTasks, onSave }: Props) {
         setStagedTasks([]);
       }}
     >
-      <div className="flex gap-x-2">
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-x-2">
-            <SearchBar onChange={handleSearchChange} search={search} />
-            <div
-              className="px-4 rounded-lg flex items-center justify-center bg-black-75"
-              onClick={handleOpenStagedCommitPanel}
-            >
-              <Hamburger />
-            </div>
-          </div>
-          <div className="flex flex-col gap-y-2 text-white">
+      <div className="flex gap-x-2 min-w-72 pb-2">
+        <div className="flex flex-col gap-2 w-full">
+          <SearchBar
+            className="h-8"
+            invert
+            onChange={handleSearchChange}
+            search={search}
+            show
+          />
+          <div className="flex flex-col gap-y-1 text-white w-full border-t border-primary-outline py-2">
+            <p className="text-paragraph text-sm indent-1 font-extrabold">
+              Tasks
+            </p>
             {modifiedTasksBySearch.map((task) => {
               const isTaskStaged = stagedTasks.includes(task);
 
               const taskClasses = classNames(
-                "flex justify-between items-center gap-x-2 px-2 py-1 rounded-md font-poppins font-normal text-sm",
+                "flex justify-between items-center gap-x-2 px-3 py-1.5 rounded-md font-medium text-sm w-full cursor-pointer",
                 {
-                  "text-white bg-black-75": !isTaskStaged,
-                  "text-black bg-primary-yellow": isTaskStaged,
-                }
+                  "text-paragraph bg-black-75": !isTaskStaged,
+                  "text-primary-black bg-paragraph": isTaskStaged,
+                },
               );
 
               const crossClass = classNames("transition-all duration-300", {
@@ -89,7 +92,7 @@ function TaskDropdown({ selectedTasks, onSave }: Props) {
                   onClick={() => {
                     if (isTaskStaged) {
                       setStagedTasks(
-                        stagedTasks.filter((stagedTask) => stagedTask !== task)
+                        stagedTasks.filter((stagedTask) => stagedTask !== task),
                       );
                     } else {
                       setStagedTasks([...stagedTasks, task]);
@@ -98,7 +101,7 @@ function TaskDropdown({ selectedTasks, onSave }: Props) {
                 >
                   <p>{task.title}</p>
                   <div className={crossClass}>
-                    <Cross />
+                    <Cross black={isTaskStaged} />
                   </div>
                 </div>
               );

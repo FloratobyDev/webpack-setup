@@ -19,7 +19,7 @@ function HeaderTabs<T>({
     <div className="flex items-center">
       {map(options, (tab) => {
         const buttonClass = classNames(
-          "flex-1 px-3 mx-0.5 py-1.5 rounded-md grow-0 whitespace-nowrap border border-transparent text-sm font-extrabold",
+          "flex-1 px-3 mx-0.5 py-1.5 rounded-md grow-0 whitespace-nowrap border border-transparent text-sm",
           {
             "bg-primary-black": tab === activeValues && !invertColor,
             "bg-black-75": invertColor && tab === activeValues,

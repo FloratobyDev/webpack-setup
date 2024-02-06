@@ -14,7 +14,7 @@ type Props = {
 
 function CommitDropdown({ commits, onSave }: Props) {
   const [search, setSearch] = useState<string>("");
-  const [openStagedCommitPanel, setOpenStagedCommitPanel] = useState(true);
+  const [openStagedCommitPanel, setOpenStagedCommitPanel] = useState(false);
   const [selectedStagedCommits, setSelectedStagedCommits] =
     useState<CommitType[]>(commits);
   const { pushList, setPushList } = useRepository();
@@ -60,11 +60,13 @@ function CommitDropdown({ commits, onSave }: Props) {
 
   const hasInteracted = pushList.some((push) => !push.has_interacted);
 
+  const label = `Add Commits (${commits.length})`;
+  
   return (
     <DropdownButton
       alignment="left"
       hasAlerts={hasInteracted}
-      name="Add Commits"
+      name={label}
       onCancel={onCancel}
       onOpen={onOpen}
       onSave={() => {
@@ -72,16 +74,33 @@ function CommitDropdown({ commits, onSave }: Props) {
         setSelectedStagedCommits([]);
       }}
     >
-      <div className="text-white">
+      <div className="text-paragraph pb-2">
         <div className="flex gap-x-2">
           <div className="flex flex-col gap-2">
             <div className="flex gap-x-2">
-              <SearchBar onChange={handleSearchChange} search={search} />
+              <SearchBar
+                className="h-8"
+                invert
+                onChange={handleSearchChange}
+                search={search}
+                show
+              />
               <div
-                className="px-4 rounded-lg flex items-center justify-center bg-black-75"
+                className="px-4 rounded-smd flex items-center justify-center bg-black-75 cursor-pointer"
                 onClick={handleOpenStagedCommitPanel}
               >
-                <p>E</p>
+                <svg
+                  fill="none"
+                  height="10"
+                  viewBox="0 0 11 10"
+                  width="11"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0.419922 0.579102V1.8291H10.4199V0.579102H0.419922ZM0.419922 4.2916V5.5416H10.4199V4.2916H0.419922ZM0.419922 8.0416V9.2916H10.4199V8.0416H0.419922Z"
+                    fill="#F0F0F0"
+                  />
+                </svg>
               </div>
             </div>
             <div className="flex flex-col gap-y-1">
@@ -105,11 +124,11 @@ function CommitDropdown({ commits, onSave }: Props) {
           {openStagedCommitPanel && (
             <div className="flex flex-col gap-y-2 p-2">
               <H6>Commits</H6>
-              <div>
+              <div className="flex flex-col gap-y-0.5">
                 {selectedStagedCommits.length > 0 ? (
                   map(selectedStagedCommits, (commit) => (
                     <div
-                      className="flex justify-between p-1"
+                      className="flex justify-between px-2 py-1 rounded-smd bg-black-75 gap-x-2 text-sm"
                       key={commit.commit_sha}
                     >
                       <p className="truncate w-32">{commit.description}</p>
@@ -122,7 +141,9 @@ function CommitDropdown({ commits, onSave }: Props) {
                     </div>
                   ))
                 ) : (
-                  <p className="text-white italic">No commits selected</p>
+                  <p className="text-sub-paragraph text-sm italic whitespace-nowrap">
+                    No commits selected
+                  </p>
                 )}
               </div>
             </div>

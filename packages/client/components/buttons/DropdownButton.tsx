@@ -36,7 +36,7 @@ function DropdownButton({
   });
 
   const alignmentClasses = classNames(
-    "p-2 absolute z-10 bg-black border-gray-200 mt-2 border rounded-smd flex flex-col overflow-hidden",
+    "p-2 absolute z-10 bg-primary-black border-primary-outline mt-2 border rounded-smd flex flex-col overflow-hidden",
     {
       "left-0": alignment === "left",
       "right-0": alignment === "right",
@@ -60,6 +60,7 @@ function DropdownButton({
           {children}
           <div className="text-white flex gap-x-2 justify-end">
             <button
+              className="bg-black-75 px-2 py-1 rounded-smd hover:bg-paragraph hover:text-black-75"
               onClick={() => {
                 onCancel();
                 toggle(false);
@@ -68,6 +69,7 @@ function DropdownButton({
               Cancel
             </button>
             <button
+              className="bg-black-75 px-2 py-1 rounded-smd hover:bg-paragraph hover:text-black-75"
               onClick={() => {
                 onSave();
                 toggle(false);

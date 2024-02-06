@@ -101,9 +101,9 @@ function Task({ taskInfo }: Props) {
         />
       </div>
       <div className={taskClass} onClick={handleOpen}>
-        <p className="text-sm leading-snug">{taskInfo.title}</p>
+        <p className="text-sm font-normal leading-snug">{taskInfo.title}</p>
         <div className="flex items-center gap-x-2 justify-between">
-          <p className="text-[13px] italic">
+          <p className="text-[13px] text-primary-yellow font-extrabold">
             {checklistDone}/
             {size(taskInfo.checklists)}
           </p>

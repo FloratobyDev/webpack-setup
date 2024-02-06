@@ -5,7 +5,7 @@ type Props = {
 };
 
 function Cross({ black }: Props) {
-  const crossColor = black ? "#232323" : "#DFB626";
+  const crossColor = black ? "#232323" : "#FFFFFF";
   return (
     <svg
       fill="none"

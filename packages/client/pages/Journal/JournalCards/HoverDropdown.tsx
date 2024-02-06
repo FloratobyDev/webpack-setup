@@ -21,9 +21,7 @@ function HoverDropdown({ label, hovered, children }: Props) {
     setShow(false);
   });
 
-  console.log("hovered", hovered);
-
-  const divClasses = classNames("relative text-white rounded-smd px-2", {
+  const divClasses = classNames("relative text-white rounded-smd px-3 py-0.5", {
     "bg-primary-black": hovered,
     "bg-black-75": !hovered,
   });
@@ -32,7 +30,7 @@ function HoverDropdown({ label, hovered, children }: Props) {
     <div className={divClasses} onClick={handleOpen} ref={divRef}>
       <button>{label}</button>
       {show && (
-        <div className="absolute right-0 bg-primary-black border border-primary-outline p-1.5 rounded-smd z-10 top-7">
+        <div className="absolute right-0 bg-primary-black border border-primary-outline p-1.5 rounded-smd z-10 top-8">
           {children}
         </div>
       )}

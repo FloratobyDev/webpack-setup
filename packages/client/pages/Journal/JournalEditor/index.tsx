@@ -69,7 +69,7 @@ function JournalEditor() {
   }
 
   return (
-    <Paper classname="flex flex-col gap-y-8 text-black">
+    <Paper classname="flex flex-col gap-y-8 text-primary-black">
       <div className="flex flex-col gap-y-2">
         <input
           className="focus:outline-none rounded-md bg-primary-black text-heading-1 leading-heading-1 placeholder:text-heading-1 font-extrabold text-primary-yellow placeholder:text-primary-yellow focus:placeholder:opacity-0"
