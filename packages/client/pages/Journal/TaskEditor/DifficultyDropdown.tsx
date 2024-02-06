@@ -12,12 +12,12 @@ function DifficultyDropdown(
 ) {
   return (
     <div
-      className="flex justify-between flex-col items-start absolute z-10 h-24 bg-black w-full"
+      className="flex justify-between flex-col items-start absolute z-10 h-24 bg-primary-black w-full p-1 top-10 rounded-smd border border-primary-outline"
       ref={difficultyRef}
     >
       {map(DifficultyTypes, (type) => (
         <button
-          className="flex items-center gap-x-2"
+          className="flex items-center gap-x-2 hover:bg-black-75 w-full px-2 rounded-smd capitalize"
           key={type}
           onClick={onDifficultyClick(type)}
         >

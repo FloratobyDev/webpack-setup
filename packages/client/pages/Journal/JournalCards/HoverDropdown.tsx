@@ -1,30 +1,41 @@
-import React, { MouseEvent, useState } from "react";
+import React, { MouseEvent, useRef, useState } from "react";
+import classNames from "classnames";
+import useOutsideClick from "@client/hooks/useOutsideClick";
 
 type Props = {
   label: string;
+  hovered?: boolean;
   children: React.ReactNode;
 };
 
-function HoverDropdown({ label, children }: Props) {
-  const [open, setOpen] = useState(false);
+function HoverDropdown({ label, hovered, children }: Props) {
+  const [show, setShow] = useState(false);
+  const divRef = useRef<HTMLDivElement>(null);
 
   function handleOpen(e: MouseEvent<HTMLDivElement>) {
     e.stopPropagation();
-    setOpen(!open);
+    setShow(!show);
   }
+
+  useOutsideClick(divRef, show, () => {
+    setShow(false);
+  });
+
+  console.log("hovered", hovered);
+
+  const divClasses = classNames("relative text-white rounded-smd px-2", {
+    "bg-primary-black": hovered,
+    "bg-black-75": !hovered,
+  });
+
   return (
-    <div
-      className="relative text-white"
-      onClick={handleOpen}
-      onMouseEnter={() => {
-        setOpen(true);
-      }}
-      onMouseLeave={() => {
-        setOpen(false);
-      }}
-    >
+    <div className={divClasses} onClick={handleOpen} ref={divRef}>
       <button>{label}</button>
-      {open && <div className="absolute bg-gray-200">{children}</div>}
+      {show && (
+        <div className="absolute right-0 bg-primary-black border border-primary-outline p-1.5 rounded-smd z-10 top-7">
+          {children}
+        </div>
+      )}
     </div>
   );
 }

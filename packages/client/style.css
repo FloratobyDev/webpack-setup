@@ -47,3 +47,27 @@ textarea {
   src: url("./assets/Jost/Jost-SemiBold.ttf") format("truetype");
   font-weight: 600;
 }
+
+@font-face {
+  font-family: "Gothic A1";
+  src: url("./assets/GothicA1/GothicA1-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Gothic A1";
+  src: url("./assets/GothicA1/GothicA1-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Gothic A1";
+  src: url("./assets/GothicA1/GothicA1-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: "Gothic A1";
+  src: url("./assets/GothicA1/GothicA1-Black.ttf") format("truetype");
+  font-weight: 900;
+}

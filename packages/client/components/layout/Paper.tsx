@@ -7,7 +7,7 @@ type Props = {
 };
 
 function Paper({ children, classname }: Props, ref: RefObject<HTMLDivElement>) {
-  const divClasses = classNames("p-3", classname);
+  const divClasses = classNames("p-4", classname);
   return (
     <div className={divClasses} ref={ref}>
       {children}

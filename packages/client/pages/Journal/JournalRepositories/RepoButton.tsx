@@ -14,7 +14,7 @@ function RepoButton({ name, hasAlert, active, ...rest }: Props) {
   });
 
   const buttonClass = classNames(
-    "hover:bg-primary-black w-full hover:text-white flex items-center font-poppins gap-x-1 px-2 py-1 rounded-md",
+    "hover:bg-primary-black w-full hover:text-white flex items-center gap-x-1 px-2 py-1 rounded-md text-md",
     {
       "bg-primary-black text-white": active,
     },

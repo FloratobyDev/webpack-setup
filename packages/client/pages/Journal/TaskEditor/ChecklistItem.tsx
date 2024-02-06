@@ -12,16 +12,11 @@ function ChecklistItem({ checklistItem, onRemove }: Props) {
   const [hover, setHover] = useState(false);
 
   const divClass = classNames(
-    "flex items-center justify-between w-full rounded-md p-1 px-2 cursor-pointer",
+    "flex items-center justify-between w-full rounded-smd p-1 px-2 cursor-pointer",
     {
-      "bg-primary-yellow": hover,
+      "bg-black-75": hover,
     },
   );
-
-  const pClass = classNames("font-jost text-md", {
-    "text-black": hover,
-    "text-white": !hover,
-  });
 
   return (
     <div
@@ -32,14 +27,14 @@ function ChecklistItem({ checklistItem, onRemove }: Props) {
       onMouseOut={() => setHover(false)}
       onMouseOver={() => setHover(true)}
     >
-      <p className={pClass}>{checklistItem.content}</p>
+      <p className="text-white">{checklistItem.content}</p>
       <div
         className="cursor-pointer"
         onClick={() => {
           onRemove(checklistItem.id);
         }}
       >
-        <RotatedCross black={!hover} />
+        <RotatedCross black />
       </div>
     </div>
   );

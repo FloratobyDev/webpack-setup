@@ -8,7 +8,7 @@ type Props = {
 
 function H4({ classname, children }: Props) {
   const h4Classes = classNames(
-    "text-heading-4 leading-heading-4 font-poppins font-normal",
+    "text-heading-4 leading-heading-4",
     classname,
   );
   return <h4 className={h4Classes}>{children}</h4>;

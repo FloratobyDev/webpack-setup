@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import Calendar from "./Calendar";
-import { H3 } from "@client/components/headings";
+import { H4 } from "@client/components/headings";
 import Paper from "@client/components/layout/Paper";
 import RepoButton from "./RepoButton";
 import { RepositoryType } from "@client/types";
@@ -28,11 +28,11 @@ function JournalRepositories({ repositories, activeRepo, onClick }: Props) {
   return (
     <Paper classname="flex justify-between w-full h-full flex-col">
       <div className="flex justify-between items-center gap-x-4 w-full max-w-full">
-        <H3 classname="font-semibold capitalize text-primary-yellow whitespace-nowrap">
+        <H4 classname="font-black capitalize text-primary-yellow whitespace-nowrap">
           Journal Repositories
-        </H3>
+        </H4>
         {/* <p className="whitespace-normal min-w-0 break-words">hhhhhhhhhhhhhhhhhhhhhhhh</p> */}
-        <SearchBar onChange={handleSearchChange} search={search} />
+        <SearchBar className="h-8" onChange={handleSearchChange} search={search}/>
       </div>
       <div className="flex flex-col overflow-auto my-2 grow">
         {modifiedRepositories.map((repository) => (

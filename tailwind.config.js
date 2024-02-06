@@ -11,10 +11,15 @@ module.exports = {
         "heading-5": "0.875rem",
         "heading-6": "0.75rem",
         "heading-7": "0.625rem",
+        "md": "1rem",
+      },
+      borderRadius: {
+        "smd": "0.25rem",
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
         jost: ["Jost", "monospace"],
+        gothic: ["Gothic A1", "sans-serif"],
       },
       lineHeight: {
         "heading-1": "2.2rem",
@@ -26,8 +31,9 @@ module.exports = {
         "heading-7": "0.825rem",
       },
       colors: {
-        "primary-black": "#232323",
-        "black-75": "#3A3A3A",
+        "primary-black": "#181818",
+        "primary-outline": "#333333",
+        "black-75": "#232323",
         "black-5": "#878787",
         "paragraph": "#F0F0F0",
         "sub-paragraph": "#CFCFCF",

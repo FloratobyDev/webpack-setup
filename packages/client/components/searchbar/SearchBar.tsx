@@ -1,22 +1,56 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import Search from "@client/components/svgs/Search";
+import useOutsideClick from "@client/hooks/useOutsideClick";
+import classNames from "classnames";
 
 type Props = {
   search: string;
   onChange: (event: any) => void;
+  show?: boolean;
+  className?: string;
+  invert?: boolean;
 };
 
-function SearchBar({ search, onChange }: Props) {
+function SearchBar({ search, onChange, show, invert, className }: Props) {
+  const [showSearch, setShowSearch] = useState(show);
+  const divRef = useRef(null);
+
+  useOutsideClick(divRef, showSearch, () => {
+    if (!show) {
+      setShowSearch(false);
+    }
+  });
+
+  const divClasses = classNames(
+    "flex items-center px-3 gap-x-4 rounded-smd text-white",
+    { "bg-primary-black": !invert, "bg-black-75": invert },
+    className,
+  );
+
   return (
-    <div className="flex justify-between font-poppins items-center px-3 py-1 gap-x-4 rounded-lg bg-primary-black text-white w-full min-w-0">
-      <input
-        className="bg-transparent outline-none text-white placeholder:text-sm placeholder:font-jost flex w-[90%]"
-        onChange={onChange}
-        placeholder="Search"
-        type="text"
-        value={search}
-      />
-      <Search />
+    <div
+      className={divClasses}
+      onBlur={() => {
+        setShowSearch(false);
+      }}
+      ref={divRef}
+    >
+      {(show || showSearch) && (
+        <input
+          className="bg-transparent outline-none text-paragraph placeholder:text-paragraph placeholder:text-sm flex w-[90%] h-full"
+          onChange={onChange}
+          placeholder="Search"
+          type="text"
+          value={search}
+        />
+      )}
+      <div
+        onClick={() => {
+          setShowSearch(!showSearch);
+        }}
+      >
+        <Search />
+      </div>
     </div>
   );
 }

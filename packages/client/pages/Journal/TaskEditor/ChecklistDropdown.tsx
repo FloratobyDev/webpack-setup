@@ -1,11 +1,7 @@
 import React, { forwardRef, RefObject, useEffect, useState } from "react";
+import ChecklistItem from "./ChecklistItem";
 import { ChecklistType } from "@client/types";
 import { map } from "lodash";
-import Paper from "@client/components/layout/Paper";
-import RadioButton from "@client/components/buttons/RadioButton";
-import RotatedCross from "@client/components/svgs/RotatedCross";
-import classNames from "classnames";
-import ChecklistItem from "./ChecklistItem";
 
 type Props = {
   checklist: ChecklistType[];
@@ -37,15 +33,6 @@ function ChecklistDropdown(
     };
   }, [currentChecklist]);
 
-  const [hover, setHover] = useState(false);
-
-  const divClass = classNames(
-    "flex items-center justify-between w-full rounded-md p-1 px-2",
-    {
-      "bg-primary-yellow": hover,
-    },
-  );
-
   function handleRemove(idx: number) {
     const newChecklist = [...checklist];
     newChecklist.splice(idx, 1);
@@ -53,11 +40,11 @@ function ChecklistDropdown(
   }
 
   return (
-    <Paper
-      classname="flex justify-between flex-col gap-y-2 items-start bg-primary-black rounded-md w-full top-32 z-10"
+    <div
+      className="flex justify-between flex-col gap-y-2 items-start bg-primary-black rounded-smd w-full top-32 z-10 p-2"
       ref={checkListRef}
     >
-      <div className="w-full">
+      <div className="w-full flex justify-center">
         {map(checklist, (checklistItem, idx) => (
           <ChecklistItem
             checklistItem={checklistItem}
@@ -67,27 +54,22 @@ function ChecklistDropdown(
             }}
           />
         ))}
+        {checklist.length === 0 && (
+          <p className="text-paragraph text-center">
+            No checklist added
+          </p>
+        )}
       </div>
-      <div className="w-full bg-black-75 p-2 rounded-md">
+      <div className="w-full bg-black-75 p-2 rounded-smd">
         <input
           alt="checklist"
-          className="bg-transparent outline-none text-white placeholder:text-sm placeholder:font-jost flex w-full"
+          className="bg-transparent outline-none text-paragraph placeholder:text-sm placeholder:text-paragraph flex w-full h-4"
           onChange={(e) => setCurrentChecklist(e.target.value)}
           placeholder="Write checklist here..."
           value={currentChecklist}
         />
       </div>
-      {/* <button
-        className=""
-        onClick={() => {
-          if (currentChecklist === "") return;
-          onAddCheck(currentChecklist);
-          setCurrentChecklist("");
-        }}
-      >
-        Add
-      </button> */}
-    </Paper>
+    </div>
   );
 }
 

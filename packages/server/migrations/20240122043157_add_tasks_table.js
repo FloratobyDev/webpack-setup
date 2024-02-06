@@ -18,7 +18,7 @@ exports.up = async function (knex) {
     state task_state DEFAULT 'Open',
     difficulty difficulty_type DEFAULT 'easy',
     due_date DATE DEFAULT NULL,
-    title VARCHAR(40) NOT NULL
+    title VARCHAR(200) NOT NULL
   );`);
 };
 

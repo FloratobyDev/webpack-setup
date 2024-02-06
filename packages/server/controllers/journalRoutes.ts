@@ -286,6 +286,8 @@ journalRouter.post("/tasks", async (req, res) => {
       });
     }
   } catch (err) {
+    console.log("err", err);
+
     return res.status(500).json({ message: "Internal Server Error", err });
   }
 });

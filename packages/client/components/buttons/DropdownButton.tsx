@@ -36,7 +36,7 @@ function DropdownButton({
   });
 
   const alignmentClasses = classNames(
-    "p-2 absolute z-10 bg-black border-gray-200 mt-2 border rounded-md flex flex-col overflow-hidden",
+    "p-2 absolute z-10 bg-black border-gray-200 mt-2 border rounded-smd flex flex-col overflow-hidden",
     {
       "left-0": alignment === "left",
       "right-0": alignment === "right",
@@ -50,7 +50,7 @@ function DropdownButton({
         <div className="h-2 w-2 bg-red-400 -top-0.5 -right-0.5 rounded-full absolute" />
       )}
       <button
-        className="border border-black-5 text-white px-3 py-1.5 rounded-md font-poppins focus:outline-none hover:bg-black-5 hover:border-transparent hover:text-black"
+        className="border border-black-5 text-paragraph px-3 py-1.5 rounded-smd font-extrabold text-sm focus:outline-none hover:bg-paragraph hover:border-transparent hover:text-black"
         onClick={handleOpenTask}
       >
         {name}

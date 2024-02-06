@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import dayjs from "dayjs";
@@ -80,7 +81,7 @@ function Calendar() {
 
   return (
     <div className="bg-primary-black w-full flex flex-col text-center rounded-md px-2 py-4">
-      <p className="text-xs font-bold font-jost">{date.format("YYYY")}</p>
+      <p className="text-sm font-bold font-jost mb-1">{date.format("YYYY")}</p>
       <div className="w-full flex justify-between px-4">
         <button onClick={goToPreviousMonth}>
           <svg
@@ -98,7 +99,7 @@ function Calendar() {
             />
           </svg>
         </button>
-        <H3 classname="text-primary-yellow font-semibold uppercase">{date.format("MMMM")}</H3>
+        <H3 classname="text-primary-yellow font-extrabold text-sm uppercase">{date.format("MMMM")}</H3>
         <button onClick={goToNextMonth}>
           <svg
             fill="none"
@@ -117,7 +118,7 @@ function Calendar() {
         </button>
       </div>
       <div className="flex flex-col gap-y-3 mt-2">
-        <div className="grid grid-cols-7 items-center justify-center text-center text-xs text-black-50 font-jost font-semibold">
+        <div className="grid grid-cols-7 items-center justify-center text-center text-sm text-black-50 font-jost font-semibold">
           <p>S</p>
           <p>M</p>
           <p>T</p>

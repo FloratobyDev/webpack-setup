@@ -8,7 +8,7 @@ type Props = {
 
 function H2({ classname, children }: Props) {
   const h2Classes = classNames(
-    "text-heading-2 leading-heading-2 font-poppins",
+    "text-heading-2 leading-heading-2",
     classname,
   );
   return <h2 className={h2Classes}>{children}</h2>;

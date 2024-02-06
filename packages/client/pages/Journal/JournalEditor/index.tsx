@@ -72,13 +72,13 @@ function JournalEditor() {
     <Paper classname="flex flex-col gap-y-8 text-black">
       <div className="flex flex-col gap-y-2">
         <input
-          className="focus:outline-none rounded-md bg-primary-black text-heading-1 leading-heading-1 placeholder:text-heading-1 font-poppins font-medium text-primary-yellow placeholder:text-primary-yellow focus:placeholder:opacity-0"
+          className="focus:outline-none rounded-md bg-primary-black text-heading-1 leading-heading-1 placeholder:text-heading-1 font-extrabold text-primary-yellow placeholder:text-primary-yellow focus:placeholder:opacity-0"
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Untitled"
           value={title}
         />
         <textarea
-          className="focus:outline-none rounded-md bg-primary-black text-heading-4 leading-heading-4 placeholder:text-heading-4 font-jost text-paragraph placeholder:text-paragraph focus:placeholder:opacity-0"
+          className="focus:outline-none rounded-md bg-primary-black text-heading-4 leading-heading-4 placeholder:text-heading-4 text-paragraph placeholder:text-paragraph focus:placeholder:opacity-0"
           onChange={handleTextChange}
           placeholder="Type something..."
           ref={contentRef}
@@ -89,11 +89,11 @@ function JournalEditor() {
       <div className="flex gap-x-2">
         <CommitDropdown commits={commits} onSave={handleCommitSave} />
         <TaskDropdown onSave={handleTaskSave} selectedTasks={selectedTasks} />
-        <button className="bg-primary-yellow text-black font-poppins focus:outline-none px-3 py-1.5 rounded-md hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent">
+        <button className="bg-primary-yellow text-primary-black focus:outline-none px-3 py-1.5 rounded-smd text-sm font-extrabold hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent">
           Save Draft
         </button>
         <button
-          className="bg-primary-yellow text-black font-poppins focus:outline-none px-3 py-1.5 rounded-md hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent"
+          className="bg-primary-yellow text-primary-black focus:outline-none px-3 py-1.5 rounded-smd text-sm font-extrabold hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent"
           onClick={handleJournalSubmission}
         >
           Save

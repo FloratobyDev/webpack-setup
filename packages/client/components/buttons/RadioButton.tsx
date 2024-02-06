@@ -10,10 +10,10 @@ type Props = {
 function RadioButton({ onClick, checked }: Props) {
 
   const divClasses = classNames(
-    "h-4 w-4 rounded-[4px] flex items-center justify-center cursor-pointer",
+    "h-4 w-4 rounded-[2px] flex items-center justify-center cursor-pointer",
     {
-      "bg-primary-yellow": checked,
-      "border border-primary-yellow": !checked,
+      "bg-paragraph": checked,
+      "border border-paragraph": !checked,
     },
   );
   return (

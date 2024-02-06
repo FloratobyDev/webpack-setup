@@ -23,7 +23,7 @@ function NavBar() {
   }
 
   return (
-    <div className="h-full inline-flex px-2 py-4 flex-col justify-between dark:bg-black-75 rounded-md">
+    <div className="h-full inline-flex px-2 py-4 flex-col justify-between dark:bg-black-75 border-r border-r-primary-outline">
       <div className="flex flex-col gap-y-1 w-full">
         {links.map(({ icon, page }) => (
           <LinkButton

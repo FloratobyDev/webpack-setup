@@ -45,13 +45,13 @@ function Journal() {
   }
 
   return (
-    <div className="flex min-h-full h-full">
+    <div className="flex min-h-full h-full w-full">
       {/* <button onClick={installApp}>Install App</button> */}
-      <div className="w-[18%] max-w-[18%] flex gap-y-1 ml-1 flex-col min-h-full h-full">
+      <div className="w-[20%] max-w-[18%] flex-col min-h-full h-full border-r border-r-primary-outline">
         <SubLayout
-          classnames="overflow-auto"
+          classnames="overflow-auto flex border-b border-b-primary-outline"
           style={{
-            maxHeight: "16rem",
+            maxHeight: "14rem",
           }}
         >
           <RepositoryInfo
@@ -62,7 +62,7 @@ function Journal() {
         </SubLayout>
         <SubLayout
           style={{
-            height: "calc(100vh - 16rem)",
+            height: "calc(100vh - 14rem)",
           }}
         >
           <JournalRepositories
@@ -73,7 +73,7 @@ function Journal() {
         </SubLayout>
       </div>
       <div
-        className="flex-1 flex flex-col gap-y-1 overflow-auto"
+        className="flex-1 flex flex-col overflow-auto"
         onClick={handleNotificationClick}
       >
         <SubLayout classnames="basis-0" transparent>
@@ -84,21 +84,15 @@ function Journal() {
         </SubLayout>
       </div>
       <TaskProvider>
-        <div className="w-[22%] flex gap-y-1 flex-col min-h-full h-full">
+        <div className="w-[24%] flex flex-col min-h-full h-full border-l border-l-primary-outline">
           <div className="flex-1">
             <SubLayout
-              classnames="flex-1"
-              // style={{
-              //   maxHeight: "16rem",
-              // }}
+              classnames="flex-1 border-b border-b-primary-outline"
             >
               <TaskEditor />
             </SubLayout>
           </div>
           <SubLayout
-          // style={{
-          //   height: "calc(100vh - 16rem)",
-          // }}
           >
             <TaskCards />
           </SubLayout>

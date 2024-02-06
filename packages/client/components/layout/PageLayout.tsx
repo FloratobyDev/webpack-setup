@@ -6,9 +6,8 @@ type Props = {
 
 function PageLayout({ children }: Props) {
   return (
-    <div className="max-h-screen p-2 h-screen flex text-white">
+    <div className="max-h-screen h-screen flex text-white bg-primary-black font-gothic">
       {children}
-      <div className="bg-primary-black fixed inset-0 -z-10" />
     </div>
   );
 }

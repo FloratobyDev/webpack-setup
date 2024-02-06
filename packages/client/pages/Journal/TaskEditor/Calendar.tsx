@@ -55,8 +55,8 @@ function Calendar({ onChange }: Props) {
   );
 
   return (
-    <div className="bg-primary-black w-full flex flex-col text-center rounded-md px-2 py-4">
-      <p className="text-xs font-bold font-jost">{month.format("YYYY")}</p>
+    <div className="bg-primary-black w-full flex flex-col text-center rounded-md px-2 pb-4 pt-3 border border-primary-outline">
+      <p className="text-sm font-extrabold mb-1">{month.format("YYYY")}</p>
       <div className="w-full flex justify-between px-4">
         <button onClick={goToPreviousMonth}>
           <svg
@@ -69,12 +69,12 @@ function Calendar({ onChange }: Props) {
             <path
               clipRule="evenodd"
               d="M4.54692 9.22066C5.86627 10.2029 7.74127 9.26127 7.74127 7.61643L7.74127 2.94722C7.74127 1.30238 5.86627 0.360739 4.54693 1.34299L1.41112 3.6776C0.336918 4.47735 0.336917 6.0863 1.41112 6.88605L4.54692 9.22066Z"
-              fill="#DFB626"
+              fill="#F0F0F0"
               fillRule="evenodd"
             />
           </svg>
         </button>
-        <H3 classname="text-primary-yellow font-semibold uppercase">
+        <H3 classname="text-paragraph text-sm font-extrabold uppercase">
           {month.format("MMMM")}
         </H3>
         <button onClick={goToNextMonth}>
@@ -88,14 +88,14 @@ function Calendar({ onChange }: Props) {
             <path
               clipRule="evenodd"
               d="M3.93355 1.34282C2.6142 0.360566 0.739199 1.3022 0.739199 2.94704L0.739198 7.61625C0.739198 9.26109 2.61419 10.2027 3.93354 9.22048L7.06935 6.88588C8.14355 6.08613 8.14355 4.47717 7.06935 3.67743L3.93355 1.34282Z"
-              fill="#DFB626"
+              fill="#F0F0F0"
               fillRule="evenodd"
             />
           </svg>
         </button>
       </div>
       <div className="flex flex-col gap-y-3 mt-2">
-        <div className="grid grid-cols-7 items-center justify-center text-center text-xs text-black-50 font-jost font-semibold">
+        <div className="grid grid-cols-7 items-center justify-center text-center text-sm text-black-50 font-semibold">
           <p>S</p>
           <p>M</p>
           <p>T</p>
@@ -113,11 +113,11 @@ function Calendar({ onChange }: Props) {
               return (
                 <div
                   className={classNames(
-                    "h-5 w-5 rounded-[4px] mx-auto flex items-center justify-center hover:text-primary-black hover:bg-primary-yellow cursor-pointer",
+                    "h-5 w-5 rounded-sm mx-auto flex items-center justify-center hover:text-primary-black hover:bg-paragraph cursor-pointer",
                     {
                       invisible: !dayInfo,
-                      "bg-primary-yellow text-primary-black": isSelectedDate,
-                      "text-primary-yellow": !isSelectedDate,
+                      "bg-paragraph text-primary-black": isSelectedDate,
+                      "text-paragraph": !isSelectedDate,
                     },
                   )}
                   key={dayIndex}
@@ -130,7 +130,7 @@ function Calendar({ onChange }: Props) {
                     setDate(selectedDate);
                   }}
                 >
-                  <p>{dayInfo?.day}</p>
+                  <p className="text-sm">{dayInfo?.day}</p>
                 </div>
               );
             })}
