@@ -1,3 +1,4 @@
+const verifyToken = require("../verifyToken.ts");
 const { groupBy, map, uniqBy } = require("lodash");
 const journalRouter = require("express").Router();
 const journalDb = require("../dbRequest.ts");
@@ -6,15 +7,20 @@ const dayjs = require("dayjs");
 
 journalRouter.get("/repositories", async (req, res) => {
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
-      // const { githubId } = journalJwt.decode(req.cookies.accessToken);
-      const githubId = 1;
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
+      const { githubId } = userInfo;
       const repositoryData = await journalDb.raw(
         `SELECT * FROM repositories WHERE user_id=?`,
         [githubId],
       );
 
-      if (repositoryData.rows.length) {
+      console.log("repositoryData", repositoryData.rows);
+
+      if (repositoryData.rows?.length) {
         const repoIds = repositoryData.rows.map((repo) => Number(repo.id));
 
         const notifications = await journalDb.raw(
@@ -34,21 +40,34 @@ journalRouter.get("/repositories", async (req, res) => {
           },
         );
 
+        console.log(
+          "modifiedRepositoryDataHasNotifs",
+          modifiedRepositoryDataHasNotifs,
+        );
+
         return res.status(200).json(modifiedRepositoryDataHasNotifs);
       }
-
-      return res.status(404).json({ message: "No repositories found" });
-    }
+      console.log("No repositories found");
+      return res.status(200).json([]);
+    });
   } catch (err) {
+    console.log("err", err);
     return res.status(500).json({ message: "Internal Server Error", err });
   }
 });
 
 journalRouter.get("/repositories/:repoId", async (req, res) => {
+  console.log("none here");
+
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
-      // const { githubId } = journalJwt.decode(req.cookies.accessToken);
-      const githubId = 1;
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
+      console.log("hiii");
+
+      const { githubId } = userInfo;
       const { repoId } = req.params;
 
       const firstTenPushesWithNotif = await journalDb.raw(
@@ -197,7 +216,7 @@ journalRouter.get("/repositories/:repoId", async (req, res) => {
         notifications: firstTenNotifs.rows,
         bookmarkedJournals: modifiedBookmarks,
       });
-    }
+    });
   } catch (err) {
     console.log("err", err);
     return res.status(500).json({ message: "Internal Server Error", err });
@@ -206,7 +225,10 @@ journalRouter.get("/repositories/:repoId", async (req, res) => {
 
 journalRouter.patch("/notifications", async (req, res) => {
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
       const notificationIds = req.body.map((notification) =>
         Number(notification.id),
       );
@@ -216,7 +238,7 @@ journalRouter.patch("/notifications", async (req, res) => {
       );
 
       return res.status(200).json({ message: "Notifications updated" });
-    }
+    });
   } catch (err) {
     console.log("err", err);
     return res.status(500).json({ message: "Internal Server Error", err });
@@ -225,9 +247,11 @@ journalRouter.patch("/notifications", async (req, res) => {
 
 journalRouter.patch("/notifications/:id", async (req, res) => {
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
-      // const { githubId } = journalJwt.decode(req.cookies.accessToken);
-      const githubId = 1;
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      const { githubId } = userInfo;
       const { id } = req.params;
       const updatedNotification = await journalDb.raw(
         `UPDATE notifications SET has_interacted=true WHERE id=? AND user_id=? RETURNING *`,
@@ -240,7 +264,7 @@ journalRouter.patch("/notifications/:id", async (req, res) => {
         id: updatedNotification.rows[0].id,
         has_interacted: updatedNotification.rows[0].has_interacted,
       });
-    }
+    });
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", err });
   }
@@ -248,9 +272,9 @@ journalRouter.patch("/notifications/:id", async (req, res) => {
 
 journalRouter.post("/tasks", async (req, res) => {
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
+    verifyToken(req, async (err, userInfo) => {
       // const { githubId } = journalJwt.decode(req.cookies.accessToken);
-      const githubId = 1;
+      const { githubId } = userInfo;
       const { newTask, rest } = req.body;
 
       console.log("req.body", req.body);
@@ -297,7 +321,7 @@ journalRouter.post("/tasks", async (req, res) => {
         id: newTaskId.rows[0].id,
         checklists: newTaskChecklistsWithoutTaskIdAndUserId,
       });
-    }
+    });
   } catch (err) {
     console.log("err", err);
 
@@ -307,9 +331,12 @@ journalRouter.post("/tasks", async (req, res) => {
 
 journalRouter.patch("/tasks/:id", async (req, res) => {
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
       // const { githubId } = journalJwt.decode(req.cookies.accessToken);
-      const githubId = 1;
+      const { githubId } = userInfo;
       const { id } = req.params;
       const { state } = req.body;
 
@@ -324,7 +351,7 @@ journalRouter.patch("/tasks/:id", async (req, res) => {
         id: updatedTask.rows[0].id,
         state: updatedTask.rows[0].state,
       });
-    }
+    });
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", err });
   }
@@ -332,9 +359,12 @@ journalRouter.patch("/tasks/:id", async (req, res) => {
 
 journalRouter.patch("/checklists/:id", async (req, res) => {
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
       // const { githubId } = journalJwt.decode(req.cookies.accessToken);
-      const githubId = 1;
+      const { githubId } = userInfo;
       const { id: checklistId } = req.params;
       const { taskId, isDone } = req.body;
 
@@ -345,7 +375,7 @@ journalRouter.patch("/checklists/:id", async (req, res) => {
       console.log("req.body", req.body, updatedChecklists.rows);
 
       return res.status(200).json(updatedChecklists.rows[0]);
-    }
+    });
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", err });
   }
@@ -353,8 +383,12 @@ journalRouter.patch("/checklists/:id", async (req, res) => {
 
 journalRouter.post("/calendar", async (req, res) => {
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
-      const githubId = 1;
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
+      const { githubId } = userInfo;
       const { date } = req.body;
 
       const newDate = await journalDb.raw(
@@ -365,7 +399,7 @@ journalRouter.post("/calendar", async (req, res) => {
       console.log("newDate", newDate.rows[0]);
 
       return res.status(200).json({ message: "Success" });
-    }
+    });
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", err });
   }
@@ -373,8 +407,11 @@ journalRouter.post("/calendar", async (req, res) => {
 
 journalRouter.get("/calendar/:month", async (req, res) => {
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
-      const githubId = 1;
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      const { githubId } = userInfo;
 
       const dateNow = dayjs();
       const firstDayOfMonth = dayjs(dateNow).startOf("month");
@@ -390,7 +427,7 @@ journalRouter.get("/calendar/:month", async (req, res) => {
       });
       console.log("dates", Alldates);
       return res.status(200).json(Alldates);
-    }
+    });
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", err });
   }
@@ -398,11 +435,15 @@ journalRouter.get("/calendar/:month", async (req, res) => {
 
 journalRouter.post("/journals", async (req, res) => {
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
-      const githubId = 1;
-      const { journal, rest } = req.body;
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
 
-      console.log("journal", journal, rest);
+      const { githubId } = userInfo;
+      console.log("userInfo", userInfo);
+
+      const { journal, rest } = req.body;
 
       const newJournal = await journalDb.raw(
         `INSERT INTO journals (status, content, title, user_id, repo_id) VALUES (?, ?, ?, ?, ?) RETURNING *`,
@@ -411,60 +452,86 @@ journalRouter.post("/journals", async (req, res) => {
 
       const newJournalId = newJournal.rows[0].id;
 
-      const newJournalTasks = await journalDb("journal_task")
-        .returning("*")
-        .insert(
-          journal.tasks.map((task) => ({
-            journal_id: newJournalId,
-            task_id: task.id,
-          })),
+      let newJournalTasks = [];
+
+      if (journal.tasks.length > 0) {
+        newJournalTasks = await journalDb("journal_task")
+          .returning("*")
+          .insert(
+            journal.tasks.map((task) => ({
+              journal_id: newJournalId,
+              task_id: task.id,
+            })),
+          );
+      }
+
+      let newJournalCommits = [];
+
+      if (journal.commits.length > 0) {
+        newJournalCommits = await journalDb("journal_commit")
+          .returning("*")
+          .insert(
+            journal.commits.map((commit) => ({
+              journal_id: newJournalId,
+              commit_sha: commit.commit_sha,
+              user_id: githubId,
+            })),
+          );
+      }
+
+      // const newJournalTasksWithTaskTitle = newJournalTasks.map((task) => {
+      //   return {
+      //     ...task,
+      //     title: journal.tasks.find((t) => t.id === task.task_id).title,
+      //   };
+      // });
+
+      // const newJournalCommitsWithCommitDescription = newJournalCommits.map(
+      //   (commit) => {
+      //     return {
+      //       ...commit,
+      //       description: journal.commits.find(
+      //         (c) => c.commit_sha === commit.commit_sha,
+      //       ).description,
+      //     };
+      //   },
+      // );
+
+      const currentDate = dayjs();
+      const lastDatePosted = dayjs(req.cookies.lastJournalPostDate);
+
+      const isSameDay = currentDate.isSame(lastDatePosted, "day");
+
+      if (!isSameDay || !req.cookies.lastJournalPostDate) {
+        res.cookie("lastJournalPostDate", dayjs().toISOString(), {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+        });
+        const newDate = await journalDb.raw(
+          `INSERT INTO calendar (date, user_id) VALUES (?, ?) RETURNING *`,
+          [currentDate, githubId],
         );
-
-      const newJournalCommits = await journalDb("journal_commit")
-        .returning("*")
-        .insert(
-          journal.commits.map((commit) => ({
-            journal_id: newJournalId,
-            commit_sha: commit.commit_sha,
-            user_id: githubId,
-          })),
-        );
-
-      const newJournalTasksWithTaskTitle = newJournalTasks.map((task) => {
-        return {
-          ...task,
-          title: journal.tasks.find((t) => t.id === task.task_id).title,
-        };
-      });
-
-      const newJournalCommitsWithCommitDescription = newJournalCommits.map(
-        (commit) => {
-          return {
-            ...commit,
-            description: journal.commits.find(
-              (c) => c.commit_sha === commit.commit_sha,
-            ).description,
-          };
-        },
-      );
-
-      console.log({
-        ...newJournal.rows[0],
-        tasks: newJournalTasksWithTaskTitle,
-        commits: newJournalCommitsWithCommitDescription,
-      });
+        console.log("newDate", newDate.rows[0]);
+      } else {
+        console.log("no bookmark created");
+      }
 
       return res.status(200).json({ message: "Success" });
-    }
+    });
   } catch (err) {
+    console.log("err", err);
     return res.status(500).json({ message: "Internal Server Error", err });
   }
 });
 
 journalRouter.post("/bookmarks", async (req, res) => {
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
-      const githubId = 1;
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
+      const { githubId } = userInfo;
       const { journalId, repoId } = req.body;
 
       const newBookmark = await journalDb.raw(
@@ -477,7 +544,7 @@ journalRouter.post("/bookmarks", async (req, res) => {
       return res.status(200).json({
         newBookmark: newBookmark.rows[0],
       });
-    }
+    });
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", err });
   }
@@ -485,8 +552,12 @@ journalRouter.post("/bookmarks", async (req, res) => {
 
 journalRouter.delete("/bookmarks", async (req, res) => {
   try {
-    if (journalJwt.verify(req.cookies.accessToken, process.env.JWT_SECRET)) {
-      const githubId = 1;
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+
+      const { githubId } = userInfo;
       const { bookmarkId } = req.query;
 
       const deletedBookmark = await journalDb.raw(
@@ -497,7 +568,7 @@ journalRouter.delete("/bookmarks", async (req, res) => {
       console.log("deletedBookmark", deletedBookmark.rows[0]);
 
       return res.status(200).json({ message: "Success" });
-    }
+    });
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", err });
   }

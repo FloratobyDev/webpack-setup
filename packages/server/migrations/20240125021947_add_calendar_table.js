@@ -6,7 +6,7 @@ exports.up = function (knex) {
   return knex.raw(`
     CREATE TABLE calendar (
       date DATE NOT NULL UNIQUE,
-      user_id INTEGER REFERENCES users(id),
+      user_id INTEGER REFERENCES users(github_id),
       PRIMARY KEY (user_id, date)
       );
       `);

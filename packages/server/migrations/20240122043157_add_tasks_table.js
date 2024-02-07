@@ -14,7 +14,7 @@ exports.up = async function (knex) {
   CREATE TABLE tasks (
     id SERIAL PRIMARY KEY,
     repo_id INTEGER REFERENCES repositories(id),
-    user_id INTEGER REFERENCES users(id),
+    user_id INTEGER REFERENCES users(github_id),
     state task_state DEFAULT 'Open',
     difficulty difficulty_type DEFAULT 'easy',
     due_date DATE DEFAULT NULL,

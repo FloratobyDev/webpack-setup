@@ -14,44 +14,47 @@ module.exports = function buildOctokitWebhooks() {
   });
 
   async function handlePush({ octokit, payload }) {
+    
     if (!payload) return;
-  
+
     try {
       const repoExists = await checkIfRepoExists(payload);
       console.log("hasRepo", !!repoExists);
-  
+      const ownerId = payload.repository.owner.id;
+
       if (!repoExists) {
         await addRepository(payload);
       }
-  
-      const pushId = await createPush(payload);
+
+      const pushId = await addPush(payload);
       await handleCommitsAndNotifications(payload, pushId);
     } catch (err) {
       console.error("Error handling push:", err);
     }
   }
-  
+
   async function checkIfRepoExists(payload) {
     try {
       const result = await webhookDb.raw(
-        `SELECT 1 FROM repositories WHERE repo_id=? AND user_id=? LIMIT 1`,
+        `SELECT 1 FROM repositories WHERE id=? AND user_id=? LIMIT 1`,
         [payload.repository.id, payload.repository.owner.id],
       );
-      return result && result.rows.length;
+      return result.rows[0];
     } catch (err) {
       console.error("Failed to check if repo exists", err);
-      return false;
+      return null;
     }
   }
-  
+
   async function addRepository(payload) {
     try {
       await webhookDb.raw(
-        `INSERT INTO repositories (repo_id, user_id, name) VALUES (?, ?, ?)`,
+        `INSERT INTO repositories (id, user_id, name, description) VALUES (?, ?, ?, ?)`,
         [
           payload.repository.id,
           payload.repository.owner.id,
           payload.repository.name,
+          payload.repository.description,
         ],
       );
       console.log("Added repository");
@@ -60,12 +63,13 @@ module.exports = function buildOctokitWebhooks() {
       throw err; // rethrow to handle in the main function
     }
   }
-  
-  async function createPush(payload) {
+
+  async function addPush(payload) {
+
     try {
       const pushResult = await webhookDb.raw(
-        "INSERT INTO push (repo_id) VALUES (?) RETURNING id",
-        [payload.repository.id],
+        "INSERT INTO pushes (repo_id, user_id) VALUES (?, ?) RETURNING id",
+        [payload.repository.id, payload.repository.owner.id],
       );
       return pushResult.rows[0].id;
     } catch (err) {
@@ -73,17 +77,17 @@ module.exports = function buildOctokitWebhooks() {
       throw err;
     }
   }
-  
+
   async function handleCommitsAndNotifications(payload, pushId) {
     try {
-      await insertNotifications(payload, pushId);
-      await insertCommits(payload, pushId);
+      await addNotifications(payload, pushId);
+      await addCommits(payload, pushId);
     } catch (err) {
       console.error("Error in handling commits and notifications", err);
     }
   }
-  
-  async function insertNotifications(payload, pushId) {
+
+  async function addNotifications(payload, pushId) {
     try {
       await webhookDb.raw(
         "INSERT INTO notifications (user_id, push_id, repo_id) VALUES (?, ?, ?)",
@@ -93,15 +97,21 @@ module.exports = function buildOctokitWebhooks() {
       console.error("Failed to add notification", err);
     }
   }
-  
-  async function insertCommits(payload, pushId) {
+
+  async function addCommits(payload, pushId) {
     const { commits } = payload;
-    const commitRows = commits.map((commit) => [commit.id, pushId, commit.message]);
-  
+
+    const commitRows = commits.map((commit) => [
+      commit.id,
+      pushId,
+      payload.repository.owner.id,
+      commit.message,
+    ]);
+
     try {
       await webhookDb.raw(
-        `INSERT INTO commits (commit_sha, push_id, description) VALUES ${commits
-          .map(() => "(?, ?, ?)")
+        `INSERT INTO commits (commit_sha, push_id, user_id, description) VALUES ${commits
+          .map(() => "(?, ?, ?, ?)")
           .join(", ")}`,
         commitRows.flat(),
       );

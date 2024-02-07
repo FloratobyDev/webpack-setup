@@ -7,7 +7,7 @@ exports.up = function(knex) {
   CREATE TABLE checklists (
     id SERIAL PRIMARY KEY,
     task_id INTEGER REFERENCES tasks(id),
-    user_id INTEGER REFERENCES users(id),
+    user_id INTEGER REFERENCES users(github_id),
     is_done BOOLEAN DEFAULT FALSE,
     content VARCHAR(128)
   );

@@ -117,7 +117,7 @@ function CommitDropdown({ commits, onSave }: Props) {
                 />
               ))}
               {pushList.length === 0 && (
-                <p className="text-center">No push available</p>
+                <p className="text-center whitespace-nowrap italic text-sub-paragraph text-sm">No push available</p>
               )}
             </div>
           </div>
@@ -133,7 +133,7 @@ function CommitDropdown({ commits, onSave }: Props) {
                     >
                       <p className="truncate w-32">{commit.description}</p>
                       <div className="flex gap-x-2">
-                        <p className="">{commit.commit_sha}</p>
+                        <p className="">{commit.commit_sha.substring(0,5)}</p>
                         <button onClick={() => handleSingleDeselect(commit)}>
                           -
                         </button>

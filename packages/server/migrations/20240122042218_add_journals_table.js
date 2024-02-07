@@ -11,7 +11,7 @@ exports.up = async function (knex) {
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     published_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    user_id INTEGER REFERENCES users(id),
+    user_id INTEGER REFERENCES users(github_id),
     repo_id INTEGER REFERENCES repositories(id),
     status journal_status DEFAULT 'draft',
     title VARCHAR(40) NOT NULL,

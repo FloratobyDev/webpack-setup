@@ -22,7 +22,7 @@ type RepositoryContextType = {
   tasks: TaskType[];
   setTasks: (tasks: TaskType[]) => void;
   pushList: PushType[];
-  setPushList: ((args: (pushList: PushType[])=>PushType[]) => void);
+  setPushList: (args: (pushList: PushType[]) => PushType[]) => void;
   currentRepository: RepositoryType;
   changeRepository: (repo: RepositoryType) => void;
   allLoading: boolean;
@@ -51,6 +51,8 @@ function RepositoryProvider({ children }: Props) {
     skip: !currentRepository?.id,
     refetchOnMountOrArgChange: true,
   });
+
+  // console.log("dataByRepo", dataByRepo, repos);
 
   function changeRepository(repo: RepositoryType) {
     setCurrentRepository(repo);

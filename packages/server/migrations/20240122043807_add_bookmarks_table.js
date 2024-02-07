@@ -5,7 +5,7 @@
 exports.up = function(knex) {
   return knex.raw(`
   CREATE TABLE bookmarks (
-    user_id INTEGER REFERENCES users(id),
+    user_id INTEGER REFERENCES users(github_id),
     journal_id INTEGER REFERENCES journals(id),
     repo_id INTEGER REFERENCES repositories(id),
     PRIMARY KEY (user_id, journal_id)

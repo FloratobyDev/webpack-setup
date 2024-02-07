@@ -4,6 +4,8 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import { H4 } from "@client/components/headings";
 import { map } from "lodash";
+import { useAuth } from "@client/contexts/AuthProvider";
+import { useRepository } from "@client/contexts/RepositoryContext";
 import { useUpdateNotificationHasInteractedMutation } from "@client/store";
 
 type Props = {
@@ -30,6 +32,8 @@ function PushInfo({
   const [hasNotification, setHasNotification] = useState<boolean>(
     !pushInfo.has_interacted,
   );
+  const { currentRepository } = useRepository();
+  const { currentUser } = useAuth();
 
   const [
     mutateNotification,
@@ -121,27 +125,38 @@ function PushInfo({
         <>
           <hr className="border-t-1 border-t-primary-black" />
           <div className="p-2">
-            {map(pushInfo.commits, (commitInfo) => (
-              <div
-                className="flex justify-between px-2 py-1 hover:bg-primary-black rounded-smd cursor-pointer gap-x-10"
-                key={commitInfo.commit_sha}
-                onClick={() => {
-                  if (selectedCommits.includes(commitInfo)) {
-                    onDeselect(commitInfo);
-                  } else {
-                    onSelect(commitInfo);
-                  }
-                }}
-              >
-                <p className="truncate w-32">{commitInfo.description}</p>
-                <div className="flex gap-x-2">
-                  <p className="px-1 bg-black-50 rounded-smd">{commitInfo.commit_sha}</p>
-                  <button>
-                    {selectedCommits.includes(commitInfo) ? "-" : "+"}
-                  </button>
+            {map(pushInfo.commits, (commitInfo) => {
+              const commitLink = `https://github.com/${currentUser}/${currentRepository.name}/commit/${commitInfo.commit_sha}`;
+              return (
+                <div
+                  className="flex justify-between px-2 py-1 hover:bg-primary-black rounded-smd cursor-pointer gap-x-10"
+                  key={commitInfo.commit_sha}
+                  onClick={() => {
+                    if (selectedCommits.includes(commitInfo)) {
+                      onDeselect(commitInfo);
+                    } else {
+                      onSelect(commitInfo);
+                    }
+                  }}
+                >
+                  <p className="truncate w-32">{commitInfo.description}</p>
+                  <div className="flex gap-x-2">
+                    <a
+                      className="px-1 bg-black-50 rounded-smd"
+                      href={commitLink}
+                      onClick={(e: any) => e.stopPropagation()}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      {commitInfo.commit_sha.substring(0, 5)}
+                    </a>
+                    <button>
+                      {selectedCommits.includes(commitInfo) ? "-" : "+"}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </>
       )}

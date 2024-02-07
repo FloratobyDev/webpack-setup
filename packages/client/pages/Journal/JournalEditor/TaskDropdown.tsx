@@ -69,6 +69,9 @@ function TaskDropdown({ selectedTasks, onSave }: Props) {
             <p className="text-paragraph text-sm indent-1 font-extrabold">
               Tasks
             </p>
+            {modifiedTasksBySearch.length === 0 && (
+              <p className="text-sub-paragraph text-sm indent-1 italic">No tasks found</p>
+            )}
             {modifiedTasksBySearch.map((task) => {
               const isTaskStaged = stagedTasks.includes(task);
 

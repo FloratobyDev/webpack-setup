@@ -20,6 +20,7 @@ function TaskEditor() {
   const [openDeadline, setOpenDeadline] = useState(false);
   const [taskName, setTaskName] = useState("");
   const { onAddTask } = useTask();
+  const [dueDate, setDueDate] = useState(null);
 
   const checkListRef = useRef(null);
   const difficultyRef = useRef(null);
@@ -36,6 +37,7 @@ function TaskEditor() {
         difficulty,
         state: ProgressValues.OPEN,
         id: String(data.id),
+        due_date: dueDate,
       });
       setChecklists([]);
       setDifficulty(DifficultyTypes.EASY);
@@ -97,8 +99,6 @@ function TaskEditor() {
       "bg-yellow-400": difficulty === DifficultyTypes.MEDIUM,
     },
   );
-
-  const [dueDate, setDueDate] = useState(null);
 
   return (
     <Paper classname="flex gap-y-2 h-full flex-col justify-between">
@@ -249,6 +249,7 @@ function TaskEditor() {
                 difficulty,
                 state: ProgressValues.OPEN,
                 id: generateRandomString(5),
+                due_date: dueDate,
               },
               rest: {
                 repo_id: currentRepository?.id,

@@ -23,12 +23,12 @@ exports.seed = async function (knex) {
   `);
 
   await knex.raw(`
-  INSERT INTO repositories (user_id, name, description)
-  VALUES (1, 'test_repo', 'test description'),
-         (1, 'test_repo2', 'test description2'),
-         (1, 'test_repo3', 'test description3'),
-         (2, 'test_repo2', 'test description2'),
-         (3, 'test_repo3', 'test description3');
+  INSERT INTO repositories (id, user_id, name, description)
+  VALUES (1, 1, 'test_repo', 'test description'),
+         (2, 1, 'test_repo2', 'test description2'),
+         (3, 1, 'test_repo3', 'test description3'),
+         (4, 2, 'test_repo2', 'test description2'),
+         (5, 3, 'test_repo3', 'test description3');
   `);
 
   await knex.raw(`

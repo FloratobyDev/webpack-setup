@@ -29,11 +29,11 @@ function AuthProvider({ children }: Props) {
   useEffect(() => {
     axios
       .get("/api/verify")
-      .then((err) => {
-        console.log("err: ", err);
+      .then((response) => {
+        console.log("response: ", response.data);
 
         setIsVerified(true);
-        setCurrentUser(err.data.user);
+        setCurrentUser(response.data.user);
       })
       .catch((err) => {
         setIsVerified(false);

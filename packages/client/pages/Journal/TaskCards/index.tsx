@@ -47,7 +47,12 @@ function TaskCards() {
 
   return (
     <Paper classname="flex h-full flex-col relative gap-y-3">
-      <SearchBar className="h-10" onChange={handleInputChange} search={currentSearch}  show/>
+      <SearchBar
+        className="h-10"
+        onChange={handleInputChange}
+        search={currentSearch}
+        show
+      />
       <HeaderTabs<string>
         activeValues={activeTab}
         handleValueChange={setActiveTab}

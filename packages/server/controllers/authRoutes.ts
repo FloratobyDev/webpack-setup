@@ -43,6 +43,8 @@ authRouter.get("/authorize", async (req, res) => {
     const userName = userResponse.data.login;
     const githubId = userResponse.data.id;
 
+    console.log("userResponse", userResponse);
+
     const userExists = await authDb
       .raw(`SELECT 1 FROM users WHERE github_id = ? LIMIT 1`, [
         userResponse.data.id,

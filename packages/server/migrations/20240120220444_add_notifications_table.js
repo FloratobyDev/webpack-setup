@@ -8,7 +8,7 @@ exports.up = function(knex) {
   CREATE TABLE notifications (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    user_id INTEGER REFERENCES users(id),
+    user_id INTEGER REFERENCES users(github_id),
     push_id INTEGER REFERENCES pushes(id),
     repo_id INTEGER REFERENCES repositories(id),
     has_seen BOOLEAN DEFAULT FALSE,

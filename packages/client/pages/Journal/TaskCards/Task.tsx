@@ -13,6 +13,7 @@ import RadioButton from "@client/components/buttons/RadioButton";
 import { useTask } from "@client/contexts/TaskContext";
 import { useUpdateChecklistMutation } from "@client/store";
 import useOutsideClick from "@client/hooks/useOutsideClick";
+import dayjs from "dayjs";
 // import { headerTabs } from ".";
 
 type Props = {
@@ -118,7 +119,7 @@ function Task({ taskInfo }: Props) {
           <p className="text-[13px] text-primary-yellow font-extrabold">
             {checklistDone}/{size(taskInfo.checklists)}
           </p>
-          <div className="relative">
+          <div className="relative" ref={progressRef}>
             <button
               className="uppercase py-1 px-3 font-medium text-paragraph cursor-pointer rounded-md hover:bg-black-75 whitespace-nowrap text-[13px]"
               onClick={(e) => {
@@ -129,7 +130,6 @@ function Task({ taskInfo }: Props) {
             </button>
             {openProgress && (
               <ProgressDropdown
-                ref={progressRef}
                 setOpenProgress={setOpenProgress}
                 taskInfo={taskInfo}
               />
@@ -156,7 +156,10 @@ function Task({ taskInfo }: Props) {
       )}
       <div className="px-3 py-2 text-sm text-sub-paragraph italic flex items-center gap-x-2">
         <span className={difficultyClass} />
-        <p>Due date: 01/01/2024</p>
+        {taskInfo?.due_date && (
+          <p>Due date: {dayjs(taskInfo.due_date).format("MM/DD/YYYY")}</p>
+        )}
+        {!taskInfo?.due_date && <p>Due date: N/A</p>}
       </div>
     </div>
   );

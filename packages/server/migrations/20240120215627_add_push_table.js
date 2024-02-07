@@ -7,7 +7,7 @@ exports.up = function(knex) {
   CREATE TABLE pushes (
     id SERIAL PRIMARY KEY,
     repo_id INTEGER REFERENCES repositories(id),
-    user_id INTEGER REFERENCES users(id),
+    user_id INTEGER REFERENCES users(github_id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
   );`);
 };

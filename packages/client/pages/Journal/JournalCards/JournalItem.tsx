@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 import HoverDropdown from "./HoverDropdown";
 import { JournalType } from "@client/types";
+import { useAuth } from "@client/contexts/AuthProvider";
+import { useRepository } from "@client/contexts/RepositoryContext";
 
 type Props = {
   value: JournalType;
@@ -17,6 +19,9 @@ function JournalItem({
   handleAddBookmark,
 }: Props) {
   const [hover, setHover] = useState(false);
+  const { currentRepository } = useRepository();
+  const { currentUser } = useAuth();
+
   return (
     <div
       className="flex justify-between px-2 py-1.5 rounded-smd hover:bg-black-75 cursor-pointer"
@@ -69,14 +74,21 @@ function JournalItem({
         <div className="flex gap-x-2">
           {value.commits?.length > 0 && (
             <HoverDropdown hovered={hover} label="Commits">
-              {value.commits.map((commit) => (
-                <p
-                  className="w-full hover:bg-black-75 px-2 py-0.5 cursor-pointer whitespace-nowrap rounded-smd"
-                  key={commit.commit_sha}
-                >
-                  {commit.commit_sha}
-                </p>
-              ))}
+              {value.commits.map((commit) => {
+                const commitLink = `https://github.com/${currentUser}/${currentRepository.name}/commit/${commit.commit_sha}`;
+                return (
+                  <a
+                    className="w-full hover:bg-black-75 px-2 py-0.5 cursor-pointer whitespace-nowrap rounded-smd"
+                    href={commitLink}
+                    key={commit.commit_sha}
+                    onClick={(e: any) => e.stopPropagation()}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {commit.commit_sha.substring(0, 8)}
+                  </a>
+                );
+              })}
             </HoverDropdown>
           )}
           {value.tasks?.length > 0 && (

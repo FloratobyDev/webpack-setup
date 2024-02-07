@@ -1,3 +1,4 @@
+import { H2 } from "@client/components/headings";
 import JournalCards from "./JournalCards";
 import JournalEditor from "./JournalEditor";
 import JournalRepositories from "./JournalRepositories";
@@ -22,7 +23,11 @@ function Journal() {
     useUpdateNotificationsMutation();
 
   if (!currentRepository) {
-    return null;
+    return (
+      <div className="flex items-center justify-center w-full">
+        <H2 classname="italic text-sub-paragraph">No repositories available</H2>
+      </div>
+    );
   }
 
   const installApp = () => {
@@ -45,7 +50,7 @@ function Journal() {
   }
 
   return (
-    <div className="flex min-h-full h-full w-full">
+    <div className="flex h-full w-full">
       {/* <button onClick={installApp}>Install App</button> */}
       <div className="w-[20%] max-w-[18%] flex-col min-h-full h-full border-r border-r-primary-outline">
         <SubLayout
@@ -73,7 +78,7 @@ function Journal() {
         </SubLayout>
       </div>
       <div
-        className="flex-1 flex flex-col overflow-auto"
+        className="flex-1 flex flex-col overflow-auto h-full"
         onClick={handleNotificationClick}
       >
         <SubLayout classnames="basis-0" transparent>
@@ -84,16 +89,13 @@ function Journal() {
         </SubLayout>
       </div>
       <TaskProvider>
-        <div className="w-[24%] flex flex-col min-h-full h-full border-l border-l-primary-outline">
-          <div className="flex-1">
-            <SubLayout
-              classnames="flex-1 border-b border-b-primary-outline"
-            >
-              <TaskEditor />
-            </SubLayout>
-          </div>
-          <SubLayout
-          >
+        <div className="w-[24%] flex flex-col max-h-full h-full border-l border-l-primary-outline">
+          {/* This div is flex-1, allowing it to take up all available space minus what's needed for siblings */}
+          <SubLayout classnames="flex-1 border-b border-b-primary-outline">
+            <TaskEditor />
+          </SubLayout>
+          {/* This SubLayout should grow to use available space, making TaskCards scrollable if content overflows */}
+          <SubLayout classnames="h-full overflow-auto">
             <TaskCards />
           </SubLayout>
         </div>

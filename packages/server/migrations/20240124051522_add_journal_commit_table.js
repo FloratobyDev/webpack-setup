@@ -7,7 +7,7 @@ exports.up = function(knex) {
     CREATE TABLE journal_commit (
       commit_sha VARCHAR(64) NOT NULL,
       journal_id INTEGER,
-      user_id INTEGER REFERENCES users(id),
+      user_id INTEGER REFERENCES users(github_id),
       FOREIGN KEY (commit_sha) REFERENCES commits(commit_sha) ON DELETE CASCADE,
       FOREIGN KEY (journal_id) REFERENCES journals(id) ON DELETE CASCADE,
       PRIMARY KEY(journal_id, commit_sha)

@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const buildOctokitWebhooks = require("./buildOctokitWebhooks.ts");
 const authController = require("./controllers/authRoutes.ts");
 const journalController = require("./controllers/journalRoutes.ts");
+// const verifyToken = require("./verifyToken.ts");
 
 dotenv.config();
 
@@ -41,8 +42,19 @@ const validateTokenMiddleware = (req, res, next) => {
   });
 };
 
-app.get("/verify", validateTokenMiddleware, (req, res) => {
-  res.json({ user: "Michael Mushrush" });
+app.get("/verify", validateTokenMiddleware, async (req, res) => {
+  console.log("req.user", req.user);
+
+  try {
+    const userInfo = await db.raw(
+      "SELECT username FROM users WHERE github_id = ?",
+      [req.user.githubId],
+    );
+    res.json({ user: userInfo.rows[0].username });
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ message: "Error fetching user" });
+  }
 });
 
 app.get("/user", validateTokenMiddleware, (req, res) => {
