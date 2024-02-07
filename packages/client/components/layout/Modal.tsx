@@ -12,9 +12,13 @@ export default function Modal({ isOpen, children }: Props) {
   }
 
   return createPortal(
-    <div className="drop-shadow-[0_8px_16px_rgb(34,36,3,0.15)] fixed z-50 inset-0 bg-black bg-opacity-70 backdrop-filter min-h-full">
-      <div className="flex items-center justify-center min-h-full px-4 text-center opacity-100">
-        <div className="flex items-center justify-center">{children}</div>
+    <div className="drop-shadow-[0_8px_16px_rgb(34,36,3,0.15)] fixed z-50 inset-0 bg-black bg-opacity-95 backdrop-filter min-h-screen">
+      <div className="flex items-center justify-center h-full w-full px-4 text-center opacity-100">
+        {isOpen && (
+          <div className="flex items-center justify-center h-full w-full">
+            {children}
+          </div>
+        )}
       </div>
     </div>,
     document.body,

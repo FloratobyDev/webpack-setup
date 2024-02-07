@@ -1,11 +1,18 @@
 import { ChecklistType, DifficultyTypes, TaskType } from "@client/types";
 import { debounce, filter, map, size } from "lodash";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import classNames from "classnames";
 import ProgressDropdown from "./ProgressDropdown";
 import RadioButton from "@client/components/buttons/RadioButton";
 import { useTask } from "@client/contexts/TaskContext";
 import { useUpdateChecklistMutation } from "@client/store";
+import useOutsideClick from "@client/hooks/useOutsideClick";
 // import { headerTabs } from ".";
 
 type Props = {
@@ -37,6 +44,7 @@ function Task({ taskInfo }: Props) {
   const { onUpdateChecklist } = useTask();
   const [mutateChecklist, { isLoading, data, isSuccess, isError, error }] =
     useUpdateChecklistMutation();
+  const progressRef = useRef<HTMLDivElement>(null);
 
   function handleOpen() {
     setOpen(!open);
@@ -47,6 +55,10 @@ function Task({ taskInfo }: Props) {
       onUpdateChecklist(taskInfo.id, data?.id, !data?.is_done);
     }
   }, [isSuccess]);
+
+  useOutsideClick(progressRef, openProgress, () => {
+    setOpenProgress(false);
+  });
 
   const checklistDone = useMemo(() => {
     return filter(taskInfo.checklists, { is_done: true }).length;
@@ -104,8 +116,7 @@ function Task({ taskInfo }: Props) {
         <p className="text-sm font-normal leading-snug">{taskInfo.title}</p>
         <div className="flex items-center gap-x-2 justify-between">
           <p className="text-[13px] text-primary-yellow font-extrabold">
-            {checklistDone}/
-            {size(taskInfo.checklists)}
+            {checklistDone}/{size(taskInfo.checklists)}
           </p>
           <div className="relative">
             <button
@@ -118,6 +129,7 @@ function Task({ taskInfo }: Props) {
             </button>
             {openProgress && (
               <ProgressDropdown
+                ref={progressRef}
                 setOpenProgress={setOpenProgress}
                 taskInfo={taskInfo}
               />

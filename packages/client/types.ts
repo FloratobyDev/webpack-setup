@@ -103,4 +103,5 @@ export type JournalType = {
   content: string;
   commits: CommitType[];
   tasks: TaskType[];
+  is_bookmarked: boolean;
 };

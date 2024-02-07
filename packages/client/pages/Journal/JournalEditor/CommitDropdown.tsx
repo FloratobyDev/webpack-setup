@@ -14,7 +14,7 @@ type Props = {
 
 function CommitDropdown({ commits, onSave }: Props) {
   const [search, setSearch] = useState<string>("");
-  const [openStagedCommitPanel, setOpenStagedCommitPanel] = useState(false);
+  const [openStagedCommitPanel, setOpenStagedCommitPanel] = useState(true);
   const [selectedStagedCommits, setSelectedStagedCommits] =
     useState<CommitType[]>(commits);
   const { pushList, setPushList } = useRepository();

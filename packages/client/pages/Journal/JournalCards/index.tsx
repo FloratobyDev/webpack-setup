@@ -1,23 +1,29 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 import { ActivityValues, JournalType } from "@client/types";
+import { H2, H1 } from "@client/components/headings";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   useAddBookmarkMutation,
   useRemoveBookmarkMutation,
 } from "@client/store";
 import { generateRandomString } from "@client/utils";
-import { H2 } from "@client/components/headings";
 import HeaderTabs from "@client/components/HeaderTabs";
 import JournalItem from "./JournalItem";
 import { map } from "lodash";
+import Markdown from "react-markdown";
 import Modal from "@client/components/layout/Modal";
 import Paper from "@client/components/layout/Paper";
+import remarkGfm from "remark-gfm";
+import RotatedCross from "@client/components/svgs/RotatedCross";
 import SearchBar from "@client/components/searchbar/SearchBar";
 import { useRepository } from "@client/contexts/RepositoryContext";
+import dayjs from "dayjs";
+import JournalViewer from "./JournalViewer";
 
 function JournalCards() {
   const [openBookmark, setOpenBookmark] = useState(true);
   const [openJournal, setOpenJournal] = useState(true);
-  const { bookmarks, setBookmarks, currentRepository, journals } =
+  const { bookmarks, setBookmarks, currentRepository, journals, setJournals } =
     useRepository();
 
   const [
@@ -34,45 +40,14 @@ function JournalCards() {
     },
   ] = useRemoveBookmarkMutation();
 
-  function handleAddBookmark(newBookmark: JournalType) {
-    if (bookmarks.some((bookmark) => bookmark.id === newBookmark.id)) {
-      removeBookmark(newBookmark.id);
-      const removeBookmarkFilter = bookmarks.filter(
-        (bookmark) => bookmark.id !== newBookmark.id,
-      );
-      setBookmarks(removeBookmarkFilter);
-    } else {
-      addBookmark({
-        journalId: newBookmark.id,
-        repoId: Number(currentRepository.id),
-      });
-      setBookmarks([...bookmarks, newBookmark]);
-    }
-  }
-
   const [currentSearch, setCurrentSearch] = useState("");
-
-  const handleInputChange = (e: any) => {
-    setCurrentSearch(e.target.value);
-  };
-
+  const [openModal, setOpenModal] = useState(false);
   const [activeTab, setActiveTab] = useState(ActivityValues.JOURNAL);
   const mappedProgressValues = map(ActivityValues, (tab) => tab);
   const [activeValues, setActiveValues] = useState([]);
   const [currentJournal, setCurrentJournal] = useState<JournalType | null>(
     null,
   );
-
-  function getActiveValues() {
-    if (activeTab === ActivityValues.BOOKMARK) {
-      return bookmarks;
-    }
-    return journals;
-  }
-
-  useEffect(() => {
-    setActiveValues(getActiveValues());
-  }, [activeTab, bookmarks, journals]);
 
   const modifiedActiveValues: JournalType[] = useMemo(() => {
     let journalPlaceholder = [];
@@ -87,19 +62,63 @@ function JournalCards() {
     return activeValues;
   }, [currentSearch, activeTab, activeValues]);
 
-  const [openModal, setOpenModal] = useState(false);
+  const handleInputChange = (e: any) => {
+    setCurrentSearch(e.target.value);
+  };
+
+  function handleAddBookmark(newBookmark: JournalType) {
+    if (bookmarks.some((bookmark) => bookmark.id === newBookmark.id)) {
+      removeBookmark(newBookmark.id);
+      const removeBookmarkFilter = bookmarks.filter(
+        (bookmark) => bookmark.id !== newBookmark.id,
+      );
+      setJournals(
+        journals.map((journal) => {
+          if (journal.id === newBookmark.id) {
+            return { ...journal, is_bookmarked: false };
+          }
+          return journal;
+        }),
+      );
+      setBookmarks(removeBookmarkFilter);
+    } else {
+      addBookmark({
+        journalId: newBookmark.id,
+        repoId: Number(currentRepository.id),
+      });
+
+      setJournals(
+        journals.map((journal) => {
+          if (journal.id === newBookmark.id) {
+            return { ...journal, is_bookmarked: true };
+          }
+          return journal;
+        }),
+      );
+
+      const modBookmark = { ...newBookmark, is_bookmarked: true };
+      setBookmarks([...bookmarks, modBookmark]);
+    }
+  }
+
+  function getActiveValues() {
+    if (activeTab === ActivityValues.BOOKMARK) {
+      return bookmarks;
+    }
+    return journals;
+  }
+
+  useEffect(() => {
+    setActiveValues(getActiveValues());
+  }, [activeTab, bookmarks, journals]);
 
   return (
     <>
-      <Modal isOpen={openModal}>
-        {openModal && (
-          <div className="text-white">
-            {currentJournal.title}
-            <p>{currentJournal.content}</p>
-            <button onClick={() => setOpenModal(false)}>Close</button>
-          </div>
-        )}
-      </Modal>
+      <JournalViewer
+        journal={currentJournal}
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+      />
       <Paper classname="flex flex-col gap-y-3">
         <H2 classname="font-extrabold text-primary-yellow">
           Recent Activities

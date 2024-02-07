@@ -88,9 +88,21 @@ journalRouter.get("/repositories/:repoId", async (req, res) => {
       );
 
       const journals = await journalDb.raw(
-        `SELECT * FROM journals WHERE user_id=? AND repo_id=? ORDER BY created_at DESC LIMIT 10`,
+        `SELECT j.*, 
+         CASE
+          WHEN bookmarks.journal_id IS NOT NULL THEN true
+          ELSE false
+         END AS is_bookmarked
+         FROM journals j
+         LEFT JOIN bookmarks 
+         ON j.id = bookmarks.journal_id 
+         WHERE j.user_id=? AND j.repo_id=? 
+         ORDER BY created_at 
+         DESC LIMIT 10`,
         [githubId, repoId],
       );
+
+      console.log("journals", journals.rows);
 
       const tasks = await journalDb.raw(
         `SELECT * FROM tasks WHERE user_id=? AND repo_id=?`,
@@ -173,6 +185,7 @@ journalRouter.get("/repositories/:repoId", async (req, res) => {
           commits: bookmarkedCommits.rows.filter(
             (journalCommit) => journalCommit.journal_id === journal.id,
           ),
+          is_bookmarked: true,
         };
       });
 
@@ -461,7 +474,9 @@ journalRouter.post("/bookmarks", async (req, res) => {
 
       console.log("newBookmark", newBookmark.rows[0]);
 
-      return res.status(200).json({ message: "Success" });
+      return res.status(200).json({
+        newBookmark: newBookmark.rows[0],
+      });
     }
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error", err });

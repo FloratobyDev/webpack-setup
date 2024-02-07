@@ -5,6 +5,7 @@ import Paper from "@client/components/layout/Paper";
 import TaskDropdown from "./TaskDropdown";
 import { useAddJournalMutation } from "@client/store";
 import { useRepository } from "@client/contexts/RepositoryContext";
+import JournalViewer from "../JournalCards/JournalViewer";
 
 function JournalEditor() {
   const [title, setTitle] = useState("");
@@ -32,6 +33,7 @@ function JournalEditor() {
       commits,
       tasks: selectedTasks,
       status: "draft",
+      is_bookmarked: false,
     };
 
     addJournal({
@@ -68,38 +70,64 @@ function JournalEditor() {
     textArea.style.height = `${textArea.scrollHeight}px`;
   }
 
+  const mockJournal: JournalType = {
+    title,
+    content,
+    commits: [],
+    tasks: [],
+    status: "draft",
+    is_bookmarked: false,
+  };
+
+  const [openModal, setOpenModal] = useState(false);
+
   return (
-    <Paper classname="flex flex-col gap-y-8 text-primary-black">
-      <div className="flex flex-col gap-y-2">
-        <input
-          className="focus:outline-none rounded-md bg-primary-black text-heading-1 leading-heading-1 placeholder:text-heading-1 font-extrabold text-primary-yellow placeholder:text-primary-yellow focus:placeholder:opacity-0"
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Untitled"
-          value={title}
-        />
-        <textarea
-          className="focus:outline-none rounded-md bg-primary-black text-heading-4 leading-heading-4 placeholder:text-heading-4 text-paragraph placeholder:text-paragraph focus:placeholder:opacity-0"
-          onChange={handleTextChange}
-          placeholder="Type something..."
-          ref={contentRef}
-          style={{ height: "auto", overflow: "hidden" }}
-          value={content}
-        />
-      </div>
-      <div className="flex gap-x-2">
-        <CommitDropdown commits={commits} onSave={handleCommitSave} />
-        <TaskDropdown onSave={handleTaskSave} selectedTasks={selectedTasks} />
-        <button className="bg-primary-yellow text-primary-black focus:outline-none px-3 py-1.5 rounded-smd text-sm font-extrabold hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent">
-          Save Draft
-        </button>
-        <button
-          className="bg-primary-yellow text-primary-black focus:outline-none px-3 py-1.5 rounded-smd text-sm font-extrabold hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent"
-          onClick={handleJournalSubmission}
-        >
-          Save
-        </button>
-      </div>
-    </Paper>
+    <>
+      <JournalViewer
+        journal={mockJournal}
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+      />
+      <Paper classname="flex flex-col gap-y-8 text-primary-black">
+        <div className="flex flex-col gap-y-2">
+          <input
+            className="focus:outline-none rounded-md bg-primary-black text-heading-1 leading-heading-1 placeholder:text-heading-1 font-extrabold text-primary-yellow placeholder:text-primary-yellow focus:placeholder:opacity-0"
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Untitled"
+            value={title}
+          />
+          <textarea
+            className="focus:outline-none rounded-md bg-primary-black text-heading-4 leading-heading-4 placeholder:text-heading-4 text-paragraph placeholder:text-paragraph focus:placeholder:opacity-0"
+            onChange={handleTextChange}
+            placeholder="Type something..."
+            ref={contentRef}
+            style={{ height: "auto", overflow: "hidden" }}
+            value={content}
+          />
+        </div>
+        <div className="flex gap-x-2">
+          <button
+            className="border border-black-5 text-paragraph px-3 py-1.5 rounded-smd font-extrabold text-sm focus:outline-none hover:bg-paragraph hover:border-transparent hover:text-black"
+            onClick={() => {
+              setOpenModal(true);
+            }}
+          >
+            Preview
+          </button>
+          <CommitDropdown commits={commits} onSave={handleCommitSave} />
+          <TaskDropdown onSave={handleTaskSave} selectedTasks={selectedTasks} />
+          <button className="bg-primary-yellow text-primary-black focus:outline-none px-3 py-1.5 rounded-smd text-sm font-extrabold hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent">
+            Save Draft
+          </button>
+          <button
+            className="bg-primary-yellow text-primary-black focus:outline-none px-3 py-1.5 rounded-smd text-sm font-extrabold hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent"
+            onClick={handleJournalSubmission}
+          >
+            Save
+          </button>
+        </div>
+      </Paper>
+    </>
   );
 }
 

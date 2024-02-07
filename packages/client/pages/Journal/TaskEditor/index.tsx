@@ -124,10 +124,13 @@ function TaskEditor() {
       </div>
 
       <div className="flex gap-x-2">
-        <div className="relative h-full">
+        <div className="relative h-full" ref={deadlineRef}>
           <button
             className="rounded-md h-full px-3 py-1.5 text-paragraph flex items-center bg-primary-black gap-x-2 cursor-pointer hover:opacity-80"
-            onClick={handleOpenDeadline}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOpenDeadline();
+            }}
           >
             <p className="font-extrabold text-sm">{dueDate || "No deadline"}</p>
             <div className="h-4 w-[1px] bg-paragraph" />
@@ -145,10 +148,7 @@ function TaskEditor() {
             </svg>
           </button>
           {openDeadline && (
-            <div
-              className="flex justify-between flex-col items-start absolute h-full z-10 top-10  w-56"
-              ref={deadlineRef}
-            >
+            <div className="flex justify-between flex-col items-start absolute h-full z-10 top-10  w-56">
               <Calendar
                 onChange={(date) => {
                   setOpenDeadline(false);
@@ -159,7 +159,7 @@ function TaskEditor() {
             </div>
           )}
         </div>
-        <div className="relative">
+        <div className="relative" ref={difficultyRef}>
           <button
             className="rounded-smd px-3 py-1.5 font-extrabold text-sm text-paragraph flex items-center bg-primary-black gap-x-2 cursor-pointer hover:opacity-80"
             onClick={handleOpenDifficulty}
@@ -236,10 +236,7 @@ function TaskEditor() {
             </svg>
           </button>
           {openDifficulty && (
-            <DifficultyDropdown
-              onDifficultyClick={onDifficultyClick}
-              ref={difficultyRef}
-            />
+            <DifficultyDropdown onDifficultyClick={onDifficultyClick} />
           )}
         </div>
         <button
