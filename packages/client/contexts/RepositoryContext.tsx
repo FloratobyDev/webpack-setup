@@ -20,7 +20,7 @@ type RepositoryContextType = {
   journals: JournalType[];
   setJournals: (journals: JournalType[]) => void;
   tasks: TaskType[];
-  setTasks: (tasks: TaskType[]) => void;
+  setTasks: any;
   pushList: PushType[];
   setPushList: (args: (pushList: PushType[]) => PushType[]) => void;
   currentRepository: RepositoryType;

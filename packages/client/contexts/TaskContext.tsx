@@ -1,5 +1,11 @@
 import { ChecklistType, TaskType } from "@client/types";
-import React, { createContext, ReactNode, useContext, useMemo } from "react";
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 import { useRepository } from "./RepositoryContext";
 
 type TaskContextType = {
@@ -13,7 +19,10 @@ type TaskContextType = {
   ) => void;
   onUpdateId: (oldId: string, newId: string) => void;
   onRemoveTask: (taskId: string) => void;
-  updateChecklistByTaskId: (taskId: string, newChecklist: ChecklistType[]) => void;
+  updateChecklistByTaskId: (
+    taskId: string,
+    newChecklist: ChecklistType[],
+  ) => void;
 };
 
 const TaskContext = createContext<TaskContextType>(undefined);
@@ -26,15 +35,24 @@ function TaskProvider({ children }: Props) {
   const { tasks, setTasks } = useRepository();
 
   function onUpdateId(oldId: string, newId: string) {
-    const newTaskIdSync = tasks.map((t: TaskType) => {
-      if (String(t.id) === oldId) {
-        return { ...t, id: newId };
-      }
-      return t;
+    setTasks((prevTasks) => {
+      const newTaskIdSync = prevTasks.map((t: TaskType) => {
+        if (String(t.id) === oldId) {
+          return { ...t, id: newId };
+        }
+        return t;
+      });
+      return newTaskIdSync;
     });
-    console.log("newId", newTaskIdSync, "tasks", tasks);
+    // const newTaskIdSync = tasks.map((t: TaskType) => {
+    //   if (String(t.id) === oldId) {
+    //     return { ...t, id: newId };
+    //   }
+    //   return t;
+    // });
+    // console.log("newId", newTaskIdSync, "tasks", tasks);
 
-    setTasks(newTaskIdSync);
+    // setTasks(newTaskIdSync);
   }
 
   function onUpdateTask(taskId: string, state: string) {
@@ -67,17 +85,24 @@ function TaskProvider({ children }: Props) {
     taskId: string,
     newChecklist: ChecklistType[],
   ) {
+    console.log("tasks", tasks, taskId);
 
-    console.log('tasks', tasks);
-    
     const newTasks = tasks.map((t: TaskType) => {
       if (t.id === taskId) {
+        console.log("new checklist", newChecklist, taskId, t.id);
         return { ...t, checklists: newChecklist };
       }
       return t;
     });
+
+    console.log("newTask", newTasks);
+
     setTasks(newTasks);
   }
+
+  useEffect(() => {
+    console.log("tasks UPDATE: ", tasks);
+  }, [tasks]);
 
   function onUpdateChecklist(
     taskId: string,

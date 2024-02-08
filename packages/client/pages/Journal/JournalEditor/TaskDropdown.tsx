@@ -56,59 +56,61 @@ function TaskDropdown({ selectedTasks, onSave }: Props) {
         setStagedTasks([]);
       }}
     >
-      <div className="flex gap-x-2 min-w-72 pb-2">
-        <div className="flex flex-col gap-2 w-full">
+      <div className="flex gap-x-2 min-w-72 pb-2 h-full">
+        <div className="flex flex-col gap-2 w-full h-full">
           <SearchBar
-            className="h-8"
+            className="h-10"
             invert
             onChange={handleSearchChange}
             search={search}
             show
           />
-          <div className="flex flex-col gap-y-1 text-white w-full border-t border-primary-outline py-2">
+          <div className="flex flex-col gap-y-1 text-white w-full border-t border-primary-outline py-2 h-72">
             <p className="text-paragraph text-sm indent-1 font-extrabold">
               Tasks
             </p>
-            {modifiedTasksBySearch.length === 0 && (
-              <p className="text-sub-paragraph text-sm indent-1 italic">No tasks found</p>
-            )}
-            {modifiedTasksBySearch.map((task) => {
-              const isTaskStaged = stagedTasks.includes(task);
+            <div className="overflow-auto flex flex-col gap-y-1 h-full">
+              {modifiedTasksBySearch.length === 0 && (
+                <p className="text-sub-paragraph text-sm indent-1 italic">No tasks found</p>
+              )}
+              {modifiedTasksBySearch.map((task) => {
+                const isTaskStaged = stagedTasks.includes(task);
 
-              const taskClasses = classNames(
-                "flex justify-between items-center gap-x-2 px-3 py-1.5 rounded-md font-medium text-sm w-full cursor-pointer",
-                {
-                  "text-paragraph bg-black-75": !isTaskStaged,
-                  "text-primary-black bg-paragraph": isTaskStaged,
-                },
-              );
+                const taskClasses = classNames(
+                  "flex justify-between items-center gap-x-2 px-3 py-1.5 rounded-md font-medium text-sm w-full cursor-pointer",
+                  {
+                    "text-paragraph bg-black-75": !isTaskStaged,
+                    "text-primary-black bg-paragraph": isTaskStaged,
+                  },
+                );
 
-              const crossClass = classNames("transition-all duration-300", {
-                "rotate-45": isTaskStaged,
-                "rotate-0": !isTaskStaged,
-              });
+                const crossClass = classNames("transition-all duration-300", {
+                  "rotate-45": isTaskStaged,
+                  "rotate-0": !isTaskStaged,
+                });
 
-              return (
-                <div
-                  className={taskClasses}
-                  key={`task-${task.id}`}
-                  onClick={() => {
-                    if (isTaskStaged) {
-                      setStagedTasks(
-                        stagedTasks.filter((stagedTask) => stagedTask !== task),
-                      );
-                    } else {
-                      setStagedTasks([...stagedTasks, task]);
-                    }
-                  }}
-                >
-                  <p>{task.title}</p>
-                  <div className={crossClass}>
-                    <Cross black={isTaskStaged} />
+                return (
+                  <div
+                    className={taskClasses}
+                    key={`task-${task.id}`}
+                    onClick={() => {
+                      if (isTaskStaged) {
+                        setStagedTasks(
+                          stagedTasks.filter((stagedTask) => stagedTask !== task),
+                        );
+                      } else {
+                        setStagedTasks([...stagedTasks, task]);
+                      }
+                    }}
+                  >
+                    <p>{task.title}</p>
+                    <div className={crossClass}>
+                      <Cross black={isTaskStaged} />
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

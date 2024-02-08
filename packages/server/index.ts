@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const buildOctokitWebhooks = require("./buildOctokitWebhooks.ts");
 const authController = require("./controllers/authRoutes.ts");
 const journalController = require("./controllers/journalRoutes.ts");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 // const verifyToken = require("./verifyToken.ts");
 
 dotenv.config();
@@ -17,12 +18,20 @@ app.use(express.json()); // Use express.json() middleware
 app.use(express.urlencoded({ extended: true })); // Use express.urlencoded() middleware
 
 // Serve static files from the React app
+app.use(cors());
 if (process.env.NODE_ENV === "development") {
-  app.use(cors());
 }
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("public"));
+  app.use(
+    "/api",
+    createProxyMiddleware({
+      target: "http://localhost:4242",
+      changeOrigin: true,
+      pathRewrite: { "^/api": "" },
+    }),
+  );
 }
 
 buildOctokitWebhooks();
@@ -57,7 +66,7 @@ app.get("/verify", validateTokenMiddleware, async (req, res) => {
   }
 });
 
-app.get("/user", validateTokenMiddleware, (req, res) => {
+app.post("/user", validateTokenMiddleware, (req, res) => {
   db.raw("SELECT * FROM users");
   res.json({ user: "Michael" });
 });
@@ -75,7 +84,7 @@ app.get("/users", validateTokenMiddleware, (req, res) => {
 });
 
 app.use("/auth", authController);
-app.use("/journal", validateTokenMiddleware, journalController);
+app.use("/journal", journalController);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}`);

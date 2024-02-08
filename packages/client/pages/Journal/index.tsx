@@ -2,7 +2,7 @@ import { H2 } from "@client/components/headings";
 import JournalCards from "./JournalCards";
 import JournalEditor from "./JournalEditor";
 import JournalRepositories from "./JournalRepositories";
-import React from "react";
+import React, { useState } from "react";
 import RepositoryInfo from "./RepositoryInfo";
 import SubLayout from "@client/components/layout/SubLayout";
 import TaskCards from "./TaskCards";
@@ -18,6 +18,7 @@ function Journal() {
     changeRepository,
     updateRepositoryAlertById,
   } = useRepository();
+  const [userData, setUserData] = useState(null);
 
   const [updateNotification, { isLoading, isSuccess, isError, error }] =
     useUpdateNotificationsMutation();
@@ -27,7 +28,7 @@ function Journal() {
       <div className="flex items-center justify-center w-full">
         <H2 classname="italic text-sub-paragraph">No repositories available</H2>
       </div>
-    ) ;
+    );
   }
 
   const installApp = () => {
@@ -37,14 +38,25 @@ function Journal() {
     window.location.href = githubInstallUrl;
   };
 
-  function handleNotificationClick() {
+  async function handleNotificationClick() {
     if (currentRepository.hasAlerts) {
       console.log(
         "currentRepository.notifications",
         currentRepository.notifications,
       );
-
-      updateNotification(currentRepository.notifications);
+      await fetch("/api/journal/notifications", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(currentRepository.notifications),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("data user", data);
+          // setUserData(data.user);
+        });
+      // updateNotification(currentRepository.notifications);
       updateRepositoryAlertById(currentRepository.id);
     }
   }
@@ -78,7 +90,9 @@ function Journal() {
       </div>
       <div
         className="flex-1 flex flex-col overflow-auto h-full"
-        onClick={handleNotificationClick}
+        onClick={async () => {
+          handleNotificationClick();
+        }}
       >
         <SubLayout classnames="basis-0" transparent>
           <JournalEditor />

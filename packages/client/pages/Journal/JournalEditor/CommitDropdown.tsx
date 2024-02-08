@@ -74,9 +74,9 @@ function CommitDropdown({ commits, onSave }: Props) {
         setSelectedStagedCommits([]);
       }}
     >
-      <div className="text-paragraph pb-2">
-        <div className="flex gap-x-2">
-          <div className="flex flex-col gap-2">
+      <div className="text-paragraph pb-2 w-full">
+        <div className="flex gap-x-2 w-full">
+          <div className="flex flex-col gap-2 w-full">
             <div className="flex gap-x-2">
               <SearchBar
                 className="h-8"
@@ -103,7 +103,7 @@ function CommitDropdown({ commits, onSave }: Props) {
                 </svg>
               </div>
             </div>
-            <div className="flex flex-col gap-y-1">
+            <div className="flex flex-col gap-y-1 h-72 w-full overflow-y-auto overflow-x-hidden">
               {map(pushList, (push, key) => (
                 <PushInfo
                   key={key}

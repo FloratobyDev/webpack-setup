@@ -9,7 +9,7 @@
     "server": "nodemon ./packages/server/index.ts",
     "build:client": "webpack --config ./webpack.client.config.js --mode production",
     "build:server": "webpack --config ./webpack.server.config.js --mode production",
-    "build": "npm run client && npm run server",
+    "build": "npm run build:client && npm run build:server",
     "start": "node ./dist/server.js",
     "test": "jest /packages/client/test"
   },
@@ -32,6 +32,7 @@
     "dedent": "^1.5.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
     "lodash": "^4.17.21",

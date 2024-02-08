@@ -56,6 +56,19 @@ journalRouter.get("/repositories", async (req, res) => {
   }
 });
 
+journalRouter.patch("/user", async (req, res) => {
+  try {
+    verifyToken(req, async (err, userInfo) => {
+      if (err) {
+        return res.status(403).json({ message: "Forbidden" });
+      }
+      return res.status(200).json(userInfo);
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal Server Error", err });
+  }
+});
+
 journalRouter.get("/repositories/:repoId", async (req, res) => {
   console.log("none here");
 
@@ -229,13 +242,15 @@ journalRouter.patch("/notifications", async (req, res) => {
       if (err) {
         return res.status(403).json({ message: "Forbidden" });
       }
-      const notificationIds = req.body.map((notification) =>
-        Number(notification.id),
-      );
-      await journalDb.raw(
-        `UPDATE notifications SET has_seen=true WHERE id = ANY(?) RETURNING *`,
-        [notificationIds],
-      );
+      console.log("req.body", req.body);
+
+      // const notificationIds = req.body.map((notification) =>
+      //   Number(notification.id),
+      // );
+      // await journalDb.raw(
+      //   `UPDATE notifications SET has_seen=true WHERE id = ANY(?) RETURNING *`,
+      //   [notificationIds],
+      // );
 
       return res.status(200).json({ message: "Notifications updated" });
     });
@@ -281,8 +296,8 @@ journalRouter.post("/tasks", async (req, res) => {
         }, 2000);
       });
 
-      console.log('value', value);
-      
+      console.log("value", value);
+
       const { githubId } = userInfo;
       const { newTask, rest } = req.body;
 
@@ -300,8 +315,8 @@ journalRouter.post("/tasks", async (req, res) => {
         ],
       );
 
-      console.log("newTaskId", newTaskId.rows);
-      console.log("newTask.checklists", newTask.checklists);
+      // console.log("newTaskId", newTaskId.rows);
+      // console.log("newTask.checklists", newTask.checklists);
 
       const modifiedChecklistWithoutId = newTask.checklists.map((checklist) => {
         return {
@@ -312,24 +327,26 @@ journalRouter.post("/tasks", async (req, res) => {
         };
       });
 
-      const newTaskChecklists = await journalDb("checklists")
-        .returning("*")
-        .insert(modifiedChecklistWithoutId);
+      if (modifiedChecklistWithoutId.length) {
+        const newTaskChecklists = await journalDb("checklists")
+          .returning("*")
+          .insert(modifiedChecklistWithoutId);
+        const newTaskChecklistsWithoutTaskIdAndUserId = newTaskChecklists.map(
+          (checklist) => {
+            return {
+              id: checklist.id,
+              content: checklist.content,
+              is_done: checklist.is_done,
+            };
+          },
+        );
+        return res.status(200).json({
+          id: newTaskId.rows[0].id,
+          checklists: newTaskChecklistsWithoutTaskIdAndUserId,
+        });
+      }
 
-      const newTaskChecklistsWithoutTaskIdAndUserId = newTaskChecklists.map(
-        (checklist) => {
-          return {
-            id: checklist.id,
-            content: checklist.content,
-            is_done: checklist.is_done,
-          };
-        },
-      );
-
-      return res.status(200).json({
-        id: newTaskId.rows[0].id,
-        checklists: newTaskChecklistsWithoutTaskIdAndUserId,
-      });
+      return res.status(200).json({ id: newTaskId.rows[0].id, checklists: [] });
     });
   } catch (err) {
     console.log("err", err);

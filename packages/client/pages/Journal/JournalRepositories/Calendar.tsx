@@ -55,7 +55,7 @@ function Calendar() {
     [date],
   );
 
-  console.log("calendarData", calendarData);
+  // console.log("calendarData", calendarData);
 
   const goToPreviousMonth = () => {
     setDate((currentDate) => currentDate.subtract(1, "month"));

@@ -6,10 +6,10 @@ module.exports = {
   development: {
     client: "postgresql",
     connection: {
-      host: 'localhost',
-      user: 'postgres',
-      password: 'password',
-      database: 'newest_db',
+      host: "localhost",
+      user: "postgres",
+      password: "password",
+      database: "newest_db",
     },
     migrations: {
       directory: __dirname + "/packages/server/migrations",
@@ -38,15 +38,11 @@ module.exports = {
   production: {
     client: "postgresql",
     connection: {
-      database: "my_db",
-      user: "username",
-      password: "password",
-    },
-    pool: {
-      min: 2,
-      max: 10,
+      connectionString: process.env.INTERNAL_DB,
+      ssl: { rejectUnauthorized: false },
     },
     migrations: {
+      directory: __dirname + "/packages/server/migrations",
       tableName: "knex_migrations",
     },
   },

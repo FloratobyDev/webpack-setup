@@ -108,7 +108,10 @@ function PushInfo({
               if (pushSelected) {
                 onDeselectMultiple(pushInfo.commits);
               } else {
-                onSelectMultiple(pushInfo.commits);
+                const unselectedCommits = pushInfo.commits.filter(
+                  (commit) => !selectedCommits.includes(commit),
+                );
+                onSelectMultiple(unselectedCommits);
               }
             }}
           >
@@ -134,8 +137,20 @@ function PushInfo({
                   onClick={() => {
                     if (selectedCommits.includes(commitInfo)) {
                       onDeselect(commitInfo);
+                      if (
+                        selectedCommits.length - 1 <
+                        pushInfo.commits.length
+                      ) {
+                        setPushSelected(false);
+                      }
                     } else {
                       onSelect(commitInfo);
+                      if (
+                        selectedCommits.length + 1 >=
+                        pushInfo.commits.length
+                      ) {
+                        setPushSelected(true);
+                      }
                     }
                   }}
                 >

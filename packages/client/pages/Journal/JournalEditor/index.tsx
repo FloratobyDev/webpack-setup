@@ -1,11 +1,12 @@
 import { CommitType, JournalType, TaskType } from "@client/types";
 import React, { useEffect, useRef, useState } from "react";
 import CommitDropdown from "./CommitDropdown";
+import JournalViewer from "../JournalCards/JournalViewer";
 import Paper from "@client/components/layout/Paper";
 import TaskDropdown from "./TaskDropdown";
 import { useAddJournalMutation } from "@client/store";
 import { useRepository } from "@client/contexts/RepositoryContext";
-import JournalViewer from "../JournalCards/JournalViewer";
+import axios from "axios";
 
 function JournalEditor() {
   const [title, setTitle] = useState("");
@@ -36,12 +37,19 @@ function JournalEditor() {
       is_bookmarked: false,
     };
 
-    addJournal({
+    axios.post("/api/journal/journals", {
       journal: newJournal,
       rest: {
         repoId: currentRepository?.id,
       },
     });
+
+    // addJournal({
+    //   journal: newJournal,
+    //   rest: {
+    //     repoId: currentRepository?.id,
+    //   },
+    // });
     setJournals([newJournal, ...journals]);
     setTitle("");
     setContent("");

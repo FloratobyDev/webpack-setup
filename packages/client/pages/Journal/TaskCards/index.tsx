@@ -58,7 +58,7 @@ function TaskCards() {
         handleValueChange={setActiveTab}
         options={mappedProgressValues}
       />
-      <div className="overflow-auto h-full flex flex-col gap-y-2">
+      <div className="overflow-auto flex flex-col gap-y-2">
         {map(modifiedTasks, (task) => {
           return <Task key={task.id} taskInfo={task} />;
         })}

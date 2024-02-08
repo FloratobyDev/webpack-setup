@@ -15,7 +15,7 @@ function ChecklistDropdown(
 ) {
   const [currentChecklist, setCurrentChecklist] = useState<string>("");
 
-  console.log("currentChecklist", currentChecklist);
+  // console.log("currentChecklist", currentChecklist);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {

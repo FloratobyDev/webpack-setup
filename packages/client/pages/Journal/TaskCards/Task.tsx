@@ -8,12 +8,12 @@ import React, {
   useState,
 } from "react";
 import classNames from "classnames";
+import dayjs from "dayjs";
 import ProgressDropdown from "./ProgressDropdown";
 import RadioButton from "@client/components/buttons/RadioButton";
+import useOutsideClick from "@client/hooks/useOutsideClick";
 import { useTask } from "@client/contexts/TaskContext";
 import { useUpdateChecklistMutation } from "@client/store";
-import useOutsideClick from "@client/hooks/useOutsideClick";
-import dayjs from "dayjs";
 // import { headerTabs } from ".";
 
 type Props = {
@@ -27,7 +27,7 @@ type ChecklistProps = {
 // TODO: Add error handling in case of failure
 function Checklist({ item, onRemove }: ChecklistProps) {
   return (
-    <div className="flex gap-x-2 items-center py-1">
+    <div className="flex items-center gap-x-2 py-1">
       <RadioButton
         checked={item.is_done}
         onClick={() => {

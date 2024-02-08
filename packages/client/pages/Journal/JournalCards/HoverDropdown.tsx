@@ -30,7 +30,7 @@ function HoverDropdown({ label, hovered, children }: Props) {
     <div className={divClasses} onClick={handleOpen} ref={divRef}>
       <button>{label}</button>
       {show && (
-        <div className="absolute right-0 bg-primary-black border border-primary-outline p-1.5 rounded-smd z-10 top-8">
+        <div className="absolute right-0 bg-primary-black border border-primary-outline p-1.5 rounded-smd z-10 top-8 flex flex-col">
           {children}
         </div>
       )}
