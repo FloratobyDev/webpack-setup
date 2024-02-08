@@ -131,7 +131,7 @@ module.exports = function buildOctokitWebhooks() {
     }
   });
 
-  const port = 10000;
+  const port = 3000;
   const host = "https://git-journal-app.onrender.com";
   const webhookPath = "/api/webhook";
   const localWebhookUrl = `${host}${webhookPath}`;

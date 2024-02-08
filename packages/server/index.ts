@@ -27,7 +27,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(
     "/api",
     createProxyMiddleware({
-      target: "http://localhost:4242",
+      target: "https://git-journal-app.onrender.com",
       changeOrigin: true,
       pathRewrite: { "^/api": "" },
     }),
