@@ -131,10 +131,10 @@ module.exports = function buildOctokitWebhooks() {
     }
   });
 
-  const port = 3000;
-  const host = "localhost";
+  const port = 10000;
+  const host = "https://git-journal-app.onrender.com";
   const webhookPath = "/api/webhook";
-  const localWebhookUrl = `http://${host}:${port}${webhookPath}`;
+  const localWebhookUrl = `${host}${webhookPath}`;
 
   const middleware = createNodeMiddleware(octokitApp.webhooks, {
     path: webhookPath,
