@@ -8,6 +8,7 @@ const buildOctokitWebhooks = require("./buildOctokitWebhooks.ts");
 const authController = require("./controllers/authRoutes.ts");
 const journalController = require("./controllers/journalRoutes.ts");
 const { createProxyMiddleware } = require("http-proxy-middleware");
+const path = require('path');
 // const verifyToken = require("./verifyToken.ts");
 
 dotenv.config();
@@ -85,6 +86,10 @@ app.get("/users", validateTokenMiddleware, (req, res) => {
 
 app.use("/auth", authController);
 app.use("/journal", journalController);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on http://localhost:${process.env.PORT}`);
