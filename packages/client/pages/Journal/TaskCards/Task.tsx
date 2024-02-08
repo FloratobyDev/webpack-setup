@@ -101,7 +101,7 @@ function Task({ taskInfo }: Props) {
 
   return (
     <div
-      className="rounded-md bg-primary-black select-none"
+      className="rounded-md bg-primary-black select-none transition-all duration-500 ease-in-out"
       data-testid={taskInfo.id}
     >
       <div className="overflow-hidden rounded-t-md">
@@ -154,12 +154,15 @@ function Task({ taskInfo }: Props) {
           </div>
         </>
       )}
-      <div className="px-3 py-2 text-sm text-sub-paragraph italic flex items-center gap-x-2">
-        <span className={difficultyClass} />
-        {taskInfo?.due_date && (
-          <p>Due date: {dayjs(taskInfo.due_date).format("MM/DD/YYYY")}</p>
-        )}
-        {!taskInfo?.due_date && <p>Due date: N/A</p>}
+      <div className="px-3 py-2 text-sm text-sub-paragraph italic flex items-center gap-x-2 justify-between">
+        <div>
+          <span className={difficultyClass} />
+          {taskInfo?.due_date && (
+            <p>Due date: {dayjs(taskInfo.due_date).format("MM/DD/YYYY")}</p>
+          )}
+          {!taskInfo?.due_date && <p>Due date: N/A</p>}
+        </div>
+        <p className="text-xs text-sub-paragraph">#{taskInfo.id}</p>
       </div>
     </div>
   );

@@ -274,6 +274,15 @@ journalRouter.post("/tasks", async (req, res) => {
   try {
     verifyToken(req, async (err, userInfo) => {
       // const { githubId } = journalJwt.decode(req.cookies.accessToken);
+      const value = await new Promise((resolve) => {
+        setTimeout(() => {
+          // return res.status(400).json({ message: "Failed" });
+          resolve(null);
+        }, 2000);
+      });
+
+      console.log('value', value);
+      
       const { githubId } = userInfo;
       const { newTask, rest } = req.body;
 
@@ -335,7 +344,6 @@ journalRouter.patch("/tasks/:id", async (req, res) => {
       if (err) {
         return res.status(403).json({ message: "Forbidden" });
       }
-      // const { githubId } = journalJwt.decode(req.cookies.accessToken);
       const { githubId } = userInfo;
       const { id } = req.params;
       const { state } = req.body;

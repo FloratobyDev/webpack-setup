@@ -27,7 +27,7 @@ function Journal() {
       <div className="flex items-center justify-center w-full">
         <H2 classname="italic text-sub-paragraph">No repositories available</H2>
       </div>
-    );
+    ) ;
   }
 
   const installApp = () => {
@@ -51,7 +51,6 @@ function Journal() {
 
   return (
     <div className="flex h-full w-full">
-      {/* <button onClick={installApp}>Install App</button> */}
       <div className="w-[20%] max-w-[18%] flex-col min-h-full h-full border-r border-r-primary-outline">
         <SubLayout
           classnames="overflow-auto flex border-b border-b-primary-outline"

@@ -1,4 +1,10 @@
-import { ChecklistType, DifficultyTypes, ProgressValues } from "@client/types";
+import {
+  ChecklistType,
+  DifficultyTypes,
+  JournalType,
+  ProgressValues,
+  TaskType,
+} from "@client/types";
 import React, { useEffect, useRef, useState } from "react";
 import Calendar from "./Calendar";
 import ChecklistDropdown from "./ChecklistDropdown";
@@ -11,6 +17,7 @@ import { useAddTasksMutation } from "@client/store";
 import useOutsideClick from "@client/hooks/useOutsideClick";
 import { useRepository } from "@client/contexts/RepositoryContext";
 import { useTask } from "@client/contexts/TaskContext";
+import { useSnackbar } from "@client/contexts/Snackbar";
 
 function TaskEditor() {
   const [openChecklist, setOpenChecklist] = useState(true);
@@ -19,31 +26,105 @@ function TaskEditor() {
   const [difficulty, setDifficulty] = useState(DifficultyTypes.EASY);
   const [openDeadline, setOpenDeadline] = useState(false);
   const [taskName, setTaskName] = useState("");
-  const { onAddTask } = useTask();
+  const { onAddTask, onUpdateId, onRemoveTask, updateChecklistByTaskId } =
+    useTask();
   const [dueDate, setDueDate] = useState(null);
 
   const checkListRef = useRef(null);
   const difficultyRef = useRef(null);
   const deadlineRef = useRef(null);
 
-  const [addTask, { isSuccess, isLoading, data }] = useAddTasksMutation();
+  const [addTask, { isSuccess, isError, isLoading, data }] =
+    useAddTasksMutation();
   const { currentRepository } = useRepository();
+  const [backupJournal, setBackupJournal] = useState<TaskType>();
+  const generatedIdRef = useRef(null);
+  const generatedChecklistIdRef = useRef([]);
+  const { setToasts } = useSnackbar();
+
+  console.log("data", data);
 
   useEffect(() => {
+    if (isError) {
+      console.log(
+        "error",
+        data,
+        isError,
+        isSuccess,
+        "backupJournal",
+        backupJournal,
+      );
+
+      setToasts((prevToasts) => [
+        ...prevToasts,
+        {
+          id: generatedIdRef.current,
+          message: "Failed to add task",
+          type: "error",
+        },
+      ]);
+      onRemoveTask(backupJournal.id);
+      setChecklists(backupJournal.checklists);
+      setDifficulty(backupJournal.difficulty);
+      setDueDate(backupJournal?.due_date);
+      setTaskName(backupJournal.title);
+    }
     if (isSuccess) {
-      onAddTask({
+      console.log("data", data);
+      updateChecklistByTaskId(generatedIdRef.current, data.checklists);
+      onUpdateId(generatedIdRef.current, String(data.id));
+      // onAddTask({
+      //   title: taskName,
+      //   checklists: data.checklists,
+      //   difficulty,
+      //   state: ProgressValues.OPEN,
+      //   id: String(data.id),
+      //   due_date: dueDate,
+      // });
+      // setChecklists([]);
+      // setDifficulty(DifficultyTypes.EASY);
+      // setDueDate(null);
+      // setTaskName("");
+    }
+  }, [data, isError, isSuccess]);
+
+  function handleAddTask() {
+    const randomString = generateRandomString(5);
+    generatedIdRef.current = randomString;
+    addTask({
+      newTask: {
         title: taskName,
-        checklists: data.checklists,
+        checklists,
         difficulty,
         state: ProgressValues.OPEN,
-        id: String(data.id),
+        id: randomString,
         due_date: dueDate,
-      });
-      setChecklists([]);
-      setDifficulty(DifficultyTypes.EASY);
-      setTaskName("");
-    }
-  }, [isSuccess]);
+      },
+      rest: {
+        repo_id: currentRepository?.id,
+      },
+    });
+    onAddTask({
+      title: taskName,
+      checklists,
+      difficulty,
+      state: ProgressValues.OPEN,
+      id: randomString,
+      due_date: dueDate,
+    });
+    setBackupJournal({
+      title: taskName,
+      checklists,
+      difficulty,
+      state: ProgressValues.OPEN,
+      id: randomString,
+      due_date: dueDate,
+    });
+    setChecklists([]);
+    setDifficulty(DifficultyTypes.EASY);
+    setDueDate(null);
+    setTaskName("");
+  }
 
   function handleOpenChecklist() {
     setOpenChecklist(!openChecklist);
@@ -51,12 +132,14 @@ function TaskEditor() {
   }
 
   function onAddCheck(currentChecklist: string) {
+    const randomString = generateRandomString(5);
+    generatedChecklistIdRef.current.push(randomString);
     setChecklists([
       ...checklists,
       {
         content: currentChecklist,
         is_done: false,
-        id: generateRandomString(10),
+        id: randomString,
       },
     ]);
   }
@@ -91,12 +174,11 @@ function TaskEditor() {
     setOpenDeadline(false);
   });
 
-  const difficultyClass = classNames(
-    "absolute h-2 w-2 top-0 right-0 rounded-full",
+  const buttonClasses = classNames(
+    "rounded-smd px-3 py-1.5 text-primary-black flex items-center gap-x-2 cursor-pointer hover:opacity-80",
     {
-      "bg-green-400": difficulty === DifficultyTypes.EASY,
-      "bg-red-400": difficulty === DifficultyTypes.HARD,
-      "bg-yellow-400": difficulty === DifficultyTypes.MEDIUM,
+      "bg-primary-yellow": !isError,
+      "bg-red-400": isError,
     },
   );
 
@@ -239,26 +321,9 @@ function TaskEditor() {
             <DifficultyDropdown onDifficultyClick={onDifficultyClick} />
           )}
         </div>
-        <button
-          className="rounded-smd px-3 py-1.5 text-primary-black flex items-center bg-primary-yellow gap-x-2 cursor-pointer hover:opacity-80"
-          onClick={() => {
-            addTask({
-              newTask: {
-                title: taskName,
-                checklists,
-                difficulty,
-                state: ProgressValues.OPEN,
-                id: generateRandomString(5),
-                due_date: dueDate,
-              },
-              rest: {
-                repo_id: currentRepository?.id,
-              },
-            });
-          }}
-        >
-          {isLoading && <p className="font-extrabold text-sm">Loading...</p>}
-          {!isLoading && <p className="font-extrabold text-sm">Add Task</p>}
+        <button className={buttonClasses} onClick={handleAddTask}>
+          {!isError && <p className="font-extrabold text-sm">Add Task</p>}
+          {isError && <p className="font-extrabold text-sm">Retry</p>}
         </button>
       </div>
     </Paper>

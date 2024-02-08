@@ -41,6 +41,7 @@ module.exports = {
         "success": "#32E714",
         "primary-yellow": "#DFB626",
         "black-50": "#5C5C5C",
+        "primary-red": "#E72D14",
       },
     },
   },

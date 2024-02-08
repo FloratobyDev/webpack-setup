@@ -11,6 +11,9 @@ type TaskContextType = {
     checklistId: string,
     value: boolean,
   ) => void;
+  onUpdateId: (oldId: string, newId: string) => void;
+  onRemoveTask: (taskId: string) => void;
+  updateChecklistByTaskId: (taskId: string, newChecklist: ChecklistType[]) => void;
 };
 
 const TaskContext = createContext<TaskContextType>(undefined);
@@ -21,6 +24,18 @@ type Props = {
 
 function TaskProvider({ children }: Props) {
   const { tasks, setTasks } = useRepository();
+
+  function onUpdateId(oldId: string, newId: string) {
+    const newTaskIdSync = tasks.map((t: TaskType) => {
+      if (String(t.id) === oldId) {
+        return { ...t, id: newId };
+      }
+      return t;
+    });
+    console.log("newId", newTaskIdSync, "tasks", tasks);
+
+    setTasks(newTaskIdSync);
+  }
 
   function onUpdateTask(taskId: string, state: string) {
     console.log("update checklist", taskId, state, tasks);
@@ -33,13 +48,35 @@ function TaskProvider({ children }: Props) {
       }
       return t;
     });
-    console.log("newTaskProgress", newTaskProgress, "tasks", tasks);
 
     setTasks(newTaskProgress);
   }
 
   function onAddTask(task: TaskType) {
     setTasks([...tasks, task]);
+  }
+
+  function onRemoveTask(taskId: string) {
+    const newTasks = tasks.filter((t: TaskType) => t.id !== taskId);
+    setTasks(newTasks);
+  }
+
+  // function onUpdateChecklistId
+
+  function updateChecklistByTaskId(
+    taskId: string,
+    newChecklist: ChecklistType[],
+  ) {
+
+    console.log('tasks', tasks);
+    
+    const newTasks = tasks.map((t: TaskType) => {
+      if (t.id === taskId) {
+        return { ...t, checklists: newChecklist };
+      }
+      return t;
+    });
+    setTasks(newTasks);
   }
 
   function onUpdateChecklist(
@@ -71,6 +108,9 @@ function TaskProvider({ children }: Props) {
       onUpdateTask,
       onAddTask,
       onUpdateChecklist,
+      onUpdateId,
+      onRemoveTask,
+      updateChecklistByTaskId,
     }),
     [tasks],
   );

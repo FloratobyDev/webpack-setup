@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "@client/contexts/AuthProvider";
+import { H1 } from "@client/components/headings";
 
 /**
  * We would like to be able to login with GITHUB
@@ -43,9 +44,17 @@ function Login() {
 
   if (!isVerified)
     return (
-      <div className=" bg-primary-black h-screen flex items-center justify-center text-white">
-        <h1>Not Authorized</h1>
-        <button onClick={authorizeApp}>Authorize</button>
+      <div className=" bg-primary-black h-screen flex flex-col items-center justify-center text-white">
+        {/* <p className="text-2xl">Welcome to</p> */}
+        <h1 className="text-primary-yellow text-8xl">
+          GIT<span className="italic text-paragraph">Reflect</span>
+        </h1>
+        <button
+          className="duration-500 transition-all px-4 py-2 hover:bg-primary-yellow hover:text-primary-black text-primary-yellow border border-primary-yellow font-medium rounded-smd mt-8"
+          onClick={authorizeApp}
+        >
+          Go to App
+        </button>
       </div>
     );
 
