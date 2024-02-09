@@ -24,12 +24,27 @@ if (process.env.NODE_ENV === "development") {
 }
 
 if (process.env.NODE_ENV === "production") {
-  app.use(cors({
-    origin: "https://git-journal-frontend.onrender.com",
-    credentials: true,
-  }));
+  app.use((req, res, next) => {
+    res.header(
+      "Access-Control-Allow-Origin",
+      "https://git-journal-frontend.onrender.com",
+    );
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept",
+    );
+    next();
+  });
+
+  app.use(
+    cors({
+      origin: "https://git-journal-frontend.onrender.com",
+      credentials: true,
+    }),
+  );
   app.use(express.static("public"));
-  
+
   const pathRewriteMiddleware = (req, res, next) => {
     // Example of rewriting: replace "/api" with "/new-api" in the path
     req.url = req.url.replace(/^\/api/, "");
@@ -51,8 +66,8 @@ const validateTokenMiddleware = (req, res, next) => {
   // Get the token from the request headers
   const token = req.cookies.accessToken;
 
-  console.log('tokennnn', token);
-  
+  console.log("tokennnn", token);
+
   if (token == null) return res.sendStatus(401);
 
   // Verify the token
