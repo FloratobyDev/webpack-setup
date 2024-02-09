@@ -84,7 +84,6 @@ authRouter.get("/authorize", async (req, res) => {
         //samesite none secure
         return res
           .cookie("accessToken", token, {
-            domain: window.location.hostname,
             httpOnly: true,
             sameSite: "none",
             secure: true,

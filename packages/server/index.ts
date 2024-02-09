@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === "production") {
   // Use cors middleware for CORS configuration
   app.use(
     cors({
-      origin: "https://git-journal-frontend.onrender.com",
+      origin: "*",
       credentials: true,
       allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept",
     }),
@@ -56,7 +56,7 @@ const validateTokenMiddleware = (req, res, next) => {
   // Get the token from the request headers
   const token = req.cookies.accessToken;
 
-  console.log("tokennnn", token);
+  console.log("tokennnn", token, req.cookies);
 
   if (token == null) return res.sendStatus(401);
 
