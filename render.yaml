@@ -23,9 +23,9 @@ services:
     - key: WEBHOOK_SECRET
       value: process.env.WEBHOOK_SECRET
 
-- type: static
+- type: web
   name: git-journal-frontend
-  env: static
+  runtime: static
   buildCommand: npm run build:client
   staticPublishPath: public
   plan: free
