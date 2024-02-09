@@ -106,10 +106,6 @@ app.post("/users", validateTokenMiddleware, (req, res) => {
 app.use("/auth", authController);
 app.use("/journal", journalController);
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "index.html"));
-});
-
 app.listen(process.env.PORT, () => {
-  console.log(`Server is running on http://localhost:${process.env.PORT}`);
+  console.log(`Server is running on PORT ${process.env.PORT}!`);
 });

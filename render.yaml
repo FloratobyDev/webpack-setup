@@ -1,0 +1,36 @@
+services:
+- type: web
+  name: git-journal-backend
+  env: node
+  plan: free
+  buildCommand: npm install && npm run build:server
+  startCommand: npm run start
+  envVars:
+    - key: APP_ID
+      value: process.env.APP_ID
+    - key: CLIENT_ID
+      value: process.env.CLIENT_ID
+    - key: CLIENT_SECRET
+      value: process.env.CLIENT_SECRET
+    - key: GITHUB_TOKEN
+      value: process.env.GITHUB_TOKEN
+    - key: INTERNAL_DB
+      value: process.env.INTERNAL_DB
+    - key: JWT_SECRET
+      value: process.env.JWT_SECRET
+    - key: PRIVATE_KEY
+      value: process.env.PRIVATE_KEY
+    - key: WEBHOOK_SECRET
+      value: process.env.WEBHOOK_SECRET
+
+- type: static
+  name: git-journal-frontend
+  env: static
+  buildCommand: npm run build:client
+  staticPublishPath: public
+  plan: free
+  routes:
+    - type: rewrite
+      source: /api/*
+      destination: https://git-journal-backend.onrender.com/api
+  # other frontend configuration...
