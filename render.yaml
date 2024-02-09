@@ -30,6 +30,6 @@ services:
   staticPublishPath: public
   routes:
     - type: rewrite
-      source: /api/*
-      destination: https://git-journal-backend.onrender.com/api
+      source: /*
+      destination: /public/index.html
   # other frontend configuration...

@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import axios from "axios";
+import API from "@client/api";
 
 type AuthContextType = {
   currentUser: any;
@@ -27,8 +27,7 @@ function AuthProvider({ children }: Props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get("/api/verify")
+    API.get("/api/verify")
       .then((response) => {
         console.log("response: ", response.data);
 

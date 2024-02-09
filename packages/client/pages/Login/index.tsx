@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
+import API from "@client/api";
 import { useAuth } from "@client/contexts/AuthProvider";
-import { H1 } from "@client/components/headings";
 
 /**
  * We would like to be able to login with GITHUB
@@ -28,7 +27,7 @@ function Login() {
   };
 
   const addUser = () => {
-    axios
+    API
       .post("api/adduser", {
         username: "testuser",
         password: "testpassword",
