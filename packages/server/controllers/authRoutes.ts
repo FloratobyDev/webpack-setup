@@ -69,6 +69,7 @@ authRouter.get("/authorize", async (req, res) => {
       process.env.JWT_SECRET,
       (err, token) => {
         if (err) {
+          console.log('error signing token', err);
           return res
             .status(500)
             .redirect(`https://git-journal-frontend.onrender.com/login`);
@@ -83,7 +84,8 @@ authRouter.get("/authorize", async (req, res) => {
         return res
           .cookie("accessToken", token, {
             httpOnly: true,
-            sampleSite: true,
+            sameSite: "none",
+            secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
           })
           .status(200)
