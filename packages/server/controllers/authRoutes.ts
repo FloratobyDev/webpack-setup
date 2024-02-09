@@ -69,8 +69,17 @@ authRouter.get("/authorize", async (req, res) => {
       process.env.JWT_SECRET,
       (err, token) => {
         if (err) {
-          return res.status(500).redirect(`https://git-journal-frontend.onrender.com/login`);
+          return res
+            .status(500)
+            .redirect(`https://git-journal-frontend.onrender.com/login`);
         }
+
+        if (req.cookies.accessToken) {
+          return res
+            .status(200)
+            .redirect(`https://git-journal-frontend.onrender.com`);
+        }
+
         return res
           .cookie("accessToken", token, {
             httpOnly: true,
@@ -78,7 +87,7 @@ authRouter.get("/authorize", async (req, res) => {
             maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
           })
           .status(200)
-          .redirect(`https://git-journal-frontend.onrender.com/`);
+          .redirect(`https://git-journal-frontend.onrender.com`);
       },
     );
   } catch (err) {
