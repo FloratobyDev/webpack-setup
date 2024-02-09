@@ -24,6 +24,10 @@ if (process.env.NODE_ENV === "development") {
 }
 
 if (process.env.NODE_ENV === "production") {
+  app.use(cors({
+    origin: "https://git-journal-frontend.onrender.com",
+    credentials: true,
+  }));
   app.use(express.static("public"));
   
   const pathRewriteMiddleware = (req, res, next) => {
