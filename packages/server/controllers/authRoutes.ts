@@ -6,7 +6,7 @@ const authDb = require("../dbRequest.ts");
 authRouter.get("/authorize", async (req, res) => {
   try {
     const { code } = req.query;
-    // console.log("code", code);
+    console.log("code here", code);
 
     let response;
     await fetch("https://github.com/login/oauth/access_token", {
