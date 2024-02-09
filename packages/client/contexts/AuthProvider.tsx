@@ -27,14 +27,14 @@ function AuthProvider({ children }: Props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    API.get("/api/verify")
+    API.get("/api/verify", { withCredentials: true })
       .then((response) => {
         console.log("response: ", response.data);
         setIsVerified(true);
         setCurrentUser(response.data.user);
       })
       .catch((err) => {
-        console.log('err', err);
+        console.log("err", err);
         setIsVerified(false);
       })
       .finally(() => {

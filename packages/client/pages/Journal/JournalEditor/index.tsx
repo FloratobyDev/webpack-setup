@@ -37,12 +37,18 @@ function JournalEditor() {
       is_bookmarked: false,
     };
 
-    API.post("/api/journal/journals", {
-      journal: newJournal,
-      rest: {
-        repoId: currentRepository?.id,
+    API.post(
+      "/api/journal/journals",
+      {
+        journal: newJournal,
+        rest: {
+          repoId: currentRepository?.id,
+        },
       },
-    });
+      {
+        withCredentials: true,
+      },
+    );
 
     // addJournal({
     //   journal: newJournal,
