@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === "production") {
   // Use cors middleware for CORS configuration
   app.use(
     cors({
-      origin: "*",
+      origin: "https://git-journal-frontend.onrender.com",
       credentials: true,
       allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept",
     }),
