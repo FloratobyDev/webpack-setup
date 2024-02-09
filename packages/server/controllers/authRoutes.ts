@@ -26,10 +26,10 @@ authRouter.get("/authorize", async (req, res) => {
       })
       .then((data) => {
         response = data;
-        // console.log("data", data);
+        console.log("auth data", data);
       })
       .catch((err) => {
-        // console.log("err", err);
+        console.log("auth err", err);
       });
 
     // console.log("response", response);
