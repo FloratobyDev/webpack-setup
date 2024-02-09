@@ -1,8 +1,8 @@
+import React, { useState } from "react";
 import { H2 } from "@client/components/headings";
 import JournalCards from "./JournalCards";
 import JournalEditor from "./JournalEditor";
 import JournalRepositories from "./JournalRepositories";
-import React, { useState } from "react";
 import RepositoryInfo from "./RepositoryInfo";
 import SubLayout from "@client/components/layout/SubLayout";
 import TaskCards from "./TaskCards";
@@ -44,19 +44,7 @@ function Journal() {
         "currentRepository.notifications",
         currentRepository.notifications,
       );
-      await fetch("/api/journal/notifications", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(currentRepository.notifications),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("data user", data);
-          // setUserData(data.user);
-        });
-      // updateNotification(currentRepository.notifications);
+      updateNotification(currentRepository.notifications);
       updateRepositoryAlertById(currentRepository.id);
     }
   }

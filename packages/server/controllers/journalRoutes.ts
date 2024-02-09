@@ -236,7 +236,31 @@ journalRouter.get("/repositories/:repoId", async (req, res) => {
   }
 });
 
-journalRouter.patch("/notifications", async (req, res) => {
+journalRouter.post("/users", (req, res) => {
+  journalDb.raw("SELECT * FROM users")
+    .then((data) => {
+      console.log(data.rows);
+      res.json(data.rows);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Error fetching users" });
+    });
+});
+
+journalRouter.post("/users", (req, res) => {
+  journalDb.raw("SELECT * FROM users")
+    .then((data) => {
+      console.log(data.rows);
+      res.json(data.rows);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Error fetching users" });
+    });
+});
+
+journalRouter.post("/notifications", async (req, res) => {
   try {
     verifyToken(req, async (err, userInfo) => {
       if (err) {
@@ -260,7 +284,7 @@ journalRouter.patch("/notifications", async (req, res) => {
   }
 });
 
-journalRouter.patch("/notifications/:id", async (req, res) => {
+journalRouter.post("/notifications/:id", async (req, res) => {
   try {
     verifyToken(req, async (err, userInfo) => {
       if (err) {

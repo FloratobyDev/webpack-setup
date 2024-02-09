@@ -70,7 +70,7 @@ const journalApi = createApi({
       query: (notificationInfo) => {
         return {
           url: `/notifications`,
-          method: "PATCH",
+          method: "POST",
           body: notificationInfo,
         };
       },
@@ -85,7 +85,7 @@ const journalApi = createApi({
       query: (notificationInfo) => {
         return {
           url: `/notifications/${notificationInfo.notification_id}`,
-          method: "PATCH",
+          method: "POST",
           body: {
             push_id: notificationInfo.push_id,
           },

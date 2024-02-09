@@ -8,7 +8,7 @@ const buildOctokitWebhooks = require("./buildOctokitWebhooks.ts");
 const authController = require("./controllers/authRoutes.ts");
 const journalController = require("./controllers/journalRoutes.ts");
 const { createProxyMiddleware } = require("http-proxy-middleware");
-const path = require('path');
+const path = require("path");
 // const verifyToken = require("./verifyToken.ts");
 
 dotenv.config();
@@ -19,20 +19,26 @@ app.use(express.json()); // Use express.json() middleware
 app.use(express.urlencoded({ extended: true })); // Use express.urlencoded() middleware
 
 // Serve static files from the React app
-app.use(cors());
 if (process.env.NODE_ENV === "development") {
+  app.use(cors());
 }
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("public"));
-  app.use(
-    "/api",
-    createProxyMiddleware({
-      target: "https://git-journal-app.onrender.com",
-      changeOrigin: true,
-      pathRewrite: { "^/api": "" },
-    }),
-  );
+  
+  const pathRewriteMiddleware = (req, res, next) => {
+    // Example of rewriting: replace "/api" with "/new-api" in the path
+    req.url = req.url.replace(/^\/api/, "");
+
+    // Log the new URL for demonstration purposes
+    console.log("Rewritten URL:", req.url);
+
+    // Continue to the next middleware/route handler
+    next();
+  };
+
+  // Use the path rewrite middleware globally
+  app.use(pathRewriteMiddleware);
 }
 
 buildOctokitWebhooks();
@@ -84,11 +90,24 @@ app.get("/users", validateTokenMiddleware, (req, res) => {
     });
 });
 
+app.post("/users", validateTokenMiddleware, (req, res) => {
+  console.log("req.body", req.body);
+  db.raw("SELECT * FROM users")
+    .then((data) => {
+      console.log(data.rows);
+      res.json(data.rows);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: "Error fetching users" });
+    });
+});
+
 app.use("/auth", authController);
 app.use("/journal", journalController);
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public", "index.html"));
 });
 
 app.listen(process.env.PORT, () => {
