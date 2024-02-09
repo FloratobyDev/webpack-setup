@@ -28,7 +28,6 @@ services:
   runtime: static
   buildCommand: npm run build:client
   staticPublishPath: public
-  plan: free
   routes:
     - type: rewrite
       source: /api/*
