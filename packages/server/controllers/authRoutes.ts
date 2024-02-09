@@ -81,8 +81,10 @@ authRouter.get("/authorize", async (req, res) => {
             .redirect(`https://git-journal-frontend.onrender.com`);
         }
 
+        //samesite none secure
         return res
           .cookie("accessToken", token, {
+            domain: window.location.hostname,
             httpOnly: true,
             sameSite: "none",
             secure: true,

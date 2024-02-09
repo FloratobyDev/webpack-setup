@@ -30,11 +30,11 @@ function AuthProvider({ children }: Props) {
     API.get("/api/verify")
       .then((response) => {
         console.log("response: ", response.data);
-
         setIsVerified(true);
         setCurrentUser(response.data.user);
       })
       .catch((err) => {
+        console.log('err', err);
         setIsVerified(false);
       })
       .finally(() => {
