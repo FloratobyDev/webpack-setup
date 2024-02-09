@@ -42,6 +42,7 @@ function JournalEditor() {
       rest: {
         repoId: currentRepository?.id,
       },
+      withCredentials: true,
     });
 
     // addJournal({
