@@ -23,40 +23,30 @@ if (process.env.NODE_ENV === "development") {
   app.use(cors());
 }
 
-if (process.env.NODE_ENV === "production") {
-  app.use((req, res, next) => {
-    res.header(
-      "Access-Control-Allow-Origin",
-      "https://git-journal-frontend.onrender.com",
-    );
-    res.header("Access-Control-Allow-Credentials", true);
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept",
-    );
-    next();
-  });
+const pathRewriteMiddleware = (req, res, next) => {
+  // Example of rewriting: replace "/api" with "/new-api" in the path
+  req.url = req.url.replace(/^\/api/, "");
 
+  // Log the new URL for demonstration purposes
+  console.log("Rewritten URL:", req.url);
+
+  // Continue to the next middleware/route handler
+  next();
+};
+
+if (process.env.NODE_ENV === "production") {
+  // Use cors middleware for CORS configuration
   app.use(
     cors({
       origin: "https://git-journal-frontend.onrender.com",
       credentials: true,
+      allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept",
     }),
   );
+
   app.use(express.static("public"));
 
-  const pathRewriteMiddleware = (req, res, next) => {
-    // Example of rewriting: replace "/api" with "/new-api" in the path
-    req.url = req.url.replace(/^\/api/, "");
-
-    // Log the new URL for demonstration purposes
-    console.log("Rewritten URL:", req.url);
-
-    // Continue to the next middleware/route handler
-    next();
-  };
-
-  // Use the path rewrite middleware globally
+  // Continue using the path rewrite middleware if needed
   app.use(pathRewriteMiddleware);
 }
 
