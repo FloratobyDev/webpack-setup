@@ -268,13 +268,13 @@ journalRouter.post("/notifications", async (req, res) => {
       }
       console.log("req.body", req.body);
 
-      // const notificationIds = req.body.map((notification) =>
-      //   Number(notification.id),
-      // );
-      // await journalDb.raw(
-      //   `UPDATE notifications SET has_seen=true WHERE id = ANY(?) RETURNING *`,
-      //   [notificationIds],
-      // );
+      const notificationIds = req.body.map((notification) =>
+        Number(notification.id),
+      );
+      await journalDb.raw(
+        `UPDATE notifications SET has_seen=true WHERE id = ANY(?) RETURNING *`,
+        [notificationIds],
+      );
 
       return res.status(200).json({ message: "Notifications updated" });
     });

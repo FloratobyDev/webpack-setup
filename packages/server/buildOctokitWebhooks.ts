@@ -131,10 +131,8 @@ module.exports = function buildOctokitWebhooks() {
     }
   });
 
-  const port = 3000;
-  const host = " https://git-journal-backend.onrender.com";
+  const port = process.env.PORT || 3000;
   const webhookPath = "/api/webhook";
-  const localWebhookUrl = `${host}${webhookPath}`;
 
   const middleware = createNodeMiddleware(octokitApp.webhooks, {
     path: webhookPath,
@@ -142,7 +140,7 @@ module.exports = function buildOctokitWebhooks() {
 
   // This creates a Node.js server that listens for incoming HTTP requests (including webhook payloads from GitHub) on the specified port. When the server receives a request, it executes the `middleware` function that you defined earlier. Once the server is running, it logs messages to the console to indicate that it is listening.
   http.createServer(middleware).listen(port, () => {
-    console.log(`Server is listening for events at: ${localWebhookUrl}`);
+    console.log(`Server is listening for events at: ${webhookPath}`);
     console.log("Press Ctrl + C to quit.");
   });
 };
