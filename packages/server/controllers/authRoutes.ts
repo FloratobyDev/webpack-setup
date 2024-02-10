@@ -84,9 +84,8 @@ authRouter.get("/authorize", async (req, res) => {
         //samesite none secure
         return res
           .cookie("accessToken", token, {
-            domain: "git-journal-frontend.onrender.com",
             httpOnly: true,
-            sameSite: "none",
+            sameSite: "None",
             secure: true,
             maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
           })
