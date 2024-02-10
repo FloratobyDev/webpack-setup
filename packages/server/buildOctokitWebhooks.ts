@@ -131,7 +131,7 @@ module.exports = function buildOctokitWebhooks() {
     }
   });
 
-  const port = process.env.PORT || 3000;
+  const port = 3000;
   const webhookPath = "/api/webhook";
 
   const middleware = createNodeMiddleware(octokitApp.webhooks, {
