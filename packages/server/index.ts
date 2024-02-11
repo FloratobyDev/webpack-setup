@@ -14,6 +14,8 @@ const path = require("path");
 dotenv.config();
 
 const app = express();
+buildOctokitWebhooks(app);
+
 app.use(cookieParser()); // Use cookie-parser middleware
 app.use(express.json()); // Use express.json() middleware
 app.use(express.urlencoded({ extended: true })); // Use express.urlencoded() middleware
@@ -47,8 +49,6 @@ if (process.env.NODE_ENV === "production") {
   // Continue using the path rewrite middleware if needed
   app.use(pathRewriteMiddleware);
 }
-
-buildOctokitWebhooks(app);
 
 const validateTokenMiddleware = (req, res, next) => {
   // Get the token from the request headers
