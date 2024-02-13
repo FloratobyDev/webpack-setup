@@ -20,7 +20,6 @@ function ChecklistDropdown(
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Enter" && currentChecklist !== "") {
-        console.log("hello");
         onAddCheck(currentChecklist);
         setCurrentChecklist("");
       }
@@ -55,19 +54,28 @@ function ChecklistDropdown(
           />
         ))}
         {checklist.length === 0 && (
-          <p className="text-sub-paragraph text-center italic text-md">
+          <p className="text-sub-paragraph text-center italic text-md py-2">
             No checklist added
           </p>
         )}
       </div>
-      <div className="w-full bg-black-75 p-2 rounded-smd">
+      <div className="w-full bg-black-75 px-2 py-1 rounded-smd flex justify-between items-center">
         <input
           alt="checklist"
-          className="bg-transparent outline-none text-paragraph placeholder:text-sm placeholder:text-paragraph focus:placeholder:text-transparent flex w-full h-4"
+          className="bg-transparent outline-none text-paragraph placeholder:text-md placeholder:text-paragraph focus:placeholder:text-transparent flex w-full h-4"
           onChange={(e) => setCurrentChecklist(e.target.value)}
-          placeholder="Add checklist here..."
+          placeholder="Write checklist here..."
           value={currentChecklist}
         />
+        <button
+          className="px-2 py-1 hover:bg-primary-yellow hover:text-primary-black rounded-smd font-sem"
+          onClick={() => {
+            onAddCheck(currentChecklist);
+            setCurrentChecklist("");
+          }}
+        >
+          Add
+        </button>
       </div>
     </div>
   );

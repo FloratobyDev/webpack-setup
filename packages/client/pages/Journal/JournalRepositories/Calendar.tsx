@@ -118,7 +118,7 @@ function Calendar() {
         </button>
       </div>
       <div className="flex flex-col gap-y-3 mt-2">
-        <div className="grid grid-cols-7 items-center justify-center text-center text-sm text-black-50 font-jost font-semibold">
+        <div className="grid grid-cols-7 items-center justify-center text-center text-sm text-black-50 font-jost font-extrabold">
           <p>S</p>
           <p>M</p>
           <p>T</p>

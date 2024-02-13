@@ -10,22 +10,20 @@ type Props = {
 function RepoButton({ name, hasAlert, active, ...rest }: Props) {
   // const [hasAlertValue, setHasAlertValue] = useState<boolean>(hasAlert);
   const alertClass = classNames("h-2 w-2 rounded-full bg-red-500", {
-    invisible: !hasAlert,
+    // invisible: !hasAlert,
   });
 
   const buttonClass = classNames(
-    "hover:bg-primary-black w-full hover:text-white flex items-center gap-x-1 px-2 py-0.5 rounded-md text-md",
+    "hover:bg-primary-black w-full hover:text-white flex items-center justify-between gap-x-1 px-2 py-1 rounded-md text-md",
     {
       "bg-primary-black text-white": active,
     },
   );
   return (
-    <div
-      className="w-full"
-    >
+    <div className="w-full">
       <button {...rest} className={buttonClass}>
-        <span aria-label="alert-circle" className={alertClass} />
         {name}
+        <span aria-label="alert-circle" className={alertClass} />
       </button>
     </div>
   );

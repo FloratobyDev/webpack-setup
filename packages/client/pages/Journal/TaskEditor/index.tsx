@@ -218,7 +218,7 @@ function TaskEditor() {
   return (
     <Paper classname="flex gap-y-2 h-full flex-col justify-between">
       <div className="flex flex-col gap-y-2">
-        <H2 classname="text-primary-yellow font-black text-lg">Tasks</H2>
+        <H2 classname="text-primary-yellow font-black">Tasks</H2>
         <div className="flex flex-col gap-y-2">
           <div className={divClasses}>
             <input

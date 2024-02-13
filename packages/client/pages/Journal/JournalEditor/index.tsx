@@ -111,7 +111,7 @@ function JournalEditor() {
       <Paper classname="flex flex-col gap-y-8 text-primary-black">
         <div className="flex flex-col gap-y-2">
           <input
-            className="focus:outline-none rounded-md bg-primary-black text-heading-1 leading-heading-1 placeholder:text-heading-1 font-extrabold text-primary-yellow placeholder:text-primary-yellow focus:placeholder:opacity-0"
+            className="focus:outline-none rounded-md bg-primary-black text-heading-2 leading-heading-2 placeholder:text-heading-2 font-extrabold text-primary-yellow placeholder:text-primary-yellow focus:placeholder:opacity-0"
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Untitled"
             value={title}

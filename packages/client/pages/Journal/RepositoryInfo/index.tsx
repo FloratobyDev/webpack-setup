@@ -15,13 +15,17 @@ function RepositoryInfo({ name, description, languages }: Props) {
         <H4 classname="first-letter:capitalize text-primary-yellow font-black text-md">
           {name}
         </H4>
-        <p className="text-md first:capitalize">{description}</p>
+        <p className="text-md first:capitalize ">
+          There’s some description written right here to explain what this
+          repository is all about.There’s some description written right here to
+          explain what this repository is all about.
+        </p>
       </section>
       <section className="flex flex-col gap-y-1">
         <H4 classname="font-black first-letter:capitalize text-primary-yellow">
           Languages
         </H4>
-        <p className="text-md">HTML, CSS, Javascript, TypeScript</p>
+        <p className="text-md font-light">HTML, CSS, Javascript, TypeScript</p>
       </section>
     </Paper>
   );
