@@ -17,10 +17,12 @@ function Login() {
   const { setCurrentUser, isVerified } = useAuth();
 
   const authorizeApp = () => {
+    const hostname = PRODUCTION ? "https://git-journal-backend.onrender.com" : "http://localhost:4242";
     const clientID = "Iv1.d6f08907cca5eef0"; // Replace with your actual client ID
     const redirectUri = encodeURIComponent(
-      "https://git-journal-backend.onrender.com/auth/authorize",
+      `${hostname}/auth/authorize`,
     );
+
     const scope = "repo";
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectUri}&scope=${scope}`;
     window.location.href = githubAuthUrl;

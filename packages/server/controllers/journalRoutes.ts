@@ -565,7 +565,7 @@ journalRouter.post("/journals", async (req, res) => {
         console.log("no bookmark created");
       }
 
-      return res.status(200).json({ message: "Success" });
+      return res.status(200).json({ id: newJournalId });
     });
   } catch (err) {
     console.log("err", err);

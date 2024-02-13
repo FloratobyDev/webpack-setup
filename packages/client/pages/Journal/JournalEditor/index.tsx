@@ -12,6 +12,7 @@ function JournalEditor() {
   const [title, setTitle] = useState("");
   const [commits, setCommits] = useState<CommitType[]>([]); // ["commit1", "commit2"
   const [selectedTasks, setSelectedTasks] = useState<TaskType[]>([]); // ["commit1", "commit2"
+  const [loading, setLoading] = useState(false);
 
   const [content, setContent] = useState("");
   const contentRef = useRef(null);
@@ -29,13 +30,14 @@ function JournalEditor() {
 
   function handleJournalSubmission() {
     const newJournal: JournalType = {
-      title,
+      title: title || "Untitled",
       content,
       commits,
       tasks: selectedTasks,
-      status: "draft",
+      status: "published",
       is_bookmarked: false,
     };
+    setLoading(true);
 
     API.post(
       "/api/journal/journals",
@@ -48,19 +50,23 @@ function JournalEditor() {
       {
         withCredentials: true,
       },
-    );
-
-    // addJournal({
-    //   journal: newJournal,
-    //   rest: {
-    //     repoId: currentRepository?.id,
-    //   },
-    // });
-    setJournals([newJournal, ...journals]);
-    setTitle("");
-    setContent("");
-    setCommits([]);
-    setSelectedTasks([]);
+    )
+      .then((res) => {
+        console.log("res", res);
+        const { id } = res.data;
+        const modJournal = { ...newJournal, id };
+        setJournals([modJournal, ...journals]);
+        setTitle("");
+        setContent("");
+        setCommits([]);
+        setSelectedTasks([]);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
 
   function handleCommitSave(stagedCommits: CommitType[]) {
@@ -130,14 +136,11 @@ function JournalEditor() {
           </button>
           <CommitDropdown commits={commits} onSave={handleCommitSave} />
           <TaskDropdown onSave={handleTaskSave} selectedTasks={selectedTasks} />
-          <button className="bg-primary-yellow text-primary-black focus:outline-none px-3 py-1.5 rounded-smd text-sm font-extrabold hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent">
-            Save Draft
-          </button>
           <button
             className="bg-primary-yellow text-primary-black focus:outline-none px-3 py-1.5 rounded-smd text-sm font-extrabold hover:border hover:border-primary-yellow hover:text-primary-yellow hover:bg-transparent border border-transparent"
             onClick={handleJournalSubmission}
           >
-            Save
+            {loading ? "Publishing..." : "Publish"}
           </button>
         </div>
       </Paper>

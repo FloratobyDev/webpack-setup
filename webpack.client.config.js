@@ -2,6 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { DefinePlugin } = require("webpack");
 
 module.exports = {
   entry: path.resolve(__dirname, "packages/client/index.tsx"),
@@ -62,6 +63,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "template", "index.html"),
       filename: "index.html",
+    }),
+    new DefinePlugin({
+      PRODUCTION: JSON.stringify(true),
     }),
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash].css",

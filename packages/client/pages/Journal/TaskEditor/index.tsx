@@ -18,6 +18,7 @@ import useOutsideClick from "@client/hooks/useOutsideClick";
 import { useRepository } from "@client/contexts/RepositoryContext";
 import { useTask } from "@client/contexts/TaskContext";
 import { useSnackbar } from "@client/contexts/Snackbar";
+import { isEmpty, set } from "lodash";
 
 function TaskEditor() {
   const [openChecklist, setOpenChecklist] = useState(true);
@@ -26,8 +27,13 @@ function TaskEditor() {
   const [difficulty, setDifficulty] = useState(DifficultyTypes.EASY);
   const [openDeadline, setOpenDeadline] = useState(false);
   const [taskName, setTaskName] = useState("");
-  const { onAddTask, onUpdateId, onRemoveTask, updateChecklistByTaskId } =
-    useTask();
+  const {
+    onAddTask,
+    onUpdateId,
+    onRemoveTask,
+    updateChecklistByTaskId,
+    setSynching,
+  } = useTask();
   const [dueDate, setDueDate] = useState(null);
 
   const checkListRef = useRef(null);
@@ -41,8 +47,7 @@ function TaskEditor() {
   const generatedIdRef = useRef(null);
   const generatedChecklistIdRef = useRef([]);
   const { setToasts } = useSnackbar();
-
-  console.log("data", data);
+  const [taskAddedClicked, setTaskAddedClicked] = useState(false);
 
   useEffect(() => {
     if (isError) {
@@ -68,8 +73,16 @@ function TaskEditor() {
       setDifficulty(backupJournal.difficulty);
       setDueDate(backupJournal?.due_date);
       setTaskName(backupJournal.title);
+      setSynching({
+        value: false,
+        taskId: "",
+      });
     }
     if (isSuccess) {
+      setSynching({
+        value: false,
+        taskId: "",
+      });
       console.log("data", data);
       updateChecklistByTaskId(generatedIdRef.current, data.checklists);
       onUpdateId(generatedIdRef.current, String(data.id));
@@ -91,39 +104,47 @@ function TaskEditor() {
   function handleAddTask() {
     const randomString = generateRandomString(5);
     generatedIdRef.current = randomString;
-    addTask({
-      newTask: {
+    const isTaskEmpty = isEmpty(taskName);
+    setTaskAddedClicked(isTaskEmpty);
+    if (!isTaskEmpty) {
+      setSynching({
+        value: true,
+        taskId: randomString,
+      });
+      addTask({
+        newTask: {
+          title: taskName,
+          checklists,
+          difficulty,
+          state: ProgressValues.OPEN,
+          id: randomString,
+          due_date: dueDate,
+        },
+        rest: {
+          repo_id: currentRepository?.id,
+        },
+      });
+      onAddTask({
         title: taskName,
         checklists,
         difficulty,
         state: ProgressValues.OPEN,
         id: randomString,
         due_date: dueDate,
-      },
-      rest: {
-        repo_id: currentRepository?.id,
-      },
-    });
-    onAddTask({
-      title: taskName,
-      checklists,
-      difficulty,
-      state: ProgressValues.OPEN,
-      id: randomString,
-      due_date: dueDate,
-    });
-    setBackupJournal({
-      title: taskName,
-      checklists,
-      difficulty,
-      state: ProgressValues.OPEN,
-      id: randomString,
-      due_date: dueDate,
-    });
-    setChecklists([]);
-    setDifficulty(DifficultyTypes.EASY);
-    setDueDate(null);
-    setTaskName("");
+      });
+      setBackupJournal({
+        title: taskName,
+        checklists,
+        difficulty,
+        state: ProgressValues.OPEN,
+        id: randomString,
+        due_date: dueDate,
+      });
+      setChecklists([]);
+      setDifficulty(DifficultyTypes.EASY);
+      setDueDate(null);
+      setTaskName("");
+    }
   }
 
   function handleOpenChecklist() {
@@ -150,6 +171,9 @@ function TaskEditor() {
   }
 
   function onTaskNameChange(e: any) {
+    if (e.target.value.length <= 0) {
+      setTaskAddedClicked(false);
+    }
     setTaskName(e.target.value);
   }
 
@@ -182,12 +206,21 @@ function TaskEditor() {
     },
   );
 
+  const isTaskTitleEmpty = isEmpty(taskName) && taskAddedClicked;
+
+  const divClasses = classNames(
+    "flex bg-primary-black p-3 items-center rounded-smd gap-x-2 h-9 border border-transparent",
+    {
+      "border-primary-red": isTaskTitleEmpty,
+    },
+  );
+
   return (
     <Paper classname="flex gap-y-2 h-full flex-col justify-between">
       <div className="flex flex-col gap-y-2">
         <H2 classname="text-primary-yellow font-black text-lg">Tasks</H2>
         <div className="flex flex-col gap-y-2">
-          <div className="flex bg-primary-black p-3 items-center rounded-smd gap-x-2 text-black h-9">
+          <div className={divClasses}>
             <input
               className="bg-transparent outline-none text-paragraph placeholder:text-paragraph placeholder:text-md focus:placeholder:text-transparent text-md flex w-[90%]"
               onChange={onTaskNameChange}
@@ -196,6 +229,25 @@ function TaskEditor() {
               value={taskName}
             />
           </div>
+          {isTaskTitleEmpty && (
+            <p className="text-sm text-primary-red flex items-baseline gap-x-1">
+              <svg
+                fill="none"
+                height="14"
+                viewBox="0 0 16 14"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clipRule="evenodd"
+                  d="M7.08656 1.4618C7.47423 0.81026 8.41762 0.81026 8.8053 1.4618L15.3688 12.4925C15.7655 13.1591 15.2851 14.0039  14.5095 14.0039H1.38239C0.606736 14.0039 0.126388 13.1591 0.523018 12.4925L7.08656 1.4618ZM7.15269 4.8861C7.15269 4.44383 7.51122 4.0853 7.9535 4.0853C8.39577 4.0853 8.7543 4.44383 8.7543 4.88611V9.36013C8.7543 9.8024 8.39577 10.1609 7.9535 10.1609C7.51122 10.1609 7.15269 9.8024 7.15269 9.36013V4.8861ZM7.94193 10.8759C7.50604 10.8759 7.15269 11.2293 7.15269 11.6652C7.15269 12.1011 7.50604 12.4544 7.94193 12.4544H7.96506C8.40095 12.4544 8.7543 12.1011 8.7543 11.6652C8.7543 11.2293 8.40095 10.8759 7.96506 10.8759H7.94193Z"
+                  fill="#E72D14"
+                  fillRule="evenodd"
+                />
+              </svg>
+              Please add a task title
+            </p>
+          )}
           <ChecklistDropdown
             checklist={checklists}
             onAddCheck={onAddCheck}

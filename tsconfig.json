@@ -15,6 +15,7 @@
     "outDir": "./dist/",
     "baseUrl": ".",
     "paths": {
+      "~/*": ["./"],
       "@client/*": ["./packages/client/*"],
       "@server/*": ["./packages/server/*"],
     },

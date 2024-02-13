@@ -72,16 +72,15 @@ authRouter.get("/authorize", async (req, res) => {
           console.log('error signing token', err);
           return res
             .status(500)
-            .redirect(`https://git-journal-frontend.onrender.com/login`);
+            .redirect(`${process.env.CLIENT_NAME}/login`);
         }
 
         if (req.cookies.accessToken) {
           return res
             .status(200)
-            .redirect(`https://git-journal-frontend.onrender.com`);
+            .redirect(`${process.env.CLIENT_NAME}`);
         }
 
-        //samesite none secure
         return res
           .cookie("accessToken", token, {
             httpOnly: true,
@@ -90,11 +89,11 @@ authRouter.get("/authorize", async (req, res) => {
             maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
           })
           .status(200)
-          .redirect(`https://git-journal-frontend.onrender.com`);
+          .redirect(`${process.env.CLIENT_NAME}`);
       },
     );
   } catch (err) {
-    res.status(500).redirect(`https://git-journal-frontend.onrender.com`);
+    res.status(500).redirect(`${process.env.CLIENT_NAME}`);
   }
 });
 

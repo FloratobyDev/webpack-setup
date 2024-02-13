@@ -42,10 +42,11 @@ function Checklist({ item, onRemove }: ChecklistProps) {
 function Task({ taskInfo }: Props) {
   const [open, setOpen] = useState(false);
   const [openProgress, setOpenProgress] = useState(false);
-  const { onUpdateChecklist } = useTask();
+  const { onUpdateChecklist, synching } = useTask();
   const [mutateChecklist, { isLoading, data, isSuccess, isError, error }] =
     useUpdateChecklistMutation();
   const progressRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState<"bottom" | "top">("bottom");
 
   function handleOpen() {
     setOpen(!open);
@@ -56,6 +57,20 @@ function Task({ taskInfo }: Props) {
       onUpdateChecklist(taskInfo.id, data?.id, !data?.is_done);
     }
   }, [isSuccess]);
+
+  useEffect(() => {
+    if (progressRef.current) {
+      const boundingClientRect = progressRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      if (boundingClientRect.y > (5 * windowHeight) / 6) {
+        setPosition("top");
+      } else {
+        setPosition("bottom");
+      }
+    }
+
+  }, [progressRef.current, openProgress]);
 
   useOutsideClick(progressRef, openProgress, () => {
     setOpenProgress(false);
@@ -99,6 +114,8 @@ function Task({ taskInfo }: Props) {
     },
   );
 
+  const isSynching = synching.value && synching.taskId === taskInfo.id;
+
   return (
     <div
       className="rounded-md bg-primary-black select-none transition-all duration-500 ease-in-out"
@@ -122,14 +139,16 @@ function Task({ taskInfo }: Props) {
           <div className="relative" ref={progressRef}>
             <button
               className="uppercase py-1 px-3 font-medium text-paragraph cursor-pointer rounded-md hover:bg-black-75 whitespace-nowrap text-[13px]"
+              disabled={isSynching}
               onClick={(e) => {
                 handleOpenProgress(e);
               }}
             >
-              {taskInfo.state}
+              {isSynching ? "Syncing..." : taskInfo.state}
             </button>
             {openProgress && (
               <ProgressDropdown
+                position={position}
                 setOpenProgress={setOpenProgress}
                 taskInfo={taskInfo}
               />

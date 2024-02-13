@@ -1,5 +1,6 @@
 import { ProgressValues, TaskType } from "@client/types";
-import React, { RefObject, forwardRef, useEffect } from "react";
+import React, { forwardRef, RefObject, useEffect } from "react";
+import classNames from "classnames";
 import { map } from "lodash";
 import { useTask } from "@client/contexts/TaskContext";
 import { useUpdateTaskStateMutation } from "@client/store";
@@ -7,10 +8,11 @@ import { useUpdateTaskStateMutation } from "@client/store";
 type Props = {
   taskInfo: TaskType;
   setOpenProgress: (open: boolean) => void;
+  position: "bottom" | "top";
 };
 
 function ProgressDropdown(
-  { taskInfo, setOpenProgress }: Props,
+  { taskInfo, setOpenProgress, position }: Props,
   ref: RefObject<HTMLDivElement>,
 ) {
   const { onUpdateTask } = useTask();
@@ -33,9 +35,17 @@ function ProgressDropdown(
     }
   }, [isTaskSuccess]);
 
+  const divClasses = classNames(
+    "absolute z-10 right-0 shadow-black bg-primary-black border border-primary-outline flex rounded-smd flex-col overflow-hidden p-1 text-md",
+    {
+      "top-10": position === "bottom",
+      "bottom-10": position === "top",
+    },
+  );
+
   return (
     <div
-      className="absolute z-10 right-0 top-10 shadow-black bg-primary-black border border-primary-outline flex rounded-smd flex-col overflow-hidden p-1 text-md"
+      className={divClasses}
       data-testid={`${taskInfo.id}-progress`}
       ref={ref}
     >

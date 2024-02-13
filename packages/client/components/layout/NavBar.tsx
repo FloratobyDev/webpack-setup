@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Book from "../svgs/Book";
 import LinkButton from "../buttons/LinkButton";
 import { Pages } from "@client/types";
+import ProfileIcon from "../svgs/ProfileIcon";
 import Settings from "../svgs/Settings";
 
 function NavBar() {
@@ -11,6 +12,10 @@ function NavBar() {
     {
       icon: <Book />,
       page: Pages.JOURNAL,
+    },
+    {
+      icon: <ProfileIcon />,
+      page: Pages.PROFILE,
     },
     {
       icon: <Settings />,

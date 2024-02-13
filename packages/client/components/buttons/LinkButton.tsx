@@ -11,9 +11,10 @@ type Props = {
 
 function LinkButton({ active, iconSvg, label = "", page, ...rest }: Props) {
   const linkButtonClasses = classNames(
-    "p-2.5 py-3 rounded-md hover:bg-primary-black flex items-center justify-center w-full",
+    "p-2.5 py-3 rounded-md hover:bg-primary-black flex items-center justify-center w-full border",
     {
-      "bg-primary-black": active,
+      "bg-primary-black border-primary-outline": active,
+      "border-transparent": !active,
     },
   );
 

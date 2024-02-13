@@ -9,7 +9,7 @@ npx knex migrate:rollback
 echo "Migrating to the latest version..."
 npx knex migrate:latest
 
-# echo "Seeding the database..."
-# npx knex seed:run
+echo "Seeding the database..."
+npx knex seed:run
 
-# echo "Database reset and seeded successfully!"
+echo "Database reset and seeded successfully!"

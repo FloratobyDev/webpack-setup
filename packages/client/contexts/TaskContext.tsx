@@ -5,6 +5,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useState,
 } from "react";
 import { useRepository } from "./RepositoryContext";
 
@@ -23,6 +24,11 @@ type TaskContextType = {
     taskId: string,
     newChecklist: ChecklistType[],
   ) => void;
+  synching: {
+    value: boolean;
+    taskId: string;
+  };
+  setSynching: (value: { value: boolean; taskId: string }) => void;
 };
 
 const TaskContext = createContext<TaskContextType>(undefined);
@@ -33,6 +39,10 @@ type Props = {
 
 function TaskProvider({ children }: Props) {
   const { tasks, setTasks } = useRepository();
+  const [synching, setSynching] = useState({
+    value: false,
+    taskId: "",
+  });
 
   function onUpdateId(oldId: string, newId: string) {
     setTasks((prevTasks) => {
@@ -136,8 +146,10 @@ function TaskProvider({ children }: Props) {
       onUpdateId,
       onRemoveTask,
       updateChecklistByTaskId,
+      synching,
+      setSynching,
     }),
-    [tasks],
+    [tasks, synching],
   );
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;

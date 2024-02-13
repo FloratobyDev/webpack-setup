@@ -45,7 +45,7 @@ type AddJournalType = {
 const journalApi = createApi({
   reducerPath: "journalApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://git-journal-backend.onrender.com/api/journal",
+    baseUrl: "/api/journal",
     credentials: "include",
   }),
   tagTypes: ["Repository"],

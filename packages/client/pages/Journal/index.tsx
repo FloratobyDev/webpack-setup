@@ -51,24 +51,15 @@ function Journal() {
 
   return (
     <div className="flex h-full w-full">
-      <div className="w-[20%] max-w-[18%] flex-col min-h-full h-full border-r border-r-primary-outline">
-        <SubLayout
-          classnames="overflow-auto flex border-b border-b-primary-outline"
-          style={{
-            maxHeight: "14rem",
-          }}
-        >
+      <div className="w-[20%] max-w-[18%] flex flex-col h-full border-r border-r-primary-outline">
+        <SubLayout classnames="overflow-auto flex border-b border-b-primary-outline min-h-[20%]">
           <RepositoryInfo
             description={currentRepository.description}
             languages={[]}
             name={currentRepository.name}
           />
         </SubLayout>
-        <SubLayout
-          style={{
-            height: "calc(100vh - 14rem)",
-          }}
-        >
+        <SubLayout classnames="overflow-auto flex-1">
           <JournalRepositories
             activeRepo={currentRepository}
             onClick={changeRepository}

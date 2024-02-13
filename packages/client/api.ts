@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an Axios instance with configuration
 const API = axios.create({
-  baseURL: 'https://git-journal-backend.onrender.com', // Your base URL
+  baseURL: PRODUCTION ? 'https://git-journal-backend.onrender.com': ''
   // You can add more default settings here
 });
 

@@ -9,16 +9,42 @@ const authController = require("./controllers/authRoutes.ts");
 const journalController = require("./controllers/journalRoutes.ts");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const path = require("path");
+const lusca = require("lusca");
+const session = require("express-session");
 // const verifyToken = require("./verifyToken.ts");
 
-dotenv.config();
+dotenv.config({
+  path: ".env.local",
+});
 
 const app = express();
 buildOctokitWebhooks(app);
 
+console.log('process.env.NODE_ENV', process.env.CLIENT_NAME);
+
 app.use(cookieParser()); // Use cookie-parser middleware
 app.use(express.json()); // Use express.json() middleware
 app.use(express.urlencoded({ extended: true })); // Use express.urlencoded() middleware
+app.use(session({
+  secret: "secretIsNotOut123",
+  resave: true,
+  saveUninitialized: true,
+  cookie: { secure: false },
+}));
+app.use(
+  lusca({
+    csrf: false, // Enable CSRF
+    // csp: {
+    //   /* Content Security Policy settings */
+    // },
+    xframe: "SAMEORIGIN",
+    p3p: "ABCDEF",
+    hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
+    xssProtection: true,
+    nosniff: true,
+    referrerPolicy: "same-origin",
+  }),
+);
 
 // Serve static files from the React app
 if (process.env.NODE_ENV === "development") {
@@ -38,7 +64,7 @@ if (process.env.NODE_ENV === "production") {
   // Use cors middleware for CORS configuration
   app.use(
     cors({
-      origin: "https://git-journal-frontend.onrender.com",
+      origin: process.env.CLIENT_NAME,
       credentials: true,
       allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept",
     }),
@@ -46,9 +72,9 @@ if (process.env.NODE_ENV === "production") {
 
   app.use(express.static("public"));
 
-  // Continue using the path rewrite middleware if needed
-  app.use(pathRewriteMiddleware);
 }
+
+app.use(pathRewriteMiddleware);
 
 const validateTokenMiddleware = (req, res, next) => {
   // Get the token from the request headers
@@ -80,36 +106,6 @@ app.get("/verify", validateTokenMiddleware, async (req, res) => {
     console.log("error", error);
     res.status(500).json({ message: "Error fetching user" });
   }
-});
-
-app.post("/user", validateTokenMiddleware, (req, res) => {
-  db.raw("SELECT * FROM users");
-  res.json({ user: "Michael" });
-});
-
-app.get("/users", validateTokenMiddleware, (req, res) => {
-  db.raw("SELECT * FROM users")
-    .then((data) => {
-      console.log(data.rows);
-      res.json(data.rows);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ message: "Error fetching users" });
-    });
-});
-
-app.post("/users", validateTokenMiddleware, (req, res) => {
-  console.log("req.body", req.body);
-  db.raw("SELECT * FROM users")
-    .then((data) => {
-      console.log(data.rows);
-      res.json(data.rows);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ message: "Error fetching users" });
-    });
 });
 
 app.use("/auth", authController);

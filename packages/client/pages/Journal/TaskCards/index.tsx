@@ -1,6 +1,6 @@
 import { DifficultyTypes, ProgressValues, TaskType } from "@client/types";
 import { filter, map } from "lodash";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import HeaderTabs from "@client/components/HeaderTabs";
 import Paper from "@client/components/layout/Paper";
 import SearchBar from "@client/components/searchbar/SearchBar";
@@ -46,7 +46,7 @@ function TaskCards() {
   const mappedProgressValues = map(ProgressValues, (tab) => tab);
 
   return (
-    <Paper classname="flex h-full flex-col relative gap-y-3">
+    <Paper classname="flex h-full flex-col gap-y-3">
       <SearchBar
         className="h-10"
         onChange={handleInputChange}
@@ -58,7 +58,7 @@ function TaskCards() {
         handleValueChange={setActiveTab}
         options={mappedProgressValues}
       />
-      <div className="overflow-auto flex flex-col gap-y-2">
+      <div className="overflow-auto flex flex-col gap-y-2 h-full">
         {map(modifiedTasks, (task) => {
           return <Task key={task.id} taskInfo={task} />;
         })}
